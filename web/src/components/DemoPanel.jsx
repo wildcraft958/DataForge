@@ -92,7 +92,7 @@ export default function DemoPanel({ demos, gridSize = 140 }) {
         {demos.map((demo, i) => (
           <div
             key={i}
-            className="flex items-center gap-4 rounded-xl px-4 py-3"
+            className="flex items-center gap-4 rounded-xl px-4 py-3 overflow-x-auto"
             style={{
               opacity: i < visibleCount ? 1 : 0.1,
               transform: i < visibleCount ? 'translateY(0)' : 'translateY(8px)',

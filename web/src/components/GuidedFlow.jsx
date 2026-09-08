@@ -1,34 +1,29 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 
 const STEPS = [
   {
-    text: 'This model learned a sorting rule from three examples. It works at this difficulty.',
-    action: null,
+    text: 'The model sorts 3 bars correctly. The demonstrations include a matching example.',
     waitFor: null,
   },
   {
-    text: 'Drag the slider right and watch what happens.',
-    action: null,
+    text: 'Drag the slider to 8. The model still works because the demos cover this difficulty.',
     waitFor: 'complexity_8',
   },
   {
-    text: 'The model was trained on all difficulties. It can do this. But its examples only went up to 3.',
-    action: null,
+    text: 'Now flip the toggle to remove the matching example.',
     waitFor: null,
-  },
-  {
-    text: 'Flip the toggle to add one example at the current difficulty.',
-    action: null,
-    waitFor: 'covered',
     highlightToggle: true,
   },
   {
-    text: 'Nothing about the model changed. Nothing about the question changed. Only the examples did.',
-    action: null,
+    text: 'The same model, the same question. Only the examples changed.',
+    waitFor: 'uncovered',
+  },
+  {
+    text: 'Scroll down to the BDH section. See how the two memory systems store these demos differently.',
     waitFor: null,
   },
   {
-    text: 'That is the claim. Explore freely.',
+    text: 'That is the claim: coverage, not capability. Explore freely.',
     action: 'unlock',
     waitFor: null,
   },
@@ -41,6 +36,7 @@ export default function GuidedFlow({
   active,
 }) {
   const [step, setStep] = useState(0)
+  const autoAdvanceRef = useRef(null)
 
   const advance = useCallback(() => {
     if (step < STEPS.length - 1) {
@@ -52,14 +48,21 @@ export default function GuidedFlow({
 
   const current = STEPS[step]
 
-  if (!active) return null
-
   const canAdvance = (() => {
     if (!current.waitFor) return true
     if (current.waitFor === 'complexity_8') return complexity >= 8
+    if (current.waitFor === 'uncovered') return !covered
     if (current.waitFor === 'covered') return covered
     return true
   })()
+
+  useEffect(() => {
+    if (!active || !current.waitFor || !canAdvance) return
+    autoAdvanceRef.current = setTimeout(advance, 600)
+    return () => clearTimeout(autoAdvanceRef.current)
+  }, [active, canAdvance, current.waitFor, advance])
+
+  if (!active) return null
 
   return (
     <div

@@ -8,7 +8,7 @@ We built an interactive demo that lets you see this happen in real time.
 
 ## What we built
 
-Our project is an entry for DataForge 2026, Pathway track. We trained a small transformer (5 million parameters, decoder-only, 6 layers) on a sorting task from the ARC family. The task: given colored bars of varying heights on a 10x10 grid, sort them left to right by height.
+Our project is an entry for DataForge 2026, Pathway track. We trained a small transformer (~4.2 million parameters, decoder-only, 6 layers) on a sorting task from the ARC family. The task: given colored bars of varying heights on a 10x10 grid, sort them left to right by height.
 
 The complexity parameter is the number of bars, ranging from 2 to 8. We trained the model on all complexities with "covered" demonstrations. Covered means that at least one of the three example pairs shown to the model matches the query's difficulty. The model learned to solve every level.
 
@@ -20,7 +20,7 @@ The results were sharp. At complexity 8, the model scored 100% exact match with 
 
 This is not a bias-variance problem. The model capacity did not change. The training data did not change. The only variable is which examples the model reads as input context at inference time. The phenomenon is about in-context learning. The model infers the task rule from the demonstrations it sees. When the demonstrations do not cover the difficulty it faces, that inference breaks.
 
-Pathway's BDH-CQ system (150 million parameters) shows the same cliff on the same task family. At ordering length 8, BDH-CQ scores 0 out of 24 with short context and 12 out of 24 with supported context (arXiv:2608.09888, Table 3). The effect scales from our 5M toy model to a production-grade system.
+Pathway's BDH-CQ system (150 million parameters) shows the same cliff on the same task family. At ordering length 8, BDH-CQ scores 0 out of 24 with short context and 12 out of 24 with supported context (arXiv:2608.09888, Table 3). The effect scales from our 4.2M toy model to a production-grade system.
 
 ## The BDH connection
 
@@ -34,7 +34,7 @@ The cost difference is large. BDH-CQ processes one task for $0.00070. HRM, which
 
 ## How the demo works
 
-The interactive artifact opens with a guided walkthrough that takes under 90 seconds. The learner starts at complexity 3 with uncovered demos. Because 2-3 bar demos transfer well to a 3-bar query, the model gets it right. The learner drags the complexity slider to 8. The model breaks. The learner flips a toggle to add one demonstration at complexity 8. The model recovers. Nothing else changed.
+The interactive artifact opens with a guided walkthrough that takes under 90 seconds. The learner starts at complexity 3 with covered demonstrations. The model sorts 3 bars correctly. The learner drags the complexity slider to 8. The model still works because the demonstrations cover that difficulty. The learner then flips a toggle to remove the matching demonstration. The model fails. Nothing about the model or the question changed. Only the examples did.
 
 After the guided flow, all controls unlock. The learner can explore every complexity and toggle between covered and uncovered conditions freely.
 

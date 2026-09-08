@@ -33,9 +33,8 @@ No pretrained weights are used.
 
 | Asset | Source | Licence |
 |-------|--------|---------|
-| System font stack | Browser default | N/A |
-
-No external fonts, images, or media files are loaded.
+| Inter | Google Fonts (Rasmus Andersson) | SIL Open Font License 1.1 |
+| JetBrains Mono | Google Fonts (JetBrains) | SIL Open Font License 1.1 |
 
 ## Papers and References
 

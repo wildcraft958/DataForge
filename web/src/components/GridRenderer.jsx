@@ -13,7 +13,7 @@ const ARC_COLORS = [
 
 export { ARC_COLORS }
 
-export default function GridRenderer({ grid, size = 200, label }) {
+export default function GridRenderer({ grid, size = 200, label, ariaLabel }) {
   if (!grid || grid.length === 0) return null
 
   const rows = grid.length
@@ -41,6 +41,8 @@ export default function GridRenderer({ grid, size = 200, label }) {
           viewBox={`0 0 ${gridWidth} ${gridHeight}`}
           className="block"
           style={{ borderRadius: 3 }}
+          role="img"
+          aria-label={ariaLabel || label || 'Grid visualization'}
         >
           {grid.map((row, r) =>
             row.map((val, c) => (

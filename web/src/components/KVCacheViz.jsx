@@ -37,6 +37,9 @@ export default function KVCacheViz({ demoCount = 0, maxSlots = 24 }) {
           Attention re-reads every stored slot on each step.
           More demonstrations means more memory and more compute.
         </p>
+        <p className="text-xs text-navy-500 mt-2 italic">
+          Illustrative. Token count estimated from demo count, not from live KV tensors.
+        </p>
       </div>
     </div>
   )

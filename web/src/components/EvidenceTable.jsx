@@ -50,6 +50,47 @@ export default function EvidenceTable() {
       </div>
 
       <h3 className="text-base font-semibold text-white mb-3">
+        Ladder Experiment
+      </h3>
+      <p className="text-sm text-navy-300 mb-4">
+        BDH-CQ ordering pass rates by length (arXiv:2608.09888). Performance saturates
+        through length 5 then drops sharply.
+      </p>
+      <div className="overflow-x-auto mb-4">
+        <table className="text-sm border-collapse w-full max-w-2xl">
+          <thead>
+            <tr className="text-left">
+              <th className="px-4 py-2.5 border-b border-navy-700/60 font-semibold text-white">Length</th>
+              <th className="px-4 py-2.5 border-b border-navy-700/60 font-semibold text-white">Pass</th>
+              <th className="px-4 py-2.5 border-b border-navy-700/60 font-semibold text-white">Max</th>
+              <th className="px-4 py-2.5 border-b border-navy-700/60 font-semibold text-white">Rate</th>
+            </tr>
+          </thead>
+          <tbody>
+            {[
+              [2, 36, 36], [3, 36, 36], [4, 36, 36], [5, 36, 36],
+              [6, 29, 36], [7, 8, 24], [8, 1, 24],
+            ].map(([len, pass, max]) => {
+              const rate = Math.round((pass / max) * 100)
+              const color = rate >= 90 ? 'text-pw-success' : rate >= 50 ? 'text-amber-400' : 'text-pw-error'
+              return (
+                <tr key={len} className="hover:bg-navy-800/30 transition-colors">
+                  <td className="px-4 py-2 border-b border-navy-800/60 text-navy-100 font-mono">{len}</td>
+                  <td className="px-4 py-2 border-b border-navy-800/60 font-mono text-navy-100">{pass}</td>
+                  <td className="px-4 py-2 border-b border-navy-800/60 font-mono text-navy-400">{max}</td>
+                  <td className={`px-4 py-2 border-b border-navy-800/60 font-mono font-bold ${color}`}>{rate}%</td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+      <p className="text-xs text-navy-400 mb-8">
+        Contrast: propagation/copying tasks show no cliff (48/48 at distances 2-8).
+        Some operations extrapolate; ordering does not.
+      </p>
+
+      <h3 className="text-base font-semibold text-white mb-3">
         System Comparison
       </h3>
       <div className="overflow-x-auto">

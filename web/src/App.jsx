@@ -3,17 +3,19 @@ import Controls from './components/Controls'
 import DemoPanel from './components/DemoPanel'
 import GridRenderer from './components/GridRenderer'
 import OutputComparison from './components/OutputComparison'
-import StatusStrip from './components/StatusStrip'
+import SelfTestCard from './components/SelfTestCard'
 import LiveBadge from './components/LiveBadge'
 import BDHModule from './components/BDHModule'
 import EvidenceTable from './components/EvidenceTable'
 import GuidedFlow from './components/GuidedFlow'
+import AboutPage from './components/AboutPage'
 import useOnnxInference from './hooks/useOnnxInference'
 
 function App() {
   const [complexity, setComplexity] = useState(3)
-  const [covered, setCovered] = useState(false)
+  const [covered, setCovered] = useState(true)
   const [guidedActive, setGuidedActive] = useState(true)
+  const [aboutOpen, setAboutOpen] = useState(false)
   const [tasks, setTasks] = useState(null)
   const [precomputed, setPrecomputed] = useState(null)
   const [livePrediction, setLivePrediction] = useState(null)
@@ -71,7 +73,15 @@ function App() {
               Demonstration Coverage
             </h1>
           </div>
-          <LiveBadge isLive={isLive} />
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setAboutOpen(true)}
+              className="text-xs font-medium text-navy-300 hover:text-white transition-colors px-3 py-1.5 rounded-lg border border-navy-700/50 hover:border-navy-600"
+            >
+              About
+            </button>
+            <LiveBadge isLive={isLive} />
+          </div>
         </div>
         <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-pw-blue to-transparent" />
       </header>
@@ -117,6 +127,8 @@ function App() {
                     prediction={prediction}
                     groundTruth={currentTask.query_output}
                     gridSize={140}
+                    complexity={complexity}
+                    covered={covered}
                   />
                 ) : (
                   <div>
@@ -135,10 +147,7 @@ function App() {
               </div>
             </div>
 
-            <StatusStrip
-              prediction={prediction}
-              groundTruth={currentTask.query_output}
-            />
+            <SelfTestCard visible={!guidedActive} />
 
             <BDHModule demos={currentTask.demos} />
 
@@ -157,6 +166,8 @@ function App() {
         active={guidedActive}
         onComplete={() => setGuidedActive(false)}
       />
+
+      {aboutOpen && <AboutPage onClose={() => setAboutOpen(false)} />}
     </div>
   )
 }

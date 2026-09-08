@@ -18,7 +18,7 @@ The query grid is identical in both conditions for the same seed. Only the demon
 
 ## The Model
 
-We trained a decoder-only transformer (6 layers, 256 dimensions, 8 attention heads, 5 million parameters) on 10,500 covered tasks across all complexities. With the right demonstrations present, the model learned to solve every difficulty level.
+We trained a decoder-only transformer (6 layers, 256 dimensions, 8 attention heads, ~4.2 million parameters) on 10,500 covered tasks across all complexities. With the right demonstrations present, the model learned to solve every difficulty level.
 
 At inference, we do not retrain or update the model. We change only the demonstrations it reads as input context.
 
@@ -68,7 +68,7 @@ Our model is trained on a single synthetic task family. The coverage cliff is sp
 
 Our demo includes a Hebbian memory visualization. This is a simplified illustration of the BDH update rule from the BDH Explainer Chapter 2 (Pathway, "From Attention to Synapses"). It omits low-rank compression, the positional operator, excitatory and inhibitory circuits, and ReLU gating. It is not the official BDH implementation.
 
-All BDH-CQ numbers are developer-reported. No public model weights exist. We did not run BDH-CQ or reproduce their results.
+All BDH-CQ numbers are developer-reported. No public model weights exist. We did not run BDH-CQ or reproduce their results. The system's dimensions and update rules remain proprietary. No independent team reproduced the reported numbers. BDH-CQ is a research prototype, not a production deployment.
 
 Demonstration adaptation is session-scoped. The model does not learn across tasks or retain knowledge from one session to the next. Consolidating fast synaptic state into durable weights remains an open problem (Dragon Hatchling, arXiv:2509.26507, Conclusion).
 
