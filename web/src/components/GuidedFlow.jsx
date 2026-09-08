@@ -1,7 +1,3 @@
-/**
- * First-visit guided flow. 6 steps, under 90 seconds.
- * Controls the complexity slider and coverage toggle through a script.
- */
 import { useState, useCallback } from 'react'
 
 const STEPS = [
@@ -66,17 +62,27 @@ export default function GuidedFlow({
   })()
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50">
+    <div
+      className="fixed bottom-0 left-0 right-0 z-50 border-t border-navy-700/40"
+      style={{
+        backgroundColor: 'rgba(11, 17, 32, 0.85)',
+        backdropFilter: 'blur(12px)',
+        WebkitBackdropFilter: 'blur(12px)',
+      }}
+    >
       <div className="max-w-2xl mx-auto px-6 py-4 flex items-center gap-4">
         <div className="flex-1">
-          <p className="text-sm text-gray-800">{current.text}</p>
-          <div className="flex gap-1 mt-2">
+          <p className="text-sm text-navy-100 leading-relaxed">{current.text}</p>
+          <div className="flex gap-1 mt-2.5">
             {STEPS.map((_, i) => (
               <div
                 key={i}
-                className={`h-1 rounded-full flex-1 ${
-                  i <= step ? 'bg-blue-500' : 'bg-gray-200'
-                }`}
+                className="h-1 rounded-full flex-1 transition-colors duration-300"
+                style={{
+                  background: i <= step
+                    ? 'linear-gradient(90deg, #5468FF, #28BAFF)'
+                    : '#1A2844',
+                }}
               />
             ))}
           </div>
@@ -85,10 +91,10 @@ export default function GuidedFlow({
           onClick={advance}
           disabled={!canAdvance}
           className={`
-            px-4 py-2 rounded-lg text-sm font-medium transition-colors
+            px-5 py-2 rounded-lg text-sm font-semibold transition-all duration-200
             ${canAdvance
-              ? 'bg-blue-600 text-white hover:bg-blue-700'
-              : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+              ? 'bg-pw-blue text-white hover:shadow-[0_0_16px_rgba(84,104,255,0.4)] hover:bg-pw-blue/90'
+              : 'bg-navy-700/50 text-navy-400 cursor-not-allowed'
             }
           `}
         >
