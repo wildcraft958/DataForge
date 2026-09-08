@@ -3,7 +3,7 @@
 DataForge 2026, Pathway track.
 
 **Source code:** https://github.com/wildcraft958/DataForge
-**Live artifact:** (Vercel URL pending deployment)
+**Live artifact:** https://web-jet-theta-42.vercel.app
 
 ## Claim
 
