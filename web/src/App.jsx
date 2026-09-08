@@ -8,6 +8,7 @@ import LiveBadge from './components/LiveBadge'
 import BDHModule from './components/BDHModule'
 import EvidenceTable from './components/EvidenceTable'
 import GuidedFlow from './components/GuidedFlow'
+import useOnnxInference from './hooks/useOnnxInference'
 
 function App() {
   const [complexity, setComplexity] = useState(3)
@@ -15,6 +16,8 @@ function App() {
   const [guidedActive, setGuidedActive] = useState(true)
   const [tasks, setTasks] = useState(null)
   const [precomputed, setPrecomputed] = useState(null)
+  const [livePrediction, setLivePrediction] = useState(null)
+  const onnx = useOnnxInference()
 
   useEffect(() => {
     fetch('/tasks.json')
@@ -36,13 +39,25 @@ function App() {
     ) || null
   }, [tasks, complexity, condition])
 
-  const prediction = useMemo(() => {
+  useEffect(() => {
+    if (!onnx.ready || !currentTask) { setLivePrediction(null); return }
+    let cancelled = false
+    onnx.predict(currentTask.demos, currentTask.query_input).then((pred) => {
+      if (!cancelled) setLivePrediction(pred)
+    })
+    return () => { cancelled = true }
+  }, [onnx.ready, onnx.predict, currentTask])
+
+  const precomputedPrediction = useMemo(() => {
     if (!precomputed || !currentTask) return null
     const match = precomputed.find(
       (p) => p.complexity === complexity && p.condition === condition && p.seed === currentTask.seed
     )
     return match?.prediction || null
   }, [precomputed, currentTask, complexity, condition])
+
+  const isLive = onnx.ready && livePrediction !== null
+  const prediction = isLive ? livePrediction : precomputedPrediction
 
   return (
     <div className="min-h-screen bg-gray-50 pb-24">
@@ -56,7 +71,7 @@ function App() {
               DataForge 2026, Pathway track
             </p>
           </div>
-          <LiveBadge isLive={false} />
+          <LiveBadge isLive={isLive} />
         </div>
       </header>
 
@@ -67,7 +82,6 @@ function App() {
             onComplexityChange={setComplexity}
             covered={covered}
             onCoveredChange={setCovered}
-            disabled={guidedActive && covered && complexity < 8}
           />
         </div>
 

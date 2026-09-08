@@ -3,8 +3,8 @@
 Usage:
     python3 -m model.generate_precomputed \
         --model checkpoints/model_final.pt \
-        --tasks web/src/data/tasks.json \
-        --output web/src/data/precomputed.json
+        --tasks web/public/tasks.json \
+        --output web/public/precomputed.json
 
 Runs the trained model on every task in the web task set and stores
 predictions alongside the ground truth. The frontend uses this data
