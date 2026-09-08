@@ -135,6 +135,17 @@ export default function HebbianViz({ demos = [] }) {
           No growing cache, but finite capacity.
           Older writes interfere when the matrix fills.
         </p>
+        <button
+          onClick={() => {
+            const x = Array.from({ length: N }, () => (Math.random() * 2 - 1))
+            const norm = Math.sqrt(x.reduce((s, v) => s + v * v, 0)) || 1
+            const xn = x.map(v => v / norm)
+            setSigma(prev => hebbianWrite(prev, xn, xn))
+          }}
+          className="mt-3 text-xs px-3 py-1.5 rounded-lg border border-navy-700/50 bg-navy-900/40 text-navy-300 hover:text-white hover:border-pw-cyan/40 transition-colors"
+        >
+          Write random vector
+        </button>
       </div>
     </div>
   )

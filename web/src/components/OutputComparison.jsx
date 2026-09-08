@@ -113,6 +113,7 @@ export default function OutputComparison({
         tone: 'error',
         headline: 'Failed without coverage',
         body: `The model was trained on ${complexity}-bar tasks and can solve them. But the demonstrations only showed easy examples (≤3 bars). Without a single example at this difficulty, the model cannot apply what it knows. Flip the coverage toggle to add one.`,
+        bdh: 'BDH-CQ shows the same cliff: 0/24 without coverage, 12/24 with (arXiv:2608.09888, Table 3).',
       }
     }
     return {
@@ -307,6 +308,11 @@ export default function OutputComparison({
               <p className="text-xs text-navy-300 mt-1.5 leading-relaxed max-w-md">
                 {explanation.body}
               </p>
+              {explanation.bdh && (
+                <p className="text-[10px] text-pw-cyan/60 mt-1.5 font-mono">
+                  {explanation.bdh}
+                </p>
+              )}
             </div>
           </div>
         </div>

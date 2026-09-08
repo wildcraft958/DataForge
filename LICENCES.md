@@ -12,6 +12,7 @@ Source and licence record for code, data, weights, graphics, fonts, and reused c
 | Tailwind CSS 4 | Tailwind Labs | MIT |
 | PyTorch 2 | Meta | BSD-3-Clause |
 | NumPy | NumPy Developers | BSD-3-Clause |
+| ONNX Runtime Web | Microsoft | MIT |
 
 ## Data
 

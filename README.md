@@ -184,6 +184,9 @@ node --test bdh-toy/tests/hebbian.test.js
 
 # Start the frontend
 cd web && npm install && npm run dev
+
+# Note: model.onnx is not committed (too large for git).
+# Generate it with export_onnx.py or download from the Vercel deployment.
 ```
 
 ## Training (GPU required)

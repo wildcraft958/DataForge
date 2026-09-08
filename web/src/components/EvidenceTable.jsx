@@ -18,6 +18,7 @@ export default function EvidenceTable() {
               <th className="px-4 py-2.5 border-b border-navy-700/60 font-semibold text-white">Uncovered</th>
               <th className="px-4 py-2.5 border-b border-navy-700/60 font-semibold text-white">Covered</th>
               <th className="px-4 py-2.5 border-b border-navy-700/60 font-semibold text-white">Source</th>
+              <th className="px-4 py-2.5 border-b border-navy-700/60 font-semibold text-white">Evidence</th>
             </tr>
           </thead>
           <tbody>
@@ -26,24 +27,28 @@ export default function EvidenceTable() {
               <td className="px-4 py-2.5 border-b border-navy-800/60 text-pw-error font-mono">0/24</td>
               <td className="px-4 py-2.5 border-b border-navy-800/60 text-pw-success font-mono">12/24</td>
               <td className="px-4 py-2.5 border-b border-navy-800/60 text-navy-400 text-xs">BDH-CQ Table 3, pass@1</td>
+              <td className="px-4 py-2.5 border-b border-navy-800/60"><span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400 font-medium">developer-reported</span></td>
             </tr>
             <tr className="hover:bg-navy-800/30 transition-colors">
               <td className="px-4 py-2.5 border-b border-navy-800/60 text-navy-100">Ordering, length 8</td>
               <td className="px-4 py-2.5 border-b border-navy-800/60 text-pw-error font-mono">0/24</td>
               <td className="px-4 py-2.5 border-b border-navy-800/60 text-pw-success font-mono">13/24</td>
               <td className="px-4 py-2.5 border-b border-navy-800/60 text-navy-400 text-xs">BDH-CQ Table 3, pass@2</td>
+              <td className="px-4 py-2.5 border-b border-navy-800/60"><span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400 font-medium">developer-reported</span></td>
             </tr>
             <tr className="hover:bg-navy-800/30 transition-colors">
               <td className="px-4 py-2.5 border-b border-navy-800/60 text-navy-100">Nesting, depth 5</td>
               <td className="px-4 py-2.5 border-b border-navy-800/60 text-amber-400 font-mono">15/24</td>
               <td className="px-4 py-2.5 border-b border-navy-800/60 text-pw-success font-mono">16/24</td>
               <td className="px-4 py-2.5 border-b border-navy-800/60 text-navy-400 text-xs">BDH-CQ Table 3, pass@1</td>
+              <td className="px-4 py-2.5 border-b border-navy-800/60"><span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400 font-medium">developer-reported</span></td>
             </tr>
             <tr className="hover:bg-navy-800/30 transition-colors">
               <td className="px-4 py-2.5 text-navy-100">Nesting, depth 5</td>
               <td className="px-4 py-2.5 text-amber-400 font-mono">19/24</td>
               <td className="px-4 py-2.5 text-pw-success font-mono">24/24</td>
               <td className="px-4 py-2.5 text-navy-400 text-xs">BDH-CQ Table 3, pass@2</td>
+              <td className="px-4 py-2.5"><span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400 font-medium">developer-reported</span></td>
             </tr>
           </tbody>
         </table>

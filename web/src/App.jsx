@@ -81,7 +81,7 @@ function App() {
             >
               About
             </button>
-            <LiveBadge isLive={isLive} />
+            <LiveBadge isLive={isLive} progress={onnx.progress} />
           </div>
         </div>
         <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-pw-blue to-transparent" />
@@ -98,6 +98,12 @@ function App() {
       </div>
 
       <main className="max-w-5xl mx-auto px-6 py-6">
+        <div className="mb-4 px-4 py-3 rounded-lg border border-navy-700/40 bg-navy-900/40">
+          <p className="text-xs font-mono text-navy-400">
+            <span className="text-pw-cyan font-semibold">Claim:</span>{' '}
+            A model that learned to sort 8 bars from demonstrations will fail at 8 bars if its demonstrations only show 2-3 bars.
+          </p>
+        </div>
         <div className="mb-8">
           <Controls
             complexity={complexity}

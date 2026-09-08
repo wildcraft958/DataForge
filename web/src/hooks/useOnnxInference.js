@@ -33,6 +33,7 @@ export default function useOnnxInference() {
   const [session, setSession] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const [progress, setProgress] = useState(null)
   const sessionRef = useRef(null)
 
   useEffect(() => {
@@ -76,7 +77,9 @@ export default function useOnnxInference() {
     const cols = queryInput[0].length
     const targetLen = rows * cols + (rows - 1)
 
+    setProgress({ step: 0, total: targetLen })
     for (let step = 0; step < targetLen; step++) {
+      setProgress({ step: step + 1, total: targetLen })
       const ctx = tokens.slice(-MAX_SEQ_LEN)
       const input = new ort.Tensor(
         'int64',
@@ -95,6 +98,7 @@ export default function useOnnxInference() {
       tokens.push(bestToken)
     }
 
+    setProgress(null)
     const generated = tokens.slice(-targetLen)
     return decodeGrid(generated, rows, cols)
   }, [])
@@ -103,6 +107,7 @@ export default function useOnnxInference() {
     ready: session !== null,
     loading,
     error,
+    progress,
     predict,
   }
 }

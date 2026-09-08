@@ -1,3 +1,13 @@
+const ROW_SEP_COUNT = 9
+const GRID_SEP_COUNT = 1
+
+function tokenEstimate(complexity, demoCount = 3) {
+  const gridTokens = 10 * 10 + ROW_SEP_COUNT
+  const demoTokens = demoCount * (gridTokens * 2 + GRID_SEP_COUNT)
+  const queryTokens = gridTokens + GRID_SEP_COUNT
+  return demoTokens + queryTokens
+}
+
 export default function Controls({
   complexity,
   onComplexityChange,
@@ -65,6 +75,10 @@ export default function Controls({
         <span className={`text-sm font-semibold ${covered ? 'text-pw-success' : 'text-pw-error'}`}>
           {covered ? 'Covered' : 'Uncovered'}
         </span>
+      </div>
+
+      <div className="text-[10px] font-mono text-navy-500 mt-1 ml-1">
+        Context: ~{tokenEstimate(complexity)} / 1024 tokens
       </div>
 
       <style>{`

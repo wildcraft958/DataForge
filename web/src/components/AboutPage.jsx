@@ -169,7 +169,7 @@ function TokenizerDiagram() {
   const exampleRow = [0, 0, 3, 0, 1, 0, 0, 2, 0, 0]
   const tokenLabels = ['0', '0', '3', '0', '1', '0', '0', '2', '0', '0', 'RS']
   return (
-    <svg viewBox="0 0 520 120" className="w-full max-w-lg" role="img" aria-label="Grid row tokenized to a sequence of color indices with a row separator">
+    <svg viewBox="0 0 540 110" className="w-full max-w-lg" role="img" aria-label="Grid row tokenized to a sequence of color indices with a row separator">
       <text x={10} y={14} fill="#8B9DC3" fontSize={10} fontWeight={600} fontFamily="Inter, system-ui, sans-serif">Grid row</text>
       {exampleRow.map((v, i) => (
         <rect key={i} x={10 + i * 20} y={22} width={18} height={18} rx={3} fill={colors[v]} stroke="#1A2844" strokeWidth={0.8} />
@@ -518,9 +518,9 @@ export default function AboutPage({ onClose }) {
               </p>
             </div>
             <div className="shrink-0 rounded-xl border border-navy-700/40 bg-navy-900/30 p-4">
-              <svg viewBox="0 0 120 80" width={120} height={80} role="img" aria-label="Example: 4 colored bars unsorted becoming sorted by height">
+              <svg viewBox="0 0 128 80" width={128} height={80} role="img" aria-label="Example: 4 colored bars unsorted becoming sorted by height">
                 <text x={30} y={10} textAnchor="middle" fill="#6B7B9E" fontSize={7} fontFamily="Inter, system-ui, sans-serif">Input</text>
-                <text x={90} y={10} textAnchor="middle" fill="#6B7B9E" fontSize={7} fontFamily="Inter, system-ui, sans-serif">Output</text>
+                <text x={94} y={10} textAnchor="middle" fill="#6B7B9E" fontSize={7} fontFamily="Inter, system-ui, sans-serif">Output</text>
                 {/* Input bars (unsorted) */}
                 {[
                   { x: 8, h: 40, c: '#3B82F6' },

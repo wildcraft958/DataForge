@@ -61,3 +61,7 @@ Second: honest labeling matters. Latent reasoning models like Coconut (arXiv:241
 Third: one controlled variable teaches more than ten. Our demo has two controls: a complexity slider and a coverage toggle. That is enough to let the learner discover, test, and confirm the claim on their own.
 
 The source code is public. Every number in the evidence table traces to a specific section of a specific paper. We did not run BDH-CQ. We report the numbers its authors published.
+
+## The takeaway
+
+Coverage sensitivity is testable, measurable, and fixable. Every few-shot prompt is an experiment in coverage. The next time a model fails on a hard question, ask whether the examples covered that difficulty before asking whether the model is capable.

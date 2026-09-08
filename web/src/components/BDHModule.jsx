@@ -7,6 +7,9 @@ export default function BDHModule({ demos = [] }) {
       <h2 className="text-2xl font-bold text-white mb-2">
         Two Memory Architectures
       </h2>
+      <p className="text-xs font-mono text-pw-cyan/70 mb-2">
+        Learning goal: describe how BDH-CQ stores demonstrations differently from a Transformer.
+      </p>
       <p className="text-base text-navy-300 mb-8">
         How a Transformer and BDH-CQ store demonstrations differently.
         Add demonstrations above and watch both systems respond.
