@@ -99,7 +99,7 @@ function App() {
         {currentTask ? (
           <>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-8 mb-6">
-              <DemoPanel demos={currentTask.demos} gridSize={100} />
+              <DemoPanel demos={currentTask.demos} gridSize={130} />
 
               <div className="flex flex-col gap-4 sm:gap-6">
                 <div>

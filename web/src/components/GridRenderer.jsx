@@ -1,5 +1,5 @@
 const ARC_COLORS = [
-  '#0D1117', // 0: background
+  '#172A4A', // 0: empty cell (dark blue, clearly distinct from page #0A0F1C)
   '#3B82F6', // 1: blue
   '#EF4444', // 2: red
   '#22C55E', // 3: green
@@ -27,28 +27,38 @@ export default function GridRenderer({ grid, size = 200, label }) {
       {label && (
         <span className="text-xs font-mono text-navy-400">{label}</span>
       )}
-      <svg
-        width={gridWidth + 1}
-        height={gridHeight + 1}
-        viewBox={`0 0 ${gridWidth + 1} ${gridHeight + 1}`}
-        className="rounded max-w-full h-auto"
+      <div
+        style={{
+          padding: 3,
+          borderRadius: 6,
+          backgroundColor: '#0F1D35',
+          border: '1.5px solid #2A4570',
+        }}
       >
-        {grid.map((row, r) =>
-          row.map((val, c) => (
-            <rect
-              key={`${r}-${c}`}
-              x={c * cellSize + 0.5}
-              y={r * cellSize + 0.5}
-              width={cellSize}
-              height={cellSize}
-              fill={ARC_COLORS[val] || '#0D1117'}
-              stroke="#1A2844"
-              strokeWidth={0.5}
-              rx={1}
-            />
-          ))
-        )}
-      </svg>
+        <svg
+          width={gridWidth}
+          height={gridHeight}
+          viewBox={`0 0 ${gridWidth} ${gridHeight}`}
+          className="block"
+          style={{ borderRadius: 3 }}
+        >
+          {grid.map((row, r) =>
+            row.map((val, c) => (
+              <rect
+                key={`${r}-${c}`}
+                x={c * cellSize}
+                y={r * cellSize}
+                width={cellSize}
+                height={cellSize}
+                fill={ARC_COLORS[val] || '#172A4A'}
+                stroke="#0F1D35"
+                strokeWidth={1.2}
+                rx={1.5}
+              />
+            ))
+          )}
+        </svg>
+      </div>
     </div>
   )
 }
