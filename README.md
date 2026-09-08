@@ -2,6 +2,9 @@
 
 DataForge 2026, Pathway track.
 
+**Source code:** https://github.com/wildcraft958/DataForge
+**Live artifact:** (Vercel URL pending deployment)
+
 ## Claim
 
 A system that learns a rule from demonstrations applies it reliably only within the complexity range those demonstrations covered. Adding a single demonstration at the harder level, changing nothing else, restores performance.

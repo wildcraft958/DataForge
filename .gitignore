@@ -10,5 +10,6 @@ web/public/model.onnx
 .claude/
 /data/
 *.pdf
+!docs/*.pdf
 .pytest_cache/
 checkpoints/
