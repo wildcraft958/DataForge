@@ -1,8 +1,15 @@
 /**
  * Shows exact match, dimension check, and cell error percentage.
+ * When prediction is null, shows an awaiting message.
  */
 export default function StatusStrip({ prediction, groundTruth }) {
-  if (!prediction || !groundTruth) return null
+  if (!prediction) {
+    return (
+      <div className="flex items-center px-4 py-2 bg-gray-100 rounded text-sm font-mono text-gray-400">
+        Awaiting model output
+      </div>
+    )
+  }
 
   const rows = groundTruth.length
   const cols = groundTruth[0].length
@@ -11,7 +18,7 @@ export default function StatusStrip({ prediction, groundTruth }) {
 
   const dimsMatch = predRows === rows && predCols === cols
   let cellErrors = 0
-  let totalCells = rows * cols
+  const totalCells = rows * cols
 
   if (dimsMatch) {
     for (let r = 0; r < rows; r++) {
@@ -26,25 +33,19 @@ export default function StatusStrip({ prediction, groundTruth }) {
 
   return (
     <div className="flex items-center gap-4 px-4 py-2 bg-gray-100 rounded text-sm font-mono">
-      <StatusItem
-        ok={exactMatch}
-        label={exactMatch ? 'Exact match' : 'Mismatch'}
-      />
+      <StatusItem ok={exactMatch} label={exactMatch ? 'Exact match' : 'Mismatch'} />
       <StatusItem
         ok={dimsMatch}
         label={dimsMatch ? `Dims ${rows}×${cols}` : `Dims ${predRows}×${predCols} ≠ ${rows}×${cols}`}
       />
-      <StatusItem
-        ok={cellErrors === 0}
-        label={`Cell error: ${errorPct}%`}
-      />
+      <StatusItem ok={cellErrors === 0} label={`Cell error: ${errorPct}%`} />
     </div>
   )
 }
 
 function StatusItem({ ok, label }) {
   return (
-    <span className={ok ? 'text-green-700' : 'text-red-600'}>
+    <span className={ok ? 'text-green-500' : 'text-red-500'}>
       {ok ? '✓' : '✗'} {label}
     </span>
   )
