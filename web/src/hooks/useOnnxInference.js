@@ -85,7 +85,7 @@ export default function useOnnxInference() {
       const results = await sess.run({ input_ids: input })
       const logits = results.logits.data
       const vocabSize = results.logits.dims[2]
-      const lastStart = (window.length - 1) * vocabSize
+      const lastStart = (ctx.length - 1) * vocabSize
       let bestToken = 0, bestVal = -Infinity
       for (let v = 0; v < vocabSize; v++) {
         const val = Number(logits[lastStart + v])
