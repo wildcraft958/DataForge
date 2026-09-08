@@ -107,7 +107,7 @@ checkpoints/       Trained model weights (gitignored)
 
 ## Credits
 
-- Team: Animesh Raj (lead), Aditya Raj, Yash Raj, Pratyush Kumar
+- Team: Animesh Raj (lead), Prem Agarwal, Md. Faizan Khan, Devansh Gupta
 - BDH-CQ evidence: arXiv:2608.09888, Table 3 (developer-reported)
 - Architecture inspiration: Transformer Explainer (Georgia Tech, CHI 2026)
 

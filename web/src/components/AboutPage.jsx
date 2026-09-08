@@ -215,11 +215,11 @@ function LadderChart() {
     { x: 7, y: 8, max: 24 },
     { x: 8, y: 1, max: 24 },
   ]
-  const chartW = 320
-  const chartH = 120
+  const chartW = 340
+  const chartH = 140
   const padL = 34
   const padB = 22
-  const padT = 8
+  const padT = 22
   const barW = 28
   const gap = (chartW - padL - data.length * barW) / (data.length + 1)
 
@@ -369,6 +369,51 @@ export default function AboutPage({ onClose }) {
             capability. The variable is whether the inference-time demonstrations reach the
             query difficulty.
           </p>
+        </section>
+
+        {/* Meta-Learning and Scale */}
+        <section className="mb-12">
+          <h2 className="text-lg font-semibold text-pw-cyan mb-4">Meta-Learning and Scale</h2>
+          <div className="rounded-xl border border-pw-blue/20 bg-pw-blue/[0.04] px-5 py-4 mb-4">
+            <p className="text-sm text-navy-200 leading-relaxed mb-3">
+              In-context learning is implicit meta-learning. Von Oswald et al.{' '}
+              <span className="text-pw-cyan font-mono text-xs">arXiv:2212.07677, ICML 2023</span>{' '}
+              showed that a transformer forward pass implements gradient-descent-style weight updates
+              on its internal representations. The demonstrations are not passive context. They are a
+              training signal processed in a single pass.
+            </p>
+            <p className="text-sm text-navy-200 leading-relaxed mb-3">
+              Min et al.{' '}
+              <span className="text-pw-cyan font-mono text-xs">arXiv:2202.12837, EMNLP 2022</span>{' '}
+              found that the distribution of demonstrations matters more than label correctness. This
+              predicts the coverage cliff: what breaks in-context learning is not wrong examples but
+              missing difficulty levels.
+            </p>
+            <p className="text-sm text-navy-200 leading-relaxed">
+              The same problem appears at frontier scale. GPT-6 Astra (OpenAI, Sep 2026) and Claude
+              Opus 5 (Anthropic, 2026) both use in-context learning. When a user provides examples
+              that do not cover the difficulty of the actual question, the same coverage failure
+              applies. Our 4.2M toy model makes the effect visible. Frontier models make it
+              consequential.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="rounded-lg border border-navy-700/30 bg-navy-900/20 px-4 py-3 text-center">
+              <div className="text-lg font-bold text-white font-mono">4.2M</div>
+              <div className="text-xs text-navy-400 mt-0.5">Our toy model</div>
+              <div className="text-xs text-navy-500 mt-1">100pp coverage gap</div>
+            </div>
+            <div className="rounded-lg border border-navy-700/30 bg-navy-900/20 px-4 py-3 text-center">
+              <div className="text-lg font-bold text-white font-mono">150M</div>
+              <div className="text-xs text-navy-400 mt-0.5">BDH-CQ</div>
+              <div className="text-xs text-navy-500 mt-1">Same cliff, same task</div>
+            </div>
+            <div className="rounded-lg border border-navy-700/30 bg-navy-900/20 px-4 py-3 text-center">
+              <div className="text-lg font-bold text-white font-mono">Frontier</div>
+              <div className="text-xs text-navy-400 mt-0.5">GPT-6 Astra, Opus 5</div>
+              <div className="text-xs text-navy-500 mt-1">Same mechanism</div>
+            </div>
+          </div>
         </section>
 
         {/* Precomputed-first */}
@@ -529,6 +574,8 @@ export default function AboutPage({ onClose }) {
               ['BDH-CQ Report', 'arXiv:2608.09888', 'Table 3, ladder experiments (developer-reported)'],
               ['Dragon Hatchling', 'arXiv:2509.26507', 'Architecture, Hebbian derivation'],
               ['Coconut', 'arXiv:2412.06769', 'Latent reasoning baseline'],
+              ['Von Oswald et al.', 'arXiv:2212.07677', 'ICL as implicit meta-learning (ICML 2023)'],
+              ['Min et al.', 'arXiv:2202.12837', 'Demo distribution over label correctness (EMNLP 2022)'],
               ['HRM', 'arXiv:2506.21734', 'Adaptation by optimization (contrast)'],
               ['Transformer Explainer', 'CHI 2026', 'Design precedent (live ONNX in browser)'],
             ].map(([name, ref, note]) => (
@@ -546,7 +593,7 @@ export default function AboutPage({ onClose }) {
             DataForge 2026, Pathway Track
           </span>
           <span className="text-xs text-navy-500">
-            Animesh Raj, Aditya Raj, Yash Raj, Pratyush Kumar
+            Animesh Raj, Prem Agarwal, Md. Faizan Khan, Devansh Gupta
           </span>
         </footer>
       </div>

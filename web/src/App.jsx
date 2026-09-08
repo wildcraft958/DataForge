@@ -9,6 +9,7 @@ import BDHModule from './components/BDHModule'
 import EvidenceTable from './components/EvidenceTable'
 import GuidedFlow from './components/GuidedFlow'
 import AboutPage from './components/AboutPage'
+import WhyItMattersCard from './components/WhyItMattersCard'
 import useOnnxInference from './hooks/useOnnxInference'
 
 function App() {
@@ -149,6 +150,8 @@ function App() {
             </div>
 
             <SelfTestCard visible={!guidedActive} />
+
+            <WhyItMattersCard />
 
             <BDHModule demos={currentTask.demos} />
 
