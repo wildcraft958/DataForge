@@ -13,3 +13,6 @@ web/public/model.onnx
 !docs/*.pdf
 .pytest_cache/
 checkpoints/
+CLAUDE.md
+SUBMISSION.md
+docs/judge-qa.md

@@ -89,10 +89,6 @@ python3 -m model.export_onnx \
     --output web/public/model.onnx
 ```
 
-## Week 1 Gate
-
-At complexity 8: covered EM at least 50%, uncovered EM at most 20%, gap at least 30 percentage points.
-
 ## Repository Structure
 
 ```
@@ -100,7 +96,7 @@ generator/         Ordering task generator and export script
 model/             Transformer architecture, training, validation, ONNX export
 bdh-toy/           Simplified Hebbian memory (JS, for the BDH substrate visualization)
 web/               React + Vite frontend
-docs/              Concept summary, blog, judge Q&A (PDF before submission)
+docs/              Concept summary and blog (PDF before submission)
 data/              Generated training and validation splits (gitignored)
 checkpoints/       Trained model weights (gitignored)
 ```

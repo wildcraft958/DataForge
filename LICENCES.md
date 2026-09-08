@@ -46,4 +46,6 @@ No pretrained weights are used.
 | HRM (arXiv:2506.21734) | Adaptation by optimization | Cited for contrast |
 | TRM / Tiny Recursive Models | Recursive improvement via backward pass | Cited for contrast |
 | Recurrent Depth (arXiv:2502.05171) | Depth sharing | Cited for contrast |
+| Von Oswald et al. (arXiv:2212.07677) | ICL as implicit meta-learning | Cited beside claims |
+| Min et al. (arXiv:2202.12837) | Demonstration distribution over label correctness | Cited beside claims |
 | Transformer Explainer (Georgia Tech, CHI 2026) | Design inspiration for in-browser ONNX approach | Cited as precedent |

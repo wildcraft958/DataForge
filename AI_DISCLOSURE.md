@@ -33,7 +33,7 @@ The toy transformer model (4.2M parameters) is trained from scratch on synthetic
 
 ## Writing
 
-AI assisted with drafting documentation (README, SUBMISSION.md, this disclosure). All text was reviewed and edited by the team.
+AI assisted with drafting documentation (README, concept summary, blog, this disclosure). All text was reviewed and edited by the team.
 
 ## What AI Did Not Do
 
