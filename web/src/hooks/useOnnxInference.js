@@ -1,4 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
+import * as ort from 'onnxruntime-web'
+
+ort.env.wasm.wasmPaths = '/'
+ort.env.wasm.numThreads = 1
 
 const ROW_SEP = 10
 const GRID_SEP = 11
@@ -35,12 +39,10 @@ export default function useOnnxInference() {
     let cancelled = false
 
     async function loadModel() {
-      if (typeof globalThis.ort === 'undefined') return
-
       setLoading(true)
       setError(null)
       try {
-        const sess = await window.ort.InferenceSession.create('/model.onnx')
+        const sess = await ort.InferenceSession.create('/model.onnx')
         if (!cancelled) {
           sessionRef.current = sess
           setSession(sess)
@@ -74,7 +76,6 @@ export default function useOnnxInference() {
     const cols = queryInput[0].length
     const targetLen = rows * cols + (rows - 1)
 
-    const ort = globalThis.ort
     for (let step = 0; step < targetLen; step++) {
       const ctx = tokens.slice(-MAX_SEQ_LEN)
       const input = new ort.Tensor(

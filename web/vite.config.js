@@ -4,4 +4,11 @@ import { defineConfig } from 'vite'
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  build: {
+    chunkSizeWarningLimit: 800,
+  },
+  assetsInclude: [],
+  optimizeDeps: {
+    exclude: ['onnxruntime-web'],
+  },
 })
