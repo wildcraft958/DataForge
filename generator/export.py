@@ -79,8 +79,7 @@ def main():
     data_dir = root / "data"
     data_dir.mkdir(exist_ok=True)
 
-    web_data_dir = root / "web" / "src" / "data"
-    web_data_dir.mkdir(parents=True, exist_ok=True)
+    web_data_dir = root / "web" / "public"
 
     print(f"Generating training set ({args.train_seeds} seeds x {len(COMPLEXITIES)} complexities x 2 conditions)...")
     train = generate_split(args.train_seeds, seed_start=0)

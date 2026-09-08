@@ -12,11 +12,13 @@ function App() {
   const [precomputed, setPrecomputed] = useState(null)
 
   useMemo(() => {
-    import('./data/tasks.json')
-      .then((mod) => setTasks(mod.default))
+    fetch('/tasks.json')
+      .then((r) => r.json())
+      .then(setTasks)
       .catch(() => setTasks(null))
-    import('./data/precomputed.json')
-      .then((mod) => setPrecomputed(mod.default))
+    fetch('/precomputed.json')
+      .then((r) => r.json())
+      .then(setPrecomputed)
       .catch(() => setPrecomputed(null))
   }, [])
 
