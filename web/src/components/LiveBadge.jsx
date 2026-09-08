@@ -1,21 +1,19 @@
-/**
- * Displays whether the current output is LIVE (ONNX) or PRECOMPUTED.
- */
 export default function LiveBadge({ isLive }) {
   return (
     <span
       className={`
-        inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wide
+        inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold font-mono tracking-wide
         ${isLive
-          ? 'bg-green-100 text-green-800 border border-green-300'
-          : 'bg-amber-100 text-amber-800 border border-amber-300'
+          ? 'bg-pw-success/10 text-pw-success border border-pw-success/30'
+          : 'bg-navy-800/60 text-navy-300 border border-navy-700/50'
         }
       `}
     >
       <span
-        className={`w-2 h-2 rounded-full ${isLive ? 'bg-green-500' : 'bg-amber-500'}`}
+        className={`w-2 h-2 rounded-full ${isLive ? 'bg-pw-success' : 'bg-navy-400'}`}
+        style={isLive ? { animation: 'livePulse 2s ease-in-out infinite' } : {}}
       />
-      {isLive ? 'Live' : 'Precomputed'}
+      {isLive ? 'LIVE' : 'PRECOMPUTED'}
     </span>
   )
 }

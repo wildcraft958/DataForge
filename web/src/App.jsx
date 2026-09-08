@@ -60,22 +60,33 @@ function App() {
   const prediction = isLive ? livePrediction : precomputedPrediction
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-24">
-      <header className="bg-white border-b border-gray-200 px-6 py-4">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
+    <div className="min-h-screen bg-navy-950 text-navy-100 pb-28 font-sans">
+      <header className="relative px-6 pt-6 pb-5">
+        <div className="max-w-5xl mx-auto flex items-start justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">
-              Demonstration Coverage and Extrapolation
-            </h1>
-            <p className="text-sm text-gray-500 mt-0.5">
-              DataForge 2026, Pathway track
+            <p className="text-xs font-mono text-pw-cyan tracking-wider mb-1.5">
+              DataForge 2026 · Pathway Track
             </p>
+            <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight leading-tight">
+              Demonstration Coverage
+            </h1>
           </div>
           <LiveBadge isLive={isLive} />
         </div>
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-pw-blue to-transparent" />
       </header>
 
-      <main className="max-w-6xl mx-auto px-6 py-8">
+      <div className="max-w-5xl mx-auto px-6 pt-6 pb-2">
+        <p className="text-base sm:text-lg text-navy-200 max-w-2xl leading-relaxed">
+          A model fails on hard problems not because it lacks the capability,
+          but because the demonstrations did not cover that difficulty.
+        </p>
+        <p className="text-sm text-pw-cyan/80 mt-1.5 font-medium">
+          Change the examples. Watch it recover.
+        </p>
+      </div>
+
+      <main className="max-w-5xl mx-auto px-6 py-6">
         <div className="mb-8">
           <Controls
             complexity={complexity}
@@ -87,20 +98,17 @@ function App() {
 
         {currentTask ? (
           <>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-6">
-              <div>
-                <DemoPanel demos={currentTask.demos} gridSize={120} />
-              </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-8 mb-6">
+              <DemoPanel demos={currentTask.demos} gridSize={100} />
 
-              <div className="flex flex-col gap-6">
+              <div className="flex flex-col gap-4 sm:gap-6">
                 <div>
-                  <h3 className="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-2">
-                    Query
+                  <h3 className="text-sm font-medium text-navy-300 mb-3">
+                    Query Input
                   </h3>
                   <GridRenderer
                     grid={currentTask.query_input}
-                    size={160}
-                    label="Input"
+                    size={140}
                   />
                 </div>
 
@@ -108,20 +116,19 @@ function App() {
                   <OutputComparison
                     prediction={prediction}
                     groundTruth={currentTask.query_output}
-                    gridSize={160}
+                    gridSize={140}
                   />
                 ) : (
                   <div>
-                    <h3 className="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-2">
+                    <h3 className="text-sm font-medium text-navy-300 mb-3">
                       Expected Output
                     </h3>
                     <GridRenderer
                       grid={currentTask.query_output}
-                      size={160}
-                      label="Ground truth"
+                      size={140}
                     />
-                    <p className="text-xs text-gray-400 mt-2">
-                      Model predictions appear here after training.
+                    <p className="text-xs text-navy-500 mt-2">
+                      Prediction appears after loading.
                     </p>
                   </div>
                 )}
@@ -138,7 +145,7 @@ function App() {
             <EvidenceTable />
           </>
         ) : (
-          <div className="text-center py-12 text-gray-400">
+          <div className="text-center py-16 text-navy-400">
             {tasks === null ? 'Loading task data...' : 'No task found for this configuration.'}
           </div>
         )}

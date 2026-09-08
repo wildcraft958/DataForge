@@ -1,9 +1,3 @@
-/**
- * Hebbian memory heatmap: NxN sigma matrix visualization.
- * Implements the simplified BDH write rule:
- *   sigma_t = sigma_{t-1} + x^T * v
- * Shows how the synaptic state accumulates as demos are written.
- */
 import { useState, useEffect, useRef } from 'react'
 
 const N = 16
@@ -88,16 +82,21 @@ export default function HebbianViz({ demos = [] }) {
 
   return (
     <div className="flex flex-col gap-2">
-      <h4 className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
+      <h4 className="text-xs font-semibold text-navy-300 tracking-wide">
         BDH Synaptic Memory (σ)
       </h4>
-      <svg width={w + 1} height={h + 1} viewBox={`0 0 ${w + 1} ${h + 1}`}>
+      <svg
+        width={w + 1}
+        height={h + 1}
+        viewBox={`0 0 ${w + 1} ${h + 1}`}
+        className="rounded"
+      >
         {sigma.map((row, i) =>
           row.map((val, j) => {
             const intensity = Math.abs(val) / maxAbs
-            const r = val >= 0 ? 59 : 239
-            const g = val >= 0 ? 130 : 68
-            const b = val >= 0 ? 246 : 68
+            const r = val >= 0 ? 84 : 248
+            const g = val >= 0 ? 104 : 113
+            const b = val >= 0 ? 255 : 113
             return (
               <rect
                 key={`${i}-${j}`}
@@ -106,17 +105,17 @@ export default function HebbianViz({ demos = [] }) {
                 width={CELL_PX}
                 height={CELL_PX}
                 fill={`rgba(${r},${g},${b},${intensity.toFixed(3)})`}
-                stroke="#e5e7eb"
+                stroke="#111B2E"
                 strokeWidth={0.3}
               />
             )
           })
         )}
       </svg>
-      <span className="text-xs text-gray-500 font-mono text-center">
+      <span className="text-xs text-navy-400 font-mono text-center">
         Energy: {energy.toFixed(2)}
       </span>
-      <p className="text-xs text-gray-400 max-w-[10rem]">
+      <p className="text-xs text-navy-500 max-w-[10rem] leading-relaxed">
         Fixed size. No growing cache. But finite capacity: older writes interfere when the matrix fills.
       </p>
     </div>

@@ -1,16 +1,12 @@
-/**
- * Transformer KV cache visualization: a growing vertical stack of bars,
- * one per demo token added to the cache.
- */
 export default function KVCacheViz({ demoCount = 0, maxSlots = 24 }) {
   const filled = Math.min(demoCount * 3, maxSlots)
 
   return (
     <div className="flex flex-col gap-2">
-      <h4 className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
+      <h4 className="text-xs font-semibold text-navy-300 tracking-wide">
         Transformer KV Cache
       </h4>
-      <div className="flex flex-col-reverse gap-0.5 h-48 w-16 bg-gray-100 rounded p-1 overflow-hidden">
+      <div className="flex flex-col-reverse gap-0.5 h-48 w-16 bg-navy-800/50 rounded-lg p-1.5 overflow-hidden border border-navy-700/30">
         {Array.from({ length: filled }, (_, i) => (
           <div
             key={i}
@@ -18,15 +14,16 @@ export default function KVCacheViz({ demoCount = 0, maxSlots = 24 }) {
             style={{
               height: `${100 / maxSlots}%`,
               backgroundColor: barColor(i),
-              opacity: 0.8,
+              opacity: 0.85,
+              boxShadow: `0 0 4px ${barColor(i)}40`,
             }}
           />
         ))}
       </div>
-      <span className="text-xs text-gray-500 font-mono text-center">
+      <span className="text-xs text-navy-400 font-mono text-center">
         {filled} / {maxSlots} slots
       </span>
-      <p className="text-xs text-gray-400 max-w-[10rem]">
+      <p className="text-xs text-navy-500 max-w-[10rem] leading-relaxed">
         Cost grows with each token. Attention re-reads every slot on each step.
       </p>
     </div>
@@ -34,8 +31,8 @@ export default function KVCacheViz({ demoCount = 0, maxSlots = 24 }) {
 }
 
 const CACHE_COLORS = [
-  '#3B82F6', '#10B981', '#F59E0B', '#EF4444',
-  '#8B5CF6', '#EC4899', '#06B6D4', '#84CC16',
+  '#5468FF', '#34D399', '#F59E0B', '#F87171',
+  '#A855F7', '#EC4899', '#06B6D4', '#84CC16',
 ]
 
 function barColor(i) {

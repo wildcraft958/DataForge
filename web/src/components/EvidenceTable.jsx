@@ -3,7 +3,7 @@
  */
 export default function EvidenceTable() {
   return (
-    <section className="mt-12 pt-8 border-t border-gray-200">
+    <section className="mt-8 pt-4 sm:mt-12 sm:pt-8 border-t border-gray-200">
       <h2 className="text-xl font-bold text-gray-900 mb-1">
         Evidence
       </h2>
