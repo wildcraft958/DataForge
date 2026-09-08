@@ -1,15 +1,38 @@
 import { useState, useEffect, useRef } from 'react'
 import GridRenderer, { ARC_COLORS } from './GridRenderer'
 
+function extractBars(grid) {
+  if (!grid) return []
+  const rows = grid.length
+  const cols = grid[0].length
+  const bars = []
+  for (let c = 0; c < cols; c++) {
+    let height = 0
+    let color = 0
+    for (let r = rows - 1; r >= 0; r--) {
+      if (grid[r][c] !== 0 && (color === 0 || grid[r][c] === color)) {
+        if (color === 0) color = grid[r][c]
+        height++
+      } else {
+        break
+      }
+    }
+    if (height > 0 && color > 0) {
+      bars.push({ color, height, column: c })
+    }
+  }
+  return bars
+}
+
 export default function OutputComparison({
   prediction,
   groundTruth,
+  queryInput,
   gridSize = 160,
   complexity = 3,
   covered = false,
 }) {
-  const [revealedRows, setRevealedRows] = useState(10)
-  const [playing, setPlaying] = useState(false)
+  const [phase, setPhase] = useState('idle')
   const predKeyRef = useRef('')
   const timersRef = useRef([])
 
@@ -18,17 +41,13 @@ export default function OutputComparison({
     timersRef.current = []
   }
 
-  function startReveal(rowCount) {
+  function startAnimation() {
     clearTimers()
-    setRevealedRows(0)
-    setPlaying(true)
-    const newTimers = Array.from({ length: rowCount }, (_, i) =>
-      setTimeout(() => {
-        setRevealedRows(i + 1)
-        if (i === rowCount - 1) setPlaying(false)
-      }, (i + 1) * 70)
-    )
-    timersRef.current = newTimers
+    setPhase('input')
+    timersRef.current = [
+      setTimeout(() => setPhase('sorting'), 600),
+      setTimeout(() => setPhase('done'), 1500),
+    ]
   }
 
   useEffect(() => {
@@ -36,7 +55,7 @@ export default function OutputComparison({
     const key = JSON.stringify(prediction)
     if (key === predKeyRef.current) return
     predKeyRef.current = key
-    startReveal(prediction.length)
+    startAnimation()
     return () => {
       clearTimers()
       predKeyRef.current = ''
@@ -59,7 +78,20 @@ export default function OutputComparison({
   const accuracy = Math.round(((totalCells - wrongCells) / totalCells) * 100)
   const correct = wrongCells === 0
 
-  const allRevealed = revealedRows >= rows
+  const sorting = phase === 'sorting' || phase === 'done'
+  const showDiff = phase === 'done'
+  const playing = phase !== 'idle' && phase !== 'done'
+
+  const inputBars = extractBars(queryInput)
+  const predBars = extractBars(prediction)
+
+  const barPairs = inputBars.map(bar => {
+    const target = predBars.find(t => t.color === bar.color)
+    return {
+      ...bar,
+      targetColumn: target ? target.column : bar.column,
+    }
+  })
 
   function getExplanation() {
     if (correct && covered) {
@@ -124,7 +156,7 @@ export default function OutputComparison({
           Model Output
         </h3>
         <button
-          onClick={() => prediction && startReveal(prediction.length)}
+          onClick={() => prediction && startAnimation()}
           disabled={playing || !prediction}
           className={`
             ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium
@@ -145,7 +177,7 @@ export default function OutputComparison({
               <path d="M3 1.5v11l9-5.5L3 1.5z" fill="currentColor" />
             )}
           </svg>
-          {playing ? 'Playing...' : 'Replay'}
+          {playing ? 'Solving...' : 'Replay'}
         </button>
       </div>
       <div className="flex flex-wrap items-start gap-4 sm:gap-6">
@@ -154,48 +186,96 @@ export default function OutputComparison({
           <div
             className="rounded-lg transition-shadow duration-700"
             style={{
-              boxShadow: allRevealed
+              boxShadow: showDiff
                 ? correct
                   ? '0 0 24px rgba(52, 211, 153, 0.25)'
                   : '0 0 24px rgba(248, 113, 113, 0.25)'
                 : 'none',
             }}
           >
-            <svg width={w + 1} height={h + 1} viewBox={`0 0 ${w + 1} ${h + 1}`} className="rounded max-w-full h-auto">
-              {prediction.map((row, r) =>
-                row.map((val, c) => {
-                  const differs = val !== groundTruth[r][c]
-                  const visible = r < revealedRows
+            <div
+              style={{
+                padding: 3,
+                borderRadius: 6,
+                backgroundColor: '#0F1D35',
+                border: '1.5px solid #2A4570',
+              }}
+            >
+              <svg
+                width={w}
+                height={h}
+                viewBox={`0 0 ${w} ${h}`}
+                className="block"
+                style={{ borderRadius: 3 }}
+                role="img"
+                aria-label="Model prediction with sorting animation"
+              >
+                {Array.from({ length: rows }, (_, r) =>
+                  Array.from({ length: cols }, (_, c) => (
+                    <rect
+                      key={`bg-${r}-${c}`}
+                      x={c * cellSize}
+                      y={r * cellSize}
+                      width={cellSize}
+                      height={cellSize}
+                      fill={ARC_COLORS[0]}
+                      stroke="#0F1D35"
+                      strokeWidth={1.2}
+                      rx={1.5}
+                    />
+                  ))
+                )}
+                {barPairs.map(bar => {
+                  const dx = sorting
+                    ? (bar.targetColumn - bar.column) * cellSize
+                    : 0
                   return (
-                    <g key={`${r}-${c}`}>
-                      <rect
-                        x={c * cellSize + 0.5}
-                        y={r * cellSize + 0.5}
-                        width={cellSize}
-                        height={cellSize}
-                        fill={visible ? (ARC_COLORS[val] || '#0D1117') : '#0D1117'}
-                        stroke="#1A2844"
-                        strokeWidth={0.5}
-                        rx={1}
-                        style={{ transition: 'fill 0.12s ease' }}
-                      />
-                      {visible && differs && allRevealed && (
+                    <g
+                      key={bar.color}
+                      style={{
+                        transform: `translateX(${dx}px)`,
+                        transition: phase === 'sorting'
+                          ? 'transform 0.8s cubic-bezier(0.4, 0, 0.2, 1)'
+                          : 'none',
+                      }}
+                    >
+                      {Array.from({ length: bar.height }, (_, hi) => (
                         <rect
-                          x={c * cellSize + 1.5}
-                          y={r * cellSize + 1.5}
-                          width={cellSize - 2}
-                          height={cellSize - 2}
-                          fill="rgba(248, 113, 113, 0.12)"
-                          stroke="#F87171"
-                          strokeWidth={1.5}
-                          rx={1}
+                          key={hi}
+                          x={bar.column * cellSize}
+                          y={(rows - 1 - hi) * cellSize}
+                          width={cellSize}
+                          height={cellSize}
+                          fill={ARC_COLORS[bar.color]}
+                          stroke="#0F1D35"
+                          strokeWidth={1.2}
+                          rx={1.5}
                         />
-                      )}
+                      ))}
                     </g>
                   )
-                })
-              )}
-            </svg>
+                })}
+                {showDiff && prediction.map((row, r) =>
+                  row.map((val, c) => {
+                    if (val === groundTruth[r][c]) return null
+                    return (
+                      <rect
+                        key={`diff-${r}-${c}`}
+                        x={c * cellSize + 1.5}
+                        y={r * cellSize + 1.5}
+                        width={cellSize - 3}
+                        height={cellSize - 3}
+                        fill="rgba(248, 113, 113, 0.15)"
+                        stroke="#F87171"
+                        strokeWidth={1.5}
+                        rx={1}
+                        style={{ animation: 'fadeSlideIn 0.3s ease forwards' }}
+                      />
+                    )
+                  })
+                )}
+              </svg>
+            </div>
           </div>
         </div>
 
@@ -205,7 +285,7 @@ export default function OutputComparison({
         </div>
       </div>
 
-      {allRevealed && (
+      {showDiff && (
         <div
           className={`mt-2 rounded-xl border ${tone.border} ${tone.bg} px-4 py-3`}
           style={{ animation: 'fadeSlideIn 0.35s ease forwards' }}

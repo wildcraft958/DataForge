@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import GridRenderer from './GridRenderer'
+import SortingGrid from './SortingGrid'
 
 export default function DemoPanel({ demos, gridSize = 140 }) {
   const [visibleCount, setVisibleCount] = useState(0)
@@ -47,9 +48,14 @@ export default function DemoPanel({ demos, gridSize = 140 }) {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center gap-3">
-        <h3 className="text-base font-semibold text-white">
-          Demonstrations
-        </h3>
+        <div className="flex flex-col">
+          <h3 className="text-base font-semibold text-white">
+            Demonstrations
+          </h3>
+          <span className="text-xs text-navy-400 mt-0.5">
+            Rule: sort bars by height, shortest on the left, tallest on the right.
+          </span>
+        </div>
         <div className="flex gap-1.5 items-center">
           {demos.map((_, i) => (
             <div
@@ -118,7 +124,12 @@ export default function DemoPanel({ demos, gridSize = 140 }) {
               />
             </svg>
             <div>
-              <GridRenderer grid={demo.output} size={gridSize} />
+              <SortingGrid
+                inputGrid={demo.input}
+                outputGrid={demo.output}
+                size={gridSize}
+                animate={i < visibleCount}
+              />
             </div>
           </div>
         ))}

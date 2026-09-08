@@ -126,6 +126,7 @@ function App() {
                   <OutputComparison
                     prediction={prediction}
                     groundTruth={currentTask.query_output}
+                    queryInput={currentTask.query_input}
                     gridSize={140}
                     complexity={complexity}
                     covered={covered}
