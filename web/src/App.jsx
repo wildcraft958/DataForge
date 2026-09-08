@@ -67,7 +67,7 @@ function App() {
             onComplexityChange={setComplexity}
             covered={covered}
             onCoveredChange={setCovered}
-            disabled={guidedActive && complexity < 8}
+            disabled={guidedActive && covered && complexity < 8}
           />
         </div>
 
