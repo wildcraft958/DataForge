@@ -39,6 +39,7 @@ def load_model(path: str, device: str = "cpu") -> OrderingTransformer:
     state = torch.load(path, map_location=device, weights_only=True)
     if "model_state_dict" in state:
         state = state["model_state_dict"]
+    state = {k.removeprefix("_orig_mod."): v for k, v in state.items()}
     model.load_state_dict(state)
     model.eval()
     return model.to(device)

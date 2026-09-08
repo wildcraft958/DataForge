@@ -20,17 +20,16 @@ import time
 
 import numpy as np
 import torch
-import torch.nn as nn
-from torch.utils.data import Dataset, DataLoader
+from torch import nn
+from torch.utils.data import DataLoader, Dataset
+from tqdm import tqdm
 
 from model.architecture import OrderingTransformer
 from model.tokenizer import (
-    VOCAB_SIZE,
-    PAD,
     MAX_SEQ_LEN,
-    encode_grid,
+    PAD,
+    VOCAB_SIZE,
     encode_task,
-    pad_sequence,
 )
 
 
@@ -58,8 +57,17 @@ class OrderingDataset(Dataset):
         query_out = np.array(t["query_output"])
 
         tokens = encode_task(demos, query_in, query_out)
-        tokens = pad_sequence(tokens, MAX_SEQ_LEN)
         return torch.tensor(tokens, dtype=torch.long)
+
+
+def collate_dynamic(batch):
+    """Pad each sequence to the longest in the batch, not to MAX_SEQ_LEN."""
+    max_len = min(max(t.size(0) for t in batch), MAX_SEQ_LEN)
+    padded = torch.full((len(batch), max_len), PAD, dtype=torch.long)
+    for i, t in enumerate(batch):
+        length = min(t.size(0), max_len)
+        padded[i, :length] = t[:length]
+    return padded
 
 
 def compute_loss(model, batch, device):
@@ -89,6 +97,7 @@ def train(args):
         shuffle=True,
         num_workers=0,
         drop_last=True,
+        collate_fn=collate_dynamic,
     )
 
     model = OrderingTransformer(
@@ -103,6 +112,10 @@ def train(args):
 
     n_params = sum(p.numel() for p in model.parameters())
     print(f"Model parameters: {n_params:,}")
+
+    if args.compile and hasattr(torch, "compile"):
+        print("Compiling model with torch.compile...")
+        model = torch.compile(model)
 
     optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=0.01)
 
@@ -125,7 +138,8 @@ def train(args):
         epoch_loss = 0.0
         t0 = time.time()
 
-        for batch in loader:
+        pbar = tqdm(loader, desc=f"Epoch {epoch+1}/{args.epochs}", leave=False)
+        for batch in pbar:
             loss = compute_loss(model, batch, device)
             optimizer.zero_grad()
             loss.backward()
@@ -135,6 +149,7 @@ def train(args):
 
             epoch_loss += loss.item()
             step += 1
+            pbar.set_postfix(loss=f"{loss.item():.4f}")
 
         avg_loss = epoch_loss / len(loader)
         elapsed = time.time() - t0
@@ -152,7 +167,8 @@ def train(args):
             print(f"  Saved {path}")
 
     final_path = os.path.join(args.checkpoint_dir, "model_final.pt")
-    torch.save(model.state_dict(), final_path)
+    raw_model = model._orig_mod if hasattr(model, "_orig_mod") else model
+    torch.save(raw_model.state_dict(), final_path)
     print(f"Final model saved to {final_path}")
 
 
@@ -168,6 +184,7 @@ def main():
     parser.add_argument("--d-ff", type=int, default=1024)
     parser.add_argument("--device", type=str, default="cpu")
     parser.add_argument("--checkpoint-dir", type=str, default="checkpoints")
+    parser.add_argument("--compile", action="store_true", help="Use torch.compile")
     args = parser.parse_args()
     train(args)
 

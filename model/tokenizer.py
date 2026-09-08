@@ -37,11 +37,12 @@ def decode_grid(tokens: list[int], rows: int, cols: int) -> np.ndarray:
         if t == ROW_SEP:
             r += 1
             c = 0
-        elif t == PAD:
+        elif t == PAD or t == GRID_SEP:
             break
         else:
-            grid[r, c] = t
-            c += 1
+            if r < rows and c < cols:
+                grid[r, c] = t
+                c += 1
     return grid
 
 

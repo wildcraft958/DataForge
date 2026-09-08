@@ -28,6 +28,7 @@ def main():
     state = torch.load(args.model, map_location="cpu", weights_only=True)
     if "model_state_dict" in state:
         state = state["model_state_dict"]
+    state = {k.removeprefix("_orig_mod."): v for k, v in state.items()}
     model.load_state_dict(state)
     model.eval()
 

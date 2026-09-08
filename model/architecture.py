@@ -4,10 +4,9 @@
 Causal (autoregressive) attention with learned positional embeddings.
 """
 
-import math
 import torch
-import torch.nn as nn
-import torch.nn.functional as F
+from torch import nn
+from torch.nn import functional as F
 
 
 class OrderingTransformer(nn.Module):
@@ -47,17 +46,13 @@ class OrderingTransformer(nn.Module):
                 nn.init.xavier_uniform_(p)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        B, T = x.shape
+        _B, T = x.shape
         pos = torch.arange(T, device=x.device).unsqueeze(0)
 
         h = self.drop(self.token_emb(x) + self.pos_emb(pos))
 
-        mask = torch.triu(
-            torch.ones(T, T, device=x.device, dtype=torch.bool), diagonal=1
-        )
-
         for layer in self.layers:
-            h = layer(h, mask)
+            h = layer(h)
 
         h = self.ln_f(h)
         return self.head(h)
@@ -76,7 +71,7 @@ class TransformerBlock(nn.Module):
             nn.Dropout(dropout),
         )
 
-    def forward(self, x: torch.Tensor, mask: torch.Tensor) -> torch.Tensor:
+    def forward(self, x: torch.Tensor, mask: torch.Tensor = None) -> torch.Tensor:
         x = x + self.attn(self.ln1(x), mask)
         x = x + self.ffn(self.ln2(x))
         return x
@@ -93,17 +88,14 @@ class CausalSelfAttention(nn.Module):
         self.proj = nn.Linear(d_model, d_model)
         self.drop = nn.Dropout(dropout)
 
-    def forward(self, x: torch.Tensor, mask: torch.Tensor) -> torch.Tensor:
+    def forward(self, x: torch.Tensor, mask: torch.Tensor = None) -> torch.Tensor:
         B, T, C = x.shape
         qkv = self.qkv(x).reshape(B, T, 3, self.n_heads, self.head_dim)
         qkv = qkv.permute(2, 0, 3, 1, 4)
         q, k, v = qkv[0], qkv[1], qkv[2]
 
-        scale = math.sqrt(self.head_dim)
-        attn = (q @ k.transpose(-2, -1)) / scale
-        attn = attn.masked_fill(mask.unsqueeze(0).unsqueeze(0), float("-inf"))
-        attn = F.softmax(attn, dim=-1)
-        attn = self.drop(attn)
-
-        out = (attn @ v).transpose(1, 2).reshape(B, T, C)
+        out = F.scaled_dot_product_attention(
+            q, k, v, is_causal=True, dropout_p=self.drop.p if self.training else 0.0
+        )
+        out = out.transpose(1, 2).reshape(B, T, C)
         return self.proj(out)

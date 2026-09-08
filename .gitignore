@@ -11,3 +11,4 @@ web/public/model.onnx
 /data/
 *.pdf
 .pytest_cache/
+checkpoints/
