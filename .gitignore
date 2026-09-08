@@ -1,0 +1,13 @@
+node_modules/
+dist/
+__pycache__/
+*.pyc
+.env
+.DS_Store
+*.onnx
+web/public/model.onnx
+.reticle/
+.claude/
+/data/
+*.pdf
+.pytest_cache/
