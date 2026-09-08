@@ -2,30 +2,42 @@ export default function KVCacheViz({ demoCount = 0, maxSlots = 24 }) {
   const filled = Math.min(demoCount * 3, maxSlots)
 
   return (
-    <div className="flex flex-col gap-2">
-      <h4 className="text-xs font-semibold text-navy-300 tracking-wide">
-        Transformer KV Cache
-      </h4>
-      <div className="flex flex-col-reverse gap-0.5 h-48 w-16 bg-navy-800/50 rounded-lg p-1.5 overflow-hidden border border-navy-700/30">
-        {Array.from({ length: filled }, (_, i) => (
-          <div
-            key={i}
-            className="w-full rounded-sm transition-all duration-300"
-            style={{
-              height: `${100 / maxSlots}%`,
-              backgroundColor: barColor(i),
-              opacity: 0.85,
-              boxShadow: `0 0 4px ${barColor(i)}40`,
-            }}
-          />
-        ))}
+    <div className="flex flex-col gap-3 flex-1 min-w-[280px]">
+      <div className="bg-navy-800/60 border border-navy-700/40 rounded-2xl p-6">
+        <h4 className="text-base font-bold text-white tracking-wide mb-1">
+          Transformer KV Cache
+        </h4>
+        <p className="text-sm text-navy-300 mb-4">
+          Each token adds a key-value pair. Cost grows linearly.
+        </p>
+        <div className="flex flex-col-reverse gap-1 h-72 w-full bg-navy-900/60 rounded-xl p-3 overflow-hidden border border-navy-700/20">
+          {Array.from({ length: filled }, (_, i) => (
+            <div
+              key={i}
+              className="w-full rounded transition-all duration-300"
+              style={{
+                height: `${100 / maxSlots}%`,
+                backgroundColor: barColor(i),
+                opacity: 0.9,
+                boxShadow: `0 0 8px ${barColor(i)}50`,
+              }}
+            />
+          ))}
+        </div>
+        <div className="mt-4 flex items-baseline justify-between">
+          <span className="text-2xl font-bold text-white font-mono">
+            {filled}
+            <span className="text-base text-navy-400 font-normal"> / {maxSlots} slots</span>
+          </span>
+          <span className="text-xs text-navy-400 font-mono">
+            {filled > 0 ? `${(filled / maxSlots * 100).toFixed(0)}% full` : 'empty'}
+          </span>
+        </div>
+        <p className="text-sm text-navy-400 mt-3 leading-relaxed">
+          Attention re-reads every stored slot on each step.
+          More demonstrations means more memory and more compute.
+        </p>
       </div>
-      <span className="text-xs text-navy-400 font-mono text-center">
-        {filled} / {maxSlots} slots
-      </span>
-      <p className="text-xs text-navy-500 max-w-[10rem] leading-relaxed">
-        Cost grows with each token. Attention re-reads every slot on each step.
-      </p>
     </div>
   )
 }

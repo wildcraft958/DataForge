@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 
 const N = 16
-const CELL_PX = 10
+const CELL_PX = 18
 
 function createProjection(seed = 42) {
   let s = seed
@@ -81,43 +81,61 @@ export default function HebbianViz({ demos = [] }) {
   const h = N * CELL_PX
 
   return (
-    <div className="flex flex-col gap-2">
-      <h4 className="text-xs font-semibold text-navy-300 tracking-wide">
-        BDH Synaptic Memory (σ)
-      </h4>
-      <svg
-        width={w + 1}
-        height={h + 1}
-        viewBox={`0 0 ${w + 1} ${h + 1}`}
-        className="rounded"
-      >
-        {sigma.map((row, i) =>
-          row.map((val, j) => {
-            const intensity = Math.abs(val) / maxAbs
-            const r = val >= 0 ? 84 : 248
-            const g = val >= 0 ? 104 : 113
-            const b = val >= 0 ? 255 : 113
-            return (
-              <rect
-                key={`${i}-${j}`}
-                x={j * CELL_PX + 0.5}
-                y={i * CELL_PX + 0.5}
-                width={CELL_PX}
-                height={CELL_PX}
-                fill={`rgba(${r},${g},${b},${intensity.toFixed(3)})`}
-                stroke="#111B2E"
-                strokeWidth={0.3}
-              />
-            )
-          })
-        )}
-      </svg>
-      <span className="text-xs text-navy-400 font-mono text-center">
-        Energy: {energy.toFixed(2)}
-      </span>
-      <p className="text-xs text-navy-500 max-w-[10rem] leading-relaxed">
-        Fixed size. No growing cache. But finite capacity: older writes interfere when the matrix fills.
-      </p>
+    <div className="flex flex-col gap-3 flex-1 min-w-[280px]">
+      <div className="bg-navy-800/60 border border-navy-700/40 rounded-2xl p-6">
+        <h4 className="text-base font-bold text-white tracking-wide mb-1">
+          BDH Synaptic Memory (σ)
+        </h4>
+        <p className="text-sm text-navy-300 mb-4">
+          Fixed-size matrix. All demonstrations compress into one state.
+        </p>
+        <div className="flex justify-center">
+          <svg
+            width={w + 1}
+            height={h + 1}
+            viewBox={`0 0 ${w + 1} ${h + 1}`}
+            className="rounded-lg"
+            style={{
+              filter: energy > 0.5 ? `drop-shadow(0 0 12px rgba(84, 104, 255, 0.25))` : 'none',
+            }}
+          >
+            {sigma.map((row, i) =>
+              row.map((val, j) => {
+                const intensity = Math.abs(val) / maxAbs
+                const r = val >= 0 ? 84 : 248
+                const g = val >= 0 ? 104 : 113
+                const b = val >= 0 ? 255 : 113
+                return (
+                  <rect
+                    key={`${i}-${j}`}
+                    x={j * CELL_PX + 0.5}
+                    y={i * CELL_PX + 0.5}
+                    width={CELL_PX}
+                    height={CELL_PX}
+                    fill={`rgba(${r},${g},${b},${intensity.toFixed(3)})`}
+                    stroke="#111B2E"
+                    strokeWidth={0.4}
+                    rx={1}
+                  />
+                )
+              })
+            )}
+          </svg>
+        </div>
+        <div className="mt-4 flex items-baseline justify-between">
+          <span className="text-2xl font-bold text-white font-mono">
+            {energy.toFixed(2)}
+            <span className="text-base text-navy-400 font-normal"> energy</span>
+          </span>
+          <span className="text-xs text-navy-400 font-mono">
+            {N}x{N} fixed matrix
+          </span>
+        </div>
+        <p className="text-sm text-navy-400 mt-3 leading-relaxed">
+          No growing cache, but finite capacity.
+          Older writes interfere when the matrix fills.
+        </p>
+      </div>
     </div>
   )
 }
