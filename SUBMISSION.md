@@ -179,12 +179,12 @@ Section 3 (Evidence): Developer-reported BDH-CQ numbers from Table 3, our model 
 
 Guided-then-sandbox flow (6 steps, under 90 seconds):
 
-1. Open at complexity 3, uncovered, already correct.
-2. Text: "Drag the slider right."
-3. User drags to 8. Model collapses.
-4. Toggle pulses. Text: "Flip the toggle to add one example at the current difficulty."
-5. User flips. Model recovers.
-6. Text: "Explore freely." All controls unlock.
+1. Open at complexity 3, covered, already correct.
+2. Text: "Drag the slider to 8." The model still works because demos cover this difficulty.
+3. Text: "Flip the toggle to remove the matching example."
+4. User flips to uncovered. The model fails. Same question, same weights, only the examples changed.
+5. Text: "Scroll down to the BDH section."
+6. Text: "That is the claim: coverage, not capability. Explore freely." All controls unlock.
 
 ONNX Runtime Web loads the model in the background. Precomputed JSON shows instantly. When ONNX is ready, badge flips to LIVE.
 
@@ -281,11 +281,13 @@ Must-cite (central to the claim):
 
 Cite also:
 
-4. HRM. Wang et al. arXiv:2506.21734, 2025. Contrast: adaptation by optimization.
-5. TRM / Tiny Recursive Models. 7M params, 45% ARC-AGI-1. Contrast: recursive improvement via backward pass.
-6. Recurrent Depth. Geiping et al. arXiv:2502.05171, 2025.
-7. ConceptARC. Moskvichev, Odouard, Mitchell. TMLR 2023.
-8. Chollet. arXiv:1911.01547.
+4. Von Oswald et al. "Transformers Learn In-Context by Gradient Descent." arXiv:2212.07677, ICML 2023. ICL as implicit meta-learning.
+5. Min et al. "Rethinking the Role of Demonstrations." arXiv:2202.12837, EMNLP 2022. Demo distribution matters more than label correctness.
+6. HRM. Wang et al. arXiv:2506.21734, 2025. Contrast: adaptation by optimization.
+7. TRM / Tiny Recursive Models. 7M params, 45% ARC-AGI-1. Contrast: recursive improvement via backward pass.
+8. Recurrent Depth. Geiping et al. arXiv:2502.05171, 2025.
+9. ConceptARC. Moskvichev, Odouard, Mitchell. TMLR 2023.
+10. Chollet. arXiv:1911.01547.
 
 Design precedent:
 

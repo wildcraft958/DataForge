@@ -31,11 +31,17 @@ At inference, we do not retrain or update the model. We change only the demonstr
 | 5 | 100% | 0% | 100 pp |
 | 8 | 100% | 0% | 100 pp |
 
-EM is exact match: the model's output grid matches the correct output cell for cell. At complexity 8, covered demos produce 100% accuracy. Uncovered demos produce 0%. The gap is 100 percentage points.
+EM is exact match: the model's output grid matches the correct output cell for cell. At complexity 8, the gap is 100 percentage points. At complexity 2, the gap is only 4 points because the uncovered demos (2 to 3 bars) already cover that range.
 
-At complexity 2, the gap is only 4 points. The uncovered demos (2 to 3 bars) already cover that range, so the model succeeds either way.
+This is not a bias-variance problem. The model's capacity and weights are fixed. Success depends on whether the input context contains a demonstration at the right difficulty.
 
-This is not a bias-variance problem. The model's capacity and weights are fixed. It can solve complexity 8. Success depends on whether the input context contains a demonstration at the right difficulty.
+## The Meta-Learning Connection
+
+In-context learning is implicit meta-learning. Von Oswald et al. (arXiv:2212.07677, ICML 2023) showed that a transformer forward pass implements gradient-descent-style weight updates on its internal representations. The demonstrations are not passive context. They are a training signal processed in a single pass.
+
+Min et al. (arXiv:2202.12837, EMNLP 2022) found that the distribution of demonstrations matters more than label correctness. This predicts our finding: what breaks in-context learning is not wrong examples but missing difficulty levels.
+
+The same problem appears at frontier scale. GPT-6 Astra (OpenAI, Sep 2026) and Claude Opus 5 (Anthropic, 2026) both rely on in-context learning. When a user provides examples that do not cover the difficulty of the actual question, the same coverage failure applies. Our 4.2M toy model makes the effect visible. Frontier models make it consequential.
 
 ## Connection to BDH-CQ
 
@@ -66,9 +72,9 @@ BDH-CQ's costs were reported by an independent audit by co-authors at Bielik and
 
 Our model is trained on a single synthetic task family. The coverage cliff is specific to ordering. Other operations (like propagation) do not show this cliff, even in BDH-CQ's results.
 
-Our demo includes a Hebbian memory visualization. This is a simplified illustration of the BDH update rule from the BDH Explainer Chapter 2 (Pathway, "From Attention to Synapses"). It omits low-rank compression, the positional operator, excitatory and inhibitory circuits, and ReLU gating. It is not the official BDH implementation.
+Our Hebbian memory visualization is a simplified illustration of the BDH update rule (Pathway BDH Explainer, Chapter 2). It omits low-rank compression, the positional operator, and gating.
 
-All BDH-CQ numbers are developer-reported. No public model weights exist. We did not run BDH-CQ or reproduce their results. The system's dimensions and update rules remain proprietary. No independent team reproduced the reported numbers. BDH-CQ is a research prototype, not a production deployment.
+All BDH-CQ numbers are developer-reported. No public model weights exist. We did not run BDH-CQ. The system's dimensions and update rules remain proprietary. No independent team reproduced the results. BDH-CQ is a research prototype, not a production deployment.
 
 Demonstration adaptation is session-scoped. The model does not learn across tasks or retain knowledge from one session to the next. Consolidating fast synaptic state into durable weights remains an open problem (Dragon Hatchling, arXiv:2509.26507, Conclusion).
 
@@ -77,3 +83,5 @@ Demonstration adaptation is session-scoped. The model does not learn across task
 1. BDH-CQ report, arXiv:2608.09888, August 2026
 2. Dragon Hatchling, arXiv:2509.26507, September 2025
 3. Coconut (latent reasoning baseline), arXiv:2412.06769, December 2024
+4. Von Oswald et al., "Transformers Learn In-Context by Gradient Descent," arXiv:2212.07677, ICML 2023
+5. Min et al., "Rethinking the Role of Demonstrations," arXiv:2202.12837, EMNLP 2022

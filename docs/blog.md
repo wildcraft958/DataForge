@@ -22,6 +22,12 @@ This is not a bias-variance problem. The model capacity did not change. The trai
 
 Pathway's BDH-CQ system (150 million parameters) shows the same cliff on the same task family. At ordering length 8, BDH-CQ scores 0 out of 24 with short context and 12 out of 24 with supported context (arXiv:2608.09888, Table 3). The effect scales from our 4.2M toy model to a production-grade system.
 
+## Why this matters at scale
+
+Our model has 4.2 million parameters. GPT-6 Astra, released by OpenAI on September 3, 2026, has orders of magnitude more. Both use the same mechanism: in-context learning from demonstrations. Von Oswald et al. (arXiv:2212.07677) showed that a transformer forward pass implements gradient-descent-style updates on internal representations. The demonstrations are not passive context. They are a training signal.
+
+Min et al. (arXiv:2202.12837) found that the distribution of demonstrations matters more than their label correctness. This predicts the coverage cliff: what breaks in-context learning at any scale is not wrong examples but missing difficulty levels. When someone prompts GPT-6 Astra with three easy examples and then asks a hard question, the same failure mode applies. The 100-percentage-point gap we see at toy scale does not go away with more parameters. It goes away with the right demonstrations.
+
 ## The BDH connection
 
 Our demo includes a side-by-side comparison of two memory architectures. On the left: a standard Transformer KV cache. It grows with each token. Attention re-reads every slot on each step. On the right: a Hebbian synaptic matrix, a simplified illustration of the memory substrate from Pathway's Dragon Hatchling architecture (arXiv:2509.26507).

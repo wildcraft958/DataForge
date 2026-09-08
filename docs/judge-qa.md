@@ -6,7 +6,7 @@
 
 No. Bias-variance tradeoff is about model capacity. You change the model to fix it.
 
-In our demo, the model stays the same. Same 5 million parameters, same weights, same architecture. When the demos cover that difficulty, it scores 100% on complexity 8. When they do not, it scores 0%. The only thing that changes is the input context: which three demonstrations the model reads.
+In our demo, the model stays the same. Same ~4.2 million parameters, same weights, same architecture. When the demos cover that difficulty, it scores 100% on complexity 8. When they do not, it scores 0%. The only thing that changes is the input context: which three demonstrations the model reads.
 
 This is an in-context learning phenomenon. The model does not retrain. It reads the demos as part of its input sequence and uses them to infer the task. Coverage of the demo distribution determines success, not the model's complexity.
 
@@ -62,7 +62,7 @@ That is not the point of the demo. The point is that standard training (covered 
 Three reasons:
 
 1. Control: we train from scratch and control every variable. A large LLM brings pre-trained knowledge that confounds the demo.
-2. Transparency: at 5 million parameters, we can explain every design choice. The model does nothing we did not build.
+2. Transparency: at ~4.2 million parameters, we can explain every design choice. The model does nothing we did not build.
 3. Browser execution: the ONNX model is 19 MB. It can run live in-browser via ONNX Runtime Web. A large LLM cannot.
 
 The small model is a teaching tool, not a production system. Its job is to make the coverage cliff visible and manipulable.
@@ -119,7 +119,23 @@ Three must-cite papers, all from 2024-2026:
 
 Every number traces to a specific section of a specific paper. Citations sit beside the claim, not in a bibliography at the end.
 
-## 14. What is the one thing a learner takes away?
+## 14. Is this a meta-learning problem?
+
+Yes. In-context learning is implicit meta-learning. Von Oswald et al. (arXiv:2212.07677, ICML 2023) showed that a transformer forward pass implements gradient-descent-style weight updates on its internal representations. The model reads demonstrations and adapts in a single pass, without any backward pass or weight change.
+
+MAML and other meta-learning methods learn to adapt from a few examples. A transformer does the same thing, but the adaptation happens inside the forward pass. Our demo makes that visible: the model sees three examples and infers a rule. When the examples cover the difficulty, the rule works. When they do not, it fails. That is a meta-learning failure, not a capacity failure.
+
+Min et al. (arXiv:2202.12837) found that the distribution of demonstrations matters more than their label correctness. The structure of the demo set, not its size, determines success. This is consistent with meta-learning theory: the support set must represent the task distribution.
+
+## 15. Does this apply to large models like GPT-6 Astra?
+
+Yes. The mechanism is the same at any scale. GPT-6 Astra (OpenAI, Sep 2026) and Claude Opus 5 (Anthropic, 2026) both use in-context learning. When a user gives three easy examples and asks a hard question, the coverage gap applies.
+
+Our toy model has 4.2 million parameters. The gap is 100 percentage points at complexity 8. BDH-CQ has 150 million parameters and shows the same cliff on the same task family (0/24 to 12/24 at ordering length 8). More parameters do not fix the problem. The right demonstrations do.
+
+The 100-percentage-point gap will not appear on every task at frontier scale. Pre-trained knowledge fills some gaps. But on novel tasks where the model must rely on the provided examples, the coverage cliff is real. Our demo lets a learner see it, test it, and understand why it happens.
+
+## 16. What is the one thing a learner takes away?
 
 A model that fails on a hard problem does not necessarily lack the capability. Often it lacks a demonstration at that difficulty level. Adding one example at the right complexity can restore full performance.
 
