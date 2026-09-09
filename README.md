@@ -237,7 +237,7 @@ DataForge/
 ├── web/                       React + Vite + Tailwind frontend
 │   ├── src/
 │   │   ├── App.jsx
-│   │   ├── components/        14 components
+│   │   ├── components/        15 components
 │   │   └── hooks/
 │   │       └── useOnnxInference.js
 │   └── public/
@@ -248,10 +248,11 @@ DataForge/
 │   └── train_colab.ipynb      End-to-end training on Colab GPU
 │
 ├── docs/
-│   ├── concept-summary.md     One-page summary (943 words, renders to PDF)
+│   ├── concept-summary.md     One-page summary (912 words, renders to PDF)
 │   ├── concept-summary.pdf
 │   ├── blog.md                Blog post (renders to PDF, separate deliverable)
-│   └── blog.pdf
+│   ├── blog.pdf
+│   └── judge-qa.md            16 anticipated judge questions with answers
 │
 ├── AI_DISCLOSURE.md            AI assistance record
 ├── LICENCES.md                 Source and license record
