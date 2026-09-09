@@ -70,7 +70,7 @@ Our model is trained on a single synthetic task family. The coverage cliff is sp
 
 Our Hebbian memory visualization is a simplified illustration of the BDH update rule (Pathway BDH Explainer, Chapter 2). It omits low-rank compression, the positional operator, and gating.
 
-All BDH-CQ numbers are developer-reported. No public model weights exist. We did not run BDH-CQ. The system's dimensions and update rules remain proprietary. No independent team reproduced the results. BDH-CQ is a research prototype, not a production deployment.
+All BDH-CQ numbers are developer-reported. No public model weights exist. We did not run BDH-CQ. The system's dimensions and update rules remain proprietary. No independent team reproduced the results. BDH-CQ sits at early demonstration stage: one paper, one team, one benchmark, no public weights. It shows a strong cost ratio on ARC tasks but no team tested it outside that family.
 
 Demonstration adaptation is session-scoped. The model does not learn across tasks or retain knowledge from one session to the next. Consolidating fast synaptic state into durable weights remains an open problem (Dragon Hatchling, arXiv:2509.26507, Conclusion).
 

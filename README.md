@@ -248,7 +248,7 @@ DataForge/
 │   └── train_colab.ipynb      End-to-end training on Colab GPU
 │
 ├── docs/
-│   ├── concept-summary.md     One-page summary (912 words, renders to PDF)
+│   ├── concept-summary.md     One-page summary (935 words, renders to PDF)
 │   ├── concept-summary.pdf
 │   ├── blog.md                Blog post (renders to PDF, separate deliverable)
 │   ├── blog.pdf
