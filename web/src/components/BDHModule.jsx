@@ -1,24 +1,17 @@
-import KVCacheViz from './KVCacheViz'
-import HebbianViz from './HebbianViz'
-
-export default function BDHModule({ demos = [] }) {
+export default function BDHModule() {
   return (
     <section className="mt-10 pt-6 sm:mt-14 sm:pt-10 border-t border-navy-700/40">
-      <h2 className="text-2xl font-bold text-white mb-2">
-        Two Memory Architectures
+      <h2 className="text-xl font-bold text-white mb-2">
+        How the Hebbian Memory Works
       </h2>
       <p className="text-xs font-mono text-pw-cyan/70 mb-2">
         Learning goal: describe how BDH-CQ stores demonstrations differently from a Transformer.
       </p>
-      <p className="text-base text-navy-300 mb-8">
-        How a Transformer and BDH-CQ store demonstrations differently.
-        Add demonstrations above and watch both systems respond.
+      <p className="text-sm text-navy-300 mb-6">
+        The memory comparison above shows how a Transformer KV cache and a Hebbian
+        synaptic matrix respond to the same demonstrations. Here is the mathematics
+        behind the Hebbian update.
       </p>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-        <KVCacheViz demoCount={demos.length} />
-        <HebbianViz demos={demos} />
-      </div>
 
       <div className="bg-navy-800/50 border border-navy-700/40 rounded-2xl p-6 mb-6 max-w-2xl">
         <h3 className="text-base font-semibold text-navy-100 mb-3">

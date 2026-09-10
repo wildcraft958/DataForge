@@ -19,7 +19,7 @@ const STEPS = [
     waitFor: 'uncovered',
   },
   {
-    text: 'Scroll down to the BDH section. See how the two memory systems store these demos differently.',
+    text: 'Look at the memory comparison below the output. The Hebbian matrix absorbed different demonstrations than before.',
     waitFor: null,
   },
   {

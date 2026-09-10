@@ -6,6 +6,8 @@ import OutputComparison from './components/OutputComparison'
 import SelfTestCard from './components/SelfTestCard'
 import LiveBadge from './components/LiveBadge'
 import BDHModule from './components/BDHModule'
+import MemoryCompact from './components/MemoryCompact'
+import DemoContext from './components/DemoContext'
 import EvidenceTable from './components/EvidenceTable'
 import GuidedFlow from './components/GuidedFlow'
 import AboutPage from './components/AboutPage'
@@ -116,6 +118,8 @@ function App() {
 
         {currentTask ? (
           <>
+            <DemoContext demos={currentTask.demos} complexity={complexity} />
+
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-8 mb-6">
               <DemoPanel demos={currentTask.demos} gridSize={130} />
 
@@ -153,18 +157,23 @@ function App() {
                     </p>
                   </div>
                 )}
+
+                <MemoryCompact
+                  demoCount={currentTask.demos.length}
+                  demos={currentTask.demos}
+                />
               </div>
             </div>
 
-            <TaskCreator onnx={onnx} demos={currentTask.demos} covered={covered} />
-
             <SelfTestCard visible={!guidedActive} />
+
+            <BDHModule />
+
+            <EvidenceTable />
 
             <WhyItMattersCard />
 
-            <BDHModule demos={currentTask.demos} />
-
-            <EvidenceTable />
+            <TaskCreator onnx={onnx} demos={currentTask.demos} covered={covered} />
           </>
         ) : (
           <div className="text-center py-16 text-navy-400">

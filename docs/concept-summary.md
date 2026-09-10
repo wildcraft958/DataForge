@@ -25,7 +25,7 @@ At inference, we do not retrain or update the model. We change only the demonstr
 | 5 | 100% | 0% | 100 pp |
 | 8 | 100% | 0% | 100 pp |
 
-EM is exact match: the output grid matches cell for cell. At complexity 8, the gap is 100 percentage points. The model capacity and weights are fixed. Success depends on whether the input context contains a demonstration at the right difficulty.
+EM is exact match: the output grid matches cell for cell. At complexity 8, the gap is 100 percentage points.
 
 ## The Meta-Learning Connection
 
@@ -37,7 +37,7 @@ The same problem appears at frontier scale. GPT-6 Astra (OpenAI, Sep 2026) and C
 
 ## Connection to BDH-CQ
 
-BDH-CQ is a 150-million-parameter model built on Pathway's Brain-inspired Dragon Hatchling architecture (arXiv:2608.09888). It stores demonstrations in a recurrent synaptic state instead of a growing key-value cache. It scored 29.5% pass@2 on ARC-AGI-1 at $0.00070 per task.
+BDH-CQ is a 150-million-parameter model built on Pathway's Brain-inspired Dragon Hatchling architecture (arXiv:2608.09888). It stores demonstrations in a recurrent synaptic state (a fixed-size matrix that absorbs each demonstration through an outer-product write) instead of a growing key-value cache. It scored 29.5% pass@2 on ARC-AGI-1 at $0.00070 per task.
 
 BDH-CQ shows the same coverage cliff. Table 3 of the report:
 
@@ -52,15 +52,15 @@ The ladder experiment from the same report shows a gradual falloff for ordering.
 
 ## System Comparison
 
-| System | Adaptation method | Weight updates | Memory | Cost per task |
-|---|---|---|---|---|
-| BDH-CQ | Recurrent state absorbs demos | No | Fixed-size matrix | $0.00070 |
-| HRM | Gradient optimization on demo pairs | Yes | Growing buffers | $1.48 |
-| TRM | Learned identity embedding per puzzle | Yes | Growing buffers | $1.76 |
+| System | Adaptation method | Weight updates | Memory | ARC-AGI-1 | Cost per task |
+|---|---|---|---|---|---|
+| BDH-CQ | Recurrent state absorbs demos | No | Fixed-size matrix | 29.5% pass@2 | $0.00070 |
+| HRM | Gradient optimization on demo pairs | Yes | Growing buffers | Not tested on ARC-AGI-1 | $1.48 |
+| TRM | Learned identity embedding per puzzle | Yes | Growing buffers | 45% (ARC-AGI-1, 7M params) | $1.76 |
 
-BDH-CQ's costs were reported by an independent audit by co-authors at Bielik and NYU (arXiv:2608.09888). HRM and TRM require backward passes at inference, which increases cost by a factor of 2,000.
+BDH-CQ's costs were reported by an independent audit by co-authors at Bielik and NYU (arXiv:2608.09888). HRM and TRM require backward passes at inference, which increases cost by a factor of 2,000 ($1.48 / $0.00070, arXiv:2608.09888, Table 5).
 
-Coverage sensitivity in ICL is an active research area. Brown et al. (GPT-3, 2020) showed that few-shot performance scales with example count but did not isolate complexity matching as the failure variable.
+Brown et al. (GPT-3, 2020) showed that few-shot performance scales with example count but did not isolate complexity matching as the failure variable.
 
 ## Strengths and Limitations
 
