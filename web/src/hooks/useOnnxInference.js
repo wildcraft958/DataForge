@@ -3,7 +3,6 @@ import * as ort from 'onnxruntime-web'
 
 ort.env.wasm.wasmPaths = '/'
 ort.env.wasm.numThreads = 1
-ort.env.wasm.proxy = true
 
 const ROW_SEP = 10
 const GRID_SEP = 11
@@ -56,8 +55,15 @@ export default function useOnnxInference() {
       }
     }
 
-    loadModel()
-    return () => { cancelled = true }
+    const delay = window.requestIdleCallback
+      ? () => window.requestIdleCallback(() => loadModel(), { timeout: 5000 })
+      : () => setTimeout(loadModel, 1000)
+    const id = delay()
+    return () => {
+      cancelled = true
+      if (window.cancelIdleCallback) window.cancelIdleCallback(id)
+      else clearTimeout(id)
+    }
   }, [])
 
   const predict = useCallback(async (demos, queryInput) => {
