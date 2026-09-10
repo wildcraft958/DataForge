@@ -1,120 +1,101 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
-import * as ort from 'onnxruntime-web'
 
-ort.env.wasm.wasmPaths = '/'
-ort.env.wasm.numThreads = 1
+let sharedWorker = null
+let workerRefCount = 0
+let workerReady = false
+let workerError = null
+const pendingCallbacks = new Map()
+const readyListeners = new Set()
 
-const ROW_SEP = 10
-const GRID_SEP = 11
-const MAX_SEQ_LEN = 1024
-
-function encodeGrid(grid) {
-  const tokens = []
-  for (let i = 0; i < grid.length; i++) {
-    if (i > 0) tokens.push(ROW_SEP)
-    for (let j = 0; j < grid[i].length; j++) {
-      tokens.push(grid[i][j])
+function getWorker() {
+  if (!sharedWorker) {
+    sharedWorker = new Worker(
+      new URL('../workers/onnx.worker.js', import.meta.url),
+      { type: 'module' }
+    )
+    sharedWorker.onmessage = (e) => {
+      const msg = e.data
+      if (msg.type === 'ready') {
+        workerReady = true
+        readyListeners.forEach((fn) => fn())
+      } else if (msg.type === 'error') {
+        workerError = msg.message
+        readyListeners.forEach((fn) => fn())
+      } else if (msg.type === 'progress') {
+        const cb = pendingCallbacks.get(msg.id)
+        if (cb && cb.onProgress) cb.onProgress(msg.step, msg.total)
+      } else if (msg.type === 'predict-result') {
+        const cb = pendingCallbacks.get(msg.id)
+        if (cb) { cb.resolve(msg.grid); pendingCallbacks.delete(msg.id) }
+      } else if (msg.type === 'predict-error') {
+        const cb = pendingCallbacks.get(msg.id)
+        if (cb) { cb.reject(new Error(msg.message)); pendingCallbacks.delete(msg.id) }
+      }
     }
+    sharedWorker.postMessage({ type: 'load' })
   }
-  return tokens
+  workerRefCount++
+  return sharedWorker
 }
 
-function decodeGrid(tokens, rows, cols) {
-  const grid = Array.from({ length: rows }, () => new Array(cols).fill(0))
-  let r = 0, c = 0
-  for (const t of tokens) {
-    if (t === ROW_SEP) { r++; c = 0 }
-    else { grid[r][c] = t; c++ }
+function releaseWorker() {
+  workerRefCount--
+  if (workerRefCount <= 0) {
+    if (sharedWorker) sharedWorker.terminate()
+    sharedWorker = null
+    workerRefCount = 0
+    workerReady = false
+    workerError = null
   }
-  return grid
 }
+
+let nextId = 0
 
 export default function useOnnxInference() {
-  const [session, setSession] = useState(null)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
+  const [ready, setReady] = useState(workerReady)
+  const [loading, setLoading] = useState(!workerReady && !workerError)
+  const [error, setError] = useState(workerError)
   const [progress, setProgress] = useState(null)
-  const sessionRef = useRef(null)
+  const workerRef = useRef(null)
 
   useEffect(() => {
-    let cancelled = false
+    const w = getWorker()
+    workerRef.current = w
 
-    async function loadModel() {
-      setLoading(true)
-      setError(null)
-      try {
-        const sess = await ort.InferenceSession.create('/model.onnx')
-        if (!cancelled) {
-          sessionRef.current = sess
-          setSession(sess)
-        }
-      } catch (e) {
-        if (!cancelled) setError(e.message)
-      } finally {
-        if (!cancelled) setLoading(false)
-      }
+    if (workerReady) {
+      setReady(true)
+      setLoading(false)
+    } else if (workerError) {
+      setError(workerError)
+      setLoading(false)
     }
 
-    const delay = window.requestIdleCallback
-      ? () => window.requestIdleCallback(() => loadModel(), { timeout: 5000 })
-      : () => setTimeout(loadModel, 1000)
-    const id = delay()
+    const listener = () => {
+      if (workerReady) { setReady(true); setLoading(false) }
+      if (workerError) { setError(workerError); setLoading(false) }
+    }
+    readyListeners.add(listener)
+
     return () => {
-      cancelled = true
-      if (window.cancelIdleCallback) window.cancelIdleCallback(id)
-      else clearTimeout(id)
+      readyListeners.delete(listener)
+      releaseWorker()
     }
   }, [])
 
-  const predict = useCallback(async (demos, queryInput) => {
-    const sess = sessionRef.current
-    if (!sess) return null
+  const predict = useCallback((demos, queryInput) => {
+    const w = workerRef.current
+    if (!w || !workerReady) return Promise.resolve(null)
 
-    const tokens = []
-    for (const d of demos) {
-      tokens.push(...encodeGrid(d.input))
-      tokens.push(GRID_SEP)
-      tokens.push(...encodeGrid(d.output))
-      tokens.push(GRID_SEP)
-    }
-    tokens.push(...encodeGrid(queryInput))
-    tokens.push(GRID_SEP)
-
-    const rows = queryInput.length
-    const cols = queryInput[0].length
-    const targetLen = rows * cols + (rows - 1)
-
-    setProgress({ step: 0, total: targetLen })
-    for (let step = 0; step < targetLen; step++) {
-      setProgress({ step: step + 1, total: targetLen })
-      const ctx = tokens.slice(-MAX_SEQ_LEN)
-      const input = new ort.Tensor(
-        'int64',
-        BigInt64Array.from(ctx.map(BigInt)),
-        [1, ctx.length]
-      )
-      const results = await sess.run({ input_ids: input })
-      const logits = results.logits.data
-      const vocabSize = results.logits.dims[2]
-      const lastStart = (ctx.length - 1) * vocabSize
-      let bestToken = 0, bestVal = -Infinity
-      for (let v = 0; v < vocabSize; v++) {
-        const val = Number(logits[lastStart + v])
-        if (val > bestVal) { bestVal = val; bestToken = v }
-      }
-      tokens.push(bestToken)
-    }
-
-    setProgress(null)
-    const generated = tokens.slice(-targetLen)
-    return decodeGrid(generated, rows, cols)
+    const id = nextId++
+    return new Promise((resolve, reject) => {
+      pendingCallbacks.set(id, {
+        resolve,
+        reject,
+        onProgress: (step, total) => setProgress({ step, total }),
+      })
+      w.postMessage({ type: 'predict', id, demos, queryInput })
+    }).finally(() => setProgress(null))
   }, [])
 
-  return {
-    ready: session !== null,
-    loading,
-    error,
-    progress,
-    predict,
-  }
+  return { ready, loading, error, progress, predict }
 }
