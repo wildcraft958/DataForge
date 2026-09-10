@@ -3,6 +3,7 @@ import * as ort from 'onnxruntime-web'
 
 ort.env.wasm.wasmPaths = '/'
 ort.env.wasm.numThreads = 1
+ort.env.wasm.proxy = true
 
 const ROW_SEP = 10
 const GRID_SEP = 11
