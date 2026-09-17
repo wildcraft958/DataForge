@@ -266,9 +266,9 @@ export default function OutputComparison({
                         y={r * cellSize + 1.5}
                         width={cellSize - 3}
                         height={cellSize - 3}
-                        fill="rgba(248, 113, 113, 0.15)"
+                        fill="none"
                         stroke="#F87171"
-                        strokeWidth={1.5}
+                        strokeWidth={2}
                         rx={1}
                         style={{ animation: 'fadeSlideIn 0.3s ease forwards' }}
                       />
