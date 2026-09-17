@@ -206,15 +206,15 @@ export default function CoverageCliffChart({ precomputed, complexity }) {
       </text>
 
       {/* Legend */}
-      <rect x={340} y={4} width={12} height={8} rx={1} fill="#34D399" opacity={0.85} />
-      <text x={356} y={11} fill="#7B8BA6" fontSize="9">Covered</text>
+      <rect x={310} y={4} width={12} height={8} rx={1} fill="#34D399" opacity={0.85} />
+      <text x={326} y={11} fill="#7B8BA6" fontSize="9">Covered</text>
 
-      <rect x={400} y={4} width={12} height={8} rx={1} fill="#F87171" opacity={0.85} />
-      <text x={416} y={11} fill="#7B8BA6" fontSize="9">Uncovered</text>
+      <rect x={370} y={4} width={12} height={8} rx={1} fill="#F87171" opacity={0.85} />
+      <text x={386} y={11} fill="#7B8BA6" fontSize="9">Uncovered</text>
 
-      <circle cx={468} cy={8} r={3} fill="#28BAFF" opacity={0.9} />
-      <line x1={472} x2={484} y1={8} y2={8} stroke="#28BAFF" strokeWidth={1.5} strokeDasharray="4 2" />
-      <text x={488} y={11} fill="#7B8BA6" fontSize="9">BDH-CQ</text>
+      <circle cx={440} cy={8} r={3} fill="#28BAFF" opacity={0.9} />
+      <line x1={444} x2={456} y1={8} y2={8} stroke="#28BAFF" strokeWidth={1.5} strokeDasharray="4 2" />
+      <text x={460} y={11} fill="#7B8BA6" fontSize="9">BDH-CQ</text>
     </svg>
     </div>
   )
