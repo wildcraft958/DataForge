@@ -169,7 +169,7 @@ function App() {
 
             <BDHModule />
 
-            <EvidenceTable />
+            <EvidenceTable precomputed={precomputed} complexity={complexity} />
 
             <WhyItMattersCard />
 

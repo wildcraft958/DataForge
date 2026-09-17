@@ -69,6 +69,8 @@ function Question({ q, onComplete }) {
 }
 
 export default function SelfTestCard({ visible }) {
+  const [phase, setPhase] = useState('freetext')
+  const [freeText, setFreeText] = useState('')
   const [step, setStep] = useState(0)
   const [dismissed, setDismissed] = useState(false)
 
@@ -82,7 +84,9 @@ export default function SelfTestCard({ visible }) {
       <div className="flex items-start justify-between gap-4 mb-4">
         <div>
           <h3 className="text-sm font-semibold text-white mb-1">
-            Quick check {step + 1}/{QUESTIONS.length}
+            {phase === 'freetext'
+              ? 'Your explanation'
+              : `Quick check ${step + 1}/${QUESTIONS.length}`}
           </h3>
         </div>
         <button
@@ -94,15 +98,48 @@ export default function SelfTestCard({ visible }) {
         </button>
       </div>
 
-      <Question
-        key={step}
-        q={QUESTIONS[step]}
-        onComplete={() => {
-          if (step < QUESTIONS.length - 1) {
-            setTimeout(() => setStep(step + 1), 2000)
-          }
-        }}
-      />
+      {phase === 'freetext' ? (
+        <div>
+          <p className="text-sm text-navy-200 mb-3">
+            In one sentence, explain why the model failed when the demonstrations did not cover the query difficulty.
+          </p>
+          <input
+            type="text"
+            value={freeText}
+            onChange={(e) => setFreeText(e.target.value)}
+            maxLength={200}
+            enterKeyHint="done"
+            placeholder="e.g., The model had the capability but..."
+            className="w-full px-4 py-3 rounded-lg border border-navy-700/50 bg-navy-900/30 text-sm text-navy-100 placeholder-navy-500 focus:outline-none focus:border-pw-blue/50 transition-colors"
+          />
+          <div className="flex justify-end mt-3">
+            <button
+              onClick={() => setPhase('mcq')}
+              disabled={freeText.trim().length === 0}
+              className="px-4 py-2 rounded-lg text-sm font-medium bg-pw-blue text-white hover:shadow-[0_0_16px_rgba(84,104,255,0.4)] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              Continue to quiz
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div style={{ animation: 'fadeSlideIn 0.3s ease forwards' }}>
+          {freeText && (
+            <p className="text-[10px] text-navy-500 mb-3">
+              Your answer: &ldquo;{freeText}&rdquo;
+            </p>
+          )}
+          <Question
+            key={step}
+            q={QUESTIONS[step]}
+            onComplete={() => {
+              if (step < QUESTIONS.length - 1) {
+                setTimeout(() => setStep(step + 1), 2000)
+              }
+            }}
+          />
+        </div>
+      )}
     </div>
   )
 }

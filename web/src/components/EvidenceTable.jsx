@@ -1,4 +1,6 @@
-export default function EvidenceTable() {
+import CoverageCliffChart from './CoverageCliffChart'
+
+export default function EvidenceTable({ precomputed, complexity }) {
   return (
     <section className="mt-8 pt-4 sm:mt-12 sm:pt-8 border-t border-navy-700/40">
       <h2 className="text-xl font-bold text-white mb-1">
@@ -52,6 +54,17 @@ export default function EvidenceTable() {
             </tr>
           </tbody>
         </table>
+      </div>
+
+      <h3 className="text-base font-semibold text-white mb-3">
+        Coverage Cliff
+      </h3>
+      <p className="text-sm text-navy-300 mb-4">
+        Our model (bars) vs BDH-CQ ordering pass rates (dots, arXiv:2608.09888).
+        Both show the same cliff. Coverage is the bottleneck.
+      </p>
+      <div className="mb-8">
+        <CoverageCliffChart precomputed={precomputed} complexity={complexity} />
       </div>
 
       <h3 className="text-base font-semibold text-white mb-3">
@@ -135,6 +148,15 @@ export default function EvidenceTable() {
             </tr>
           </tbody>
         </table>
+        <p className="text-xs text-navy-400 mt-3">
+          <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400 font-medium mr-1.5">
+            developer-reported
+          </span>
+          arXiv:2608.09888, Table 5. Cost audit: independent black-box audit by co-authors at Bielik and NYU.
+        </p>
+        <p className="text-[10px] text-navy-500 mt-1">
+          HRM: arXiv:2506.21734. TRM: Tiny Recursive Models (7M params, 45% ARC-AGI-1).
+        </p>
       </div>
     </section>
   )
