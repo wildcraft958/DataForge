@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Why Your Model Fails on Hard Problems</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+  :root {
+    --blue: #0066FF;
+    --cyan: #00D4AA;
+    --navy: #0A1628;
+    --gray-100: #F3F4F6;
+    --gray-200: #E5E7EB;
+    --gray-400: #9CA3AF;
+    --gray-600: #4B5563;
+    --gray-800: #1F2937;
+    --red: #EF4444;
+    --green: #22C55E;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 10.5pt;
+    line-height: 1.65;
+    color: var(--gray-800);
+    background: white;
+  }
+
+  .header {
+    background: linear-gradient(135deg, var(--navy), #162240);
+    color: white;
+    padding: 40px 0 26px;
+    text-align: center;
+    margin: -0.6in -0.7in 0;
+    width: calc(100% + 1.4in);
+  }
+
+  .header h1 {
+    font-size: 22pt;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+    max-width: 420px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .header .subtitle {
+    font-size: 9pt;
+    color: var(--cyan);
+    font-weight: 500;
+  }
+
+  .header .meta {
+    font-size: 8pt;
+    color: rgba(255,255,255,0.6);
+    margin-top: 4px;
+  }
+
+  h2 {
+    font-size: 13pt;
+    font-weight: 700;
+    color: var(--navy);
+    margin: 22px 0 8px;
+    padding-bottom: 4px;
+    border-bottom: 2px solid var(--cyan);
+    break-after: avoid;
+  }
+
+  p { margin-bottom: 10px; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0;
+    font-size: 9.5pt;
+    break-inside: avoid;
+  }
+
+  thead { background: var(--gray-100); }
+
+  th {
+    font-weight: 600;
+    text-align: left;
+    padding: 6px 10px;
+    border: 1px solid var(--gray-200);
+    color: var(--navy);
+    font-size: 9pt;
+  }
+
+  td {
+    padding: 5px 10px;
+    border: 1px solid var(--gray-200);
+  }
+
+  .cite {
+    color: var(--gray-400);
+    font-size: 8.5pt;
+  }
+
+  .diagram-box {
+    background: var(--gray-100);
+    border: 1px solid var(--gray-200);
+    border-radius: 8px;
+    padding: 16px;
+    margin: 14px 0;
+    text-align: center;
+    break-inside: avoid;
+  }
+
+  .callout {
+    background: #EFF6FF;
+    border-left: 3px solid var(--blue);
+    padding: 10px 14px;
+    margin: 14px 0;
+    font-size: 10pt;
+    border-radius: 0 6px 6px 0;
+    break-inside: avoid;
+  }
+
+  .callout-green {
+    background: #F0FDF4;
+    border-left: 3px solid var(--green);
+    padding: 10px 14px;
+    margin: 14px 0;
+    font-size: 10pt;
+    border-radius: 0 6px 6px 0;
+    break-inside: avoid;
+  }
+
+  .two-col {
+    display: flex;
+    gap: 16px;
+    margin: 14px 0;
+    break-inside: avoid;
+  }
+
+  .two-col > div {
+    flex: 1;
+    background: var(--gray-100);
+    border-radius: 8px;
+    padding: 12px 14px;
+  }
+
+  .two-col h4 {
+    font-size: 9.5pt;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 6px;
+  }
+
+  .two-col p { font-size: 9.5pt; margin-bottom: 4px; }
+
+  .lesson-box {
+    background: #FFFBEB;
+    border: 1px solid #FDE68A;
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin: 10px 0;
+    break-inside: avoid;
+  }
+
+  .lesson-box h4 {
+    font-size: 9.5pt;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 4px;
+  }
+
+  .lesson-box p {
+    font-size: 9.5pt;
+    margin-bottom: 4px;
+  }
+
+  .footer {
+    margin-top: 20px;
+    padding-top: 10px;
+    border-top: 1px solid var(--gray-200);
+    font-size: 8pt;
+    color: var(--gray-400);
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Why Your Model Fails on Hard Problems</h1>
+  <div class="subtitle">DataForge 2026 &middot; Pathway Track &middot; Blog Post</div>
+  <div class="meta">Animesh Raj, Prem Agarwal, Md. Faizan Khan, Devansh Gupta</div>
+</div>
+
+<h2>The claim</h2>
+<p>A model that learns from demonstrations can fail on hard problems. The reason is not a lack of ability. The demonstrations did not cover that difficulty level. Add one demonstration at the harder level, and the model recovers.</p>
+<p>We built an interactive demo that lets you see this happen in real time.</p>
+
+<h2>What we built</h2>
+<p>Our project is an entry for DataForge 2026, Pathway track. We trained a small transformer (~4.2 million parameters, decoder-only, 6 layers) on a sorting task from the ARC family. The task: given colored bars of varying heights on a 10&times;10 grid, sort them left to right by height.</p>
+
+<p>The complexity parameter is the number of bars, ranging from 2 to 8. We trained the model on all complexities with "covered" demonstrations. Covered means that at least one of the three example pairs shown to the model matches the query difficulty. The model learned to solve every level.</p>
+
+<p>At inference time, we do not retrain. We do not change the model weights. We change only the demonstrations. In the "uncovered" condition, all three demos show tasks with only 2 or 3 bars. The query still asks the model to sort 8 bars. The model sees the same question. It has the same weights. It fails.</p>
+
+<div class="diagram-box">
+  <svg width="460" height="90" viewBox="0 0 460 90">
+    <defs>
+      <marker id="arr2" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#0066FF"/></marker>
+    </defs>
+    <text x="5" y="12" font-size="8" font-weight="600" fill="#22C55E">Covered</text>
+    <rect x="5" y="18" width="90" height="26" rx="5" fill="#F0FDF4" stroke="#22C55E" stroke-width="1.2"/>
+    <text x="50" y="35" text-anchor="middle" font-size="7.5" fill="#0A1628">Query: 8 bars</text>
+    <line x1="97" y1="31" x2="113" y2="31" stroke="#22C55E" stroke-width="1.2" marker-end="url(#arr2)"/>
+    <rect x="115" y="18" width="100" height="26" rx="5" fill="#F0FDF4" stroke="#22C55E" stroke-width="1.2"/>
+    <text x="165" y="35" text-anchor="middle" font-size="7.5" fill="#0A1628">Demos include 8-bar</text>
+    <line x1="217" y1="31" x2="233" y2="31" stroke="#22C55E" stroke-width="1.2" marker-end="url(#arr2)"/>
+    <rect x="235" y="18" width="70" height="26" rx="5" fill="#DCFCE7" stroke="#22C55E" stroke-width="1.5"/>
+    <text x="270" y="35" text-anchor="middle" font-size="8" font-weight="600" fill="#166534">100% EM</text>
+    <text x="5" y="58" font-size="8" font-weight="600" fill="#EF4444">Uncovered</text>
+    <rect x="5" y="64" width="90" height="26" rx="5" fill="#FEF2F2" stroke="#EF4444" stroke-width="1.2"/>
+    <text x="50" y="81" text-anchor="middle" font-size="7.5" fill="#0A1628">Query: 8 bars</text>
+    <line x1="97" y1="77" x2="113" y2="77" stroke="#EF4444" stroke-width="1.2" marker-end="url(#arr2)"/>
+    <rect x="115" y="64" width="100" height="26" rx="5" fill="#FEF2F2" stroke="#EF4444" stroke-width="1.2"/>
+    <text x="165" y="81" text-anchor="middle" font-size="7.5" fill="#0A1628">Demos only 2-3 bars</text>
+    <line x1="217" y1="77" x2="233" y2="77" stroke="#EF4444" stroke-width="1.2" marker-end="url(#arr2)"/>
+    <rect x="235" y="64" width="70" height="26" rx="5" fill="#FEE2E2" stroke="#EF4444" stroke-width="1.5"/>
+    <text x="270" y="81" text-anchor="middle" font-size="8" font-weight="600" fill="#991B1B">0% EM</text>
+    <text x="380" y="56" text-anchor="middle" font-size="8" font-weight="500" fill="#4B5563">Same model.</text>
+    <text x="380" y="68" text-anchor="middle" font-size="8" font-weight="500" fill="#4B5563">Same question.</text>
+    <text x="380" y="80" text-anchor="middle" font-size="8" font-weight="600" fill="#0A1628">Different demos.</text>
+  </svg>
+</div>
+
+<h2>What we found</h2>
+<p>The results were sharp. At complexity 8, the model scored 100% exact match with covered demonstrations. With uncovered demonstrations, it scored 0%. The gap is 100 percentage points. The model can sort 8 bars. It proved that during training and during covered inference. It cannot figure out how to sort 8 bars by looking at examples that only sort 2 or 3.</p>
+
+<p>This is not a bias-variance problem. The model capacity did not change. The training data did not change. The only variable is which examples the model reads as input context at inference time.</p>
+
+<div class="callout">
+  Pathway's BDH-CQ system (150 million parameters) shows the same cliff on the same task family. At ordering length 8, BDH-CQ scores 0 out of 24 with short context and 12 out of 24 with supported context <span class="cite">(arXiv:2608.09888, Table 3)</span>. The effect scales from our 4.2M toy model to a production-grade system.
+</div>
+
+<h2>Why this matters at scale</h2>
+<p>Our model has 4.2 million parameters. GPT-6 Astra, released by OpenAI on September 3, 2026, has orders of magnitude more. Both use the same mechanism: in-context learning from demonstrations. Von Oswald et al. <span class="cite">(arXiv:2212.07677)</span> showed that a transformer forward pass implements gradient-descent-style updates on internal representations. The demonstrations are not passive context. They are a training signal.</p>
+
+<p>Min et al. <span class="cite">(arXiv:2202.12837)</span> found that the distribution of demonstrations matters more than their label correctness. This predicts the coverage cliff: what breaks in-context learning at any scale is not wrong examples but missing difficulty levels. When someone prompts GPT-6 Astra with three easy examples and then asks a hard question, the same failure mode applies. The 100-percentage-point gap we see at toy scale does not go away with more parameters. It goes away with the right demonstrations.</p>
+
+<h2>The BDH connection</h2>
+
+<div class="two-col">
+  <div>
+    <h4>Transformer KV Cache</h4>
+    <p>Grows with each token. Attention re-reads every slot on each step. Cost scales with context length.</p>
+    <p style="font-size:8pt; color:var(--gray-400);">Our model, GPT-6, Claude Opus 5</p>
+  </div>
+  <div>
+    <h4>Hebbian Synaptic Matrix</h4>
+    <p>Fixed-size matrix. Each demo writes via outer-product update. Does not grow, but has finite capacity.</p>
+    <p style="font-size:8pt; color:var(--gray-400);">BDH, Dragon Hatchling (arXiv:2509.26507)</p>
+  </div>
+</div>
+
+<p>Our demo includes a simplified illustration of the Hebbian memory substrate. It omits low-rank compression, the positional operator, excitatory and inhibitory circuits, and gating. We label it as such. The point is to show the learner how two architectures store demonstrations differently, and why coverage matters to both.</p>
+
+<table>
+  <thead>
+    <tr><th>System</th><th>Adaptation</th><th>Backward pass?</th><th>Cost/task</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>BDH-CQ</td><td>Recurrent state absorption</td><td>No</td><td>$0.00070</td></tr>
+    <tr><td>HRM <span class="cite">(arXiv:2506.21734)</span></td><td>Gradient optimization</td><td>Yes</td><td>$1.48</td></tr>
+    <tr><td>TRM</td><td>Learned identity embedding</td><td>Yes</td><td>$1.76</td></tr>
+  </tbody>
+</table>
+
+<h2>How the demo works</h2>
+
+<div class="diagram-box">
+  <svg width="400" height="120" viewBox="0 0 400 120">
+    <defs>
+      <marker id="arr3" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><path d="M0,0 L7,2.5 L0,5" fill="#0066FF"/></marker>
+    </defs>
+    <rect x="0" y="0" width="120" height="44" rx="6" fill="#EFF6FF" stroke="#0066FF" stroke-width="1.2"/>
+    <text x="60" y="16" text-anchor="middle" font-size="7" font-weight="600" fill="#0066FF">Step 1</text>
+    <text x="60" y="28" text-anchor="middle" font-size="7" fill="#0A1628">Start at complexity 3</text>
+    <text x="60" y="38" text-anchor="middle" font-size="7" fill="#22C55E">Model works ✓</text>
+    <line x1="122" y1="22" x2="138" y2="22" stroke="#0066FF" stroke-width="1" marker-end="url(#arr3)"/>
+    <rect x="140" y="0" width="120" height="44" rx="6" fill="#EFF6FF" stroke="#0066FF" stroke-width="1.2"/>
+    <text x="200" y="16" text-anchor="middle" font-size="7" font-weight="600" fill="#0066FF">Step 2</text>
+    <text x="200" y="28" text-anchor="middle" font-size="7" fill="#0A1628">Drag slider to 8</text>
+    <text x="200" y="38" text-anchor="middle" font-size="7" fill="#22C55E">Still works ✓</text>
+    <line x1="262" y1="22" x2="278" y2="22" stroke="#0066FF" stroke-width="1" marker-end="url(#arr3)"/>
+    <rect x="280" y="0" width="120" height="44" rx="6" fill="#FEF2F2" stroke="#EF4444" stroke-width="1.2"/>
+    <text x="340" y="16" text-anchor="middle" font-size="7" font-weight="600" fill="#EF4444">Step 3</text>
+    <text x="340" y="28" text-anchor="middle" font-size="7" fill="#0A1628">Flip toggle: uncovered</text>
+    <text x="340" y="38" text-anchor="middle" font-size="7" fill="#EF4444">Model fails ✗</text>
+    <rect x="0" y="60" width="120" height="50" rx="6" fill="#FFFBEB" stroke="#FBBF24" stroke-width="1.2"/>
+    <text x="60" y="76" text-anchor="middle" font-size="7" font-weight="600" fill="#92400E">Insight</text>
+    <text x="60" y="88" text-anchor="middle" font-size="7" fill="#0A1628">Same model + question</text>
+    <text x="60" y="98" text-anchor="middle" font-size="7" fill="#0A1628">Only examples changed</text>
+    <line x1="122" y1="85" x2="138" y2="85" stroke="#0066FF" stroke-width="1" marker-end="url(#arr3)"/>
+    <rect x="140" y="60" width="120" height="50" rx="6" fill="#EFF6FF" stroke="#0066FF" stroke-width="1.2"/>
+    <text x="200" y="76" text-anchor="middle" font-size="7" font-weight="600" fill="#0066FF">Explore</text>
+    <text x="200" y="88" text-anchor="middle" font-size="7" fill="#0A1628">All controls unlock</text>
+    <text x="200" y="98" text-anchor="middle" font-size="7" fill="#0A1628">Free experimentation</text>
+    <line x1="262" y1="85" x2="278" y2="85" stroke="#0066FF" stroke-width="1" marker-end="url(#arr3)"/>
+    <rect x="280" y="60" width="120" height="50" rx="6" fill="#F0FDF4" stroke="#22C55E" stroke-width="1.2"/>
+    <text x="340" y="76" text-anchor="middle" font-size="7" font-weight="600" fill="#166534">Self-test</text>
+    <text x="340" y="88" text-anchor="middle" font-size="7" fill="#0A1628">Explain in own words</text>
+    <text x="340" y="98" text-anchor="middle" font-size="7" fill="#0A1628">Multiple-choice card</text>
+  </svg>
+  <div style="font-size:7.5pt; color:var(--gray-400); margin-top:6px;">Guided walkthrough completes in under 90 seconds. Design adapted from Transformer Explainer (Georgia Tech, CHI 2026).</div>
+</div>
+
+<p>The frontend loads predictions from a precomputed JSON file. If the browser loads the ONNX model for live inference, a visible badge reads LIVE. Otherwise it reads PRECOMPUTED. We never hide this.</p>
+
+<h2>What we learned</h2>
+
+<div class="lesson-box">
+  <h4>1. The effect is sharper than expected</h4>
+  <p>We planned for a 30 percentage point gap at complexity 8. We got 100. The model either gets the demos it needs, or it produces nonsense. There is no graceful degradation.</p>
+</div>
+
+<div class="lesson-box">
+  <h4>2. Honest labeling matters</h4>
+  <p>Latent reasoning models like Coconut <span class="cite">(arXiv:2412.06769)</span> process demonstrations internally without visible chain-of-thought tokens. A demo that hides whether its output is live or precomputed undermines the trust the learner needs.</p>
+</div>
+
+<div class="lesson-box">
+  <h4>3. One controlled variable teaches more than ten</h4>
+  <p>Our demo has two controls: a complexity slider and a coverage toggle. That is enough to let the learner discover, test, and confirm the claim on their own.</p>
+</div>
+
+<div class="callout-green">
+  The source code is public. Every number in the evidence table traces to a specific section of a specific paper. We did not run BDH-CQ. We report the numbers its authors published.
+</div>
+
+<h2>The takeaway</h2>
+<p>Coverage sensitivity is testable, measurable, and fixable. Every few-shot prompt is an experiment in coverage. The next time a model fails on a hard question, ask whether the examples covered that difficulty before asking whether the model is capable.</p>
+
+<div class="footer">
+  DataForge 2026, Pathway Track &middot; Blog Post &middot; Team: Animesh Raj (lead), Prem Agarwal, Md. Faizan Khan, Devansh Gupta
+</div>
+
+</body>
+</html>

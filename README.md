@@ -252,7 +252,7 @@ DataForge/
 │   ├── concept-summary.pdf
 │   ├── blog.md                Blog post (renders to PDF, separate deliverable)
 │   ├── blog.pdf
-│   └── judge-qa.md            16 anticipated judge questions with answers
+│   └── judge-qa.md            20 anticipated judge questions with answers
 │
 ├── AI_DISCLOSURE.md            AI assistance record
 ├── LICENCES.md                 Source and license record

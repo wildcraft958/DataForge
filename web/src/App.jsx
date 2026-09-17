@@ -104,7 +104,7 @@ function App() {
         <div className="mb-4 px-4 py-3 rounded-lg border border-navy-700/40 bg-navy-900/40">
           <p className="text-xs font-mono text-navy-400">
             <span className="text-pw-cyan font-semibold">Claim:</span>{' '}
-            A model that learned to sort 8 bars from demonstrations will fail at 8 bars if its demonstrations only show 2-3 bars.
+            The same weights that score 100% at 8 bars with matched demos score 0% with 2-bar demos. Context, not capability.
           </p>
         </div>
         <div className="mb-8">
