@@ -60,7 +60,10 @@ export default function CoverageCliffChart({ precomputed, complexity }) {
       viewBox="0 0 520 260"
       role="img"
       aria-label="Bar chart: exact-match accuracy vs complexity for covered and uncovered conditions, with BDH-CQ reference data"
-      className="w-full max-w-[520px]"
+      width="520"
+      height="260"
+      preserveAspectRatio="xMidYMid meet"
+      className="w-full max-w-[520px] h-auto"
     >
       {/* Grid lines */}
       {gridLines.map((pct) => {

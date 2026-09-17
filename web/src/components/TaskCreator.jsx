@@ -228,7 +228,7 @@ export default function TaskCreator({ onnx, demos, covered }) {
         )}
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center gap-3">
         <button
           onClick={runModel}
           disabled={!onnx.ready || running || !demos}
@@ -242,10 +242,29 @@ export default function TaskCreator({ onnx, demos, covered }) {
         {onnx.ready && (
           <span className="text-[10px] text-navy-500">
             Uses current demos ({covered ? 'covered' : 'uncovered'}).
+            <span className="relative inline-block ml-1 group cursor-help">
+              <span className="inline-flex items-center justify-center w-3.5 h-3.5 rounded-full border border-navy-600 text-[8px] font-bold text-navy-400 group-hover:text-white group-hover:border-pw-cyan transition-colors">i</span>
+              <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2.5 py-1.5 rounded-lg bg-navy-800 border border-navy-700 text-[10px] text-navy-200 whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-10">
+                Uses model deployed in browser using ONNX Runtime Web
+              </span>
+            </span>
             {prediction ? ' This task was never in the training set.' : ''}
           </span>
         )}
       </div>
+      {running && onnx.progress && (
+        <div className="mt-2 flex items-center gap-2">
+          <div className="flex-1 h-1 rounded-full bg-navy-800 overflow-hidden">
+            <div
+              className="h-full rounded-full bg-pw-cyan transition-all duration-150"
+              style={{ width: `${(onnx.progress.step / onnx.progress.total) * 100}%` }}
+            />
+          </div>
+          <span className="text-[10px] font-mono text-navy-400 shrink-0">
+            Greedy &middot; 1024 max &middot; Token {onnx.progress.step}/{onnx.progress.total}
+          </span>
+        </div>
+      )}
     </div>
   )
 }
