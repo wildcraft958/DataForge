@@ -56,14 +56,15 @@ export default function CoverageCliffChart({ precomputed, complexity }) {
   const bdhPolyline = bdhPoints.map((p) => `${p.x},${p.y}`).join(' ')
 
   return (
+    <div className="w-full max-w-[520px]" style={{ aspectRatio: '2 / 1' }}>
     <svg
       viewBox="0 0 520 260"
       role="img"
       aria-label="Bar chart: exact-match accuracy vs complexity for covered and uncovered conditions, with BDH-CQ reference data"
-      width="520"
-      height="260"
+      width="100%"
+      height="100%"
       preserveAspectRatio="xMidYMid meet"
-      className="w-full max-w-[520px] h-auto"
+      style={{ display: 'block' }}
     >
       {/* Grid lines */}
       {gridLines.map((pct) => {
@@ -215,5 +216,6 @@ export default function CoverageCliffChart({ precomputed, complexity }) {
       <line x1={472} x2={484} y1={8} y2={8} stroke="#28BAFF" strokeWidth={1.5} strokeDasharray="4 2" />
       <text x={488} y={11} fill="#7B8BA6" fontSize="9">BDH-CQ</text>
     </svg>
+    </div>
   )
 }

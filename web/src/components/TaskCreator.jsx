@@ -239,16 +239,9 @@ export default function TaskCreator({ onnx, demos, covered }) {
         {!onnx.ready && (
           <span className="text-[10px] text-navy-500">ONNX model loading...</span>
         )}
-        {onnx.ready && (
+        {onnx.ready && prediction && (
           <span className="text-[10px] text-navy-500">
-            Uses current demos ({covered ? 'covered' : 'uncovered'}).
-            <span className="relative inline-block ml-1 group cursor-help">
-              <span className="inline-flex items-center justify-center w-3.5 h-3.5 rounded-full border border-navy-600 text-[8px] font-bold text-navy-400 group-hover:text-white group-hover:border-pw-cyan transition-colors">i</span>
-              <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2.5 py-1.5 rounded-lg bg-navy-800 border border-navy-700 text-[10px] text-navy-200 whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-10">
-                Uses model deployed in browser using ONNX Runtime Web
-              </span>
-            </span>
-            {prediction ? ' This task was never in the training set.' : ''}
+            This task was never in the training set.
           </span>
         )}
       </div>
