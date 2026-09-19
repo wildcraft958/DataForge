@@ -209,6 +209,7 @@ function App() {
                     gridSize={140}
                     complexity={complexity}
                     covered={covered}
+                    demos={currentTask.demos}
                   />
                 ) : (
                   <div className="card p-5 sm:p-6">

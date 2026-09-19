@@ -1,4 +1,4 @@
-function countBars(grid) {
+export function countBars(grid) {
   if (!grid || !grid.length) return 0
   const cols = grid[0].length
   let count = 0

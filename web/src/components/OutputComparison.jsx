@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import GridRenderer, { ARC_COLORS } from './GridRenderer'
+import { countBars } from './DemoContext'
 
 function extractBars(grid) {
   if (!grid) return []
@@ -31,6 +32,7 @@ export default function OutputComparison({
   gridSize = 160,
   complexity = 3,
   covered = false,
+  demos = [],
 }) {
   const [phase, setPhase] = useState('idle')
   const predKeyRef = useRef('')
@@ -93,7 +95,20 @@ export default function OutputComparison({
     }
   })
 
+  // Uncovered demonstrations are capped at three bars, so at two and three bars
+  // the uncovered set still contains a match and the two conditions describe the
+  // same thing. Branching on the toggle alone printed a sentence the demo chips
+  // directly contradicted.
+  const matchingDemos = demos.filter((d) => countBars(d.input) === complexity).length
+
   function getExplanation() {
+    if (!covered && matchingDemos > 0) {
+      return {
+        tone: correct ? 'success' : 'warning',
+        headline: correct ? 'Correct, and both conditions match here' : 'Wrong, but not for want of coverage',
+        body: `Uncovered means demonstrations of three bars or fewer. At ${complexity} bars that still includes ${matchingDemos} matching example${matchingDemos === 1 ? '' : 's'}, so both settings cover this query. The two only separate from 4 bars upward, which is where the gap opens.`,
+      }
+    }
     if (correct && covered) {
       return {
         tone: 'success',
@@ -104,15 +119,15 @@ export default function OutputComparison({
     if (correct && !covered) {
       return {
         tone: 'success',
-        headline: 'Correct (low complexity)',
-        body: `Even without matching demonstrations, ${complexity} bars is simple enough for the model to handle. Try a higher complexity to see where coverage matters.`,
+        headline: 'Correct without coverage',
+        body: `No demonstration reached ${complexity} bars, and the model solved it anyway. The fall is not a clean staircase, and we show it as measured rather than smoothing it.`,
       }
     }
     if (!correct && !covered) {
       return {
         tone: 'error',
         headline: 'Failed without coverage',
-        body: `The model was trained on ${complexity}-bar tasks and can solve them. But the demonstrations only showed easy examples (≤3 bars). Without a single example at this difficulty, the model cannot apply what it knows. Flip the coverage toggle to add one.`,
+        body: `The model was trained on ${complexity}-bar tasks and can solve them. These demonstrations top out at three bars, so not one of them showed it this difficulty. Flip the coverage toggle to add one.`,
         bdh: 'BDH-CQ shows the same cliff: 0/24 without coverage, 12/24 with (arXiv:2608.09888, Table 3).',
       }
     }
