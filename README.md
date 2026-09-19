@@ -276,7 +276,7 @@ All 5 primary papers (rows 1-5) are from 2022-2026, cited beside claims. arc-tas
 
 ## Credits
 
-- **Team:** Animesh Raj (lead), Prem Agarwal, Md. Faizan Khan, Devansh Gupta
+- **Team:** NamoFans
 - **BDH-CQ evidence:** arXiv:2608.09888, Table 3 (developer-reported, not our reproduction)
 - **Design precedent:** Transformer Explainer (Georgia Tech, CHI 2026)
 

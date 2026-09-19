@@ -593,7 +593,7 @@ export default function AboutPage({ onClose }) {
             DataForge 2026, Pathway Track
           </span>
           <span className="text-xs text-navy-500">
-            Animesh Raj, Prem Agarwal, Md. Faizan Khan, Devansh Gupta
+            Team NamoFans
           </span>
         </footer>
       </div>
