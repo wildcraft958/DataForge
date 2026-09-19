@@ -331,7 +331,45 @@ export default function TraceLab() {
       <section className={`panel prediction${prediction ? '' : ' resting'}`}><h2>Prediction / influence</h2>{prediction ? <><p>{token.prediction!.fullSentence ? 'Full-sentence resolver' : 'Causal resolver'} prediction for “{token?.token}”</p>{prediction.map(row => <div className="score" key={row.label}><span>{row.label}</span><em className="score-rail"><i style={{ width: `${row.p * 100}%` }}/></em><strong>{(row.p * 100).toFixed(1)}%</strong></div>)}<div className="influence">{token.prediction!.influence.map((value, i) => <button key={i} title={`Reconstructed φ(Q)·φ(K): ${value.toFixed(4)}`} style={{ height: `${Math.max(8, value * 170)}px` }} onClick={() => setStep(trace.events.findIndex(e => e.tokenIndex === i))}><small>{trace.tokens[i].token}</small></button>)}</div><p className="reconstructed">{token.prediction!.fullSentence ? 'Uses a second reverse linear pass after the sentence ends; the bars above may include later entities. The chart remains forward causal influence.' : 'Reconstructed kernel influence — forward inference uses S/Z, not this history.'}</p></> : <p>Prediction activates on supported pronouns.</p>}</section>
     </div>
 
-    <section className={`panel inspector${inspected ? '' : ' resting'}`}><h2>Inspector / provenance</h2>{inspected ? <><strong>{inspected.label} <b className={inspected.source}>{inspected.source}</b></strong><p>shape [{inspected.shape.join(' × ') || 'scalar'}] · token {inspected.tokenIndex ?? '—'} · layer {(inspected.layerIndex ?? -1) + 1 || '—'}</p><Vector name={inspected.label} values={typeof inspected.values === 'number' ? new Float32Array([inspected.values]) : inspected.values}/><p>Parents</p><div className="parents">{(inspected.parentIds ?? []).length ? inspected.parentIds!.map(id => <button key={id} onClick={() => setPinnedId(id)}>{trace.artifacts[id]?.label ?? id}</button>) : 'No prior tensor: learned parameter or trace root.'}</div><button className="minor" onClick={() => setPinnedId(undefined)}>Follow active operation</button></> : <p>Select an operation to inspect its output and lineage.</p>}<p className="event-links">Active inputs: {event?.inputIds.map(id => <button key={id} onClick={() => setPinnedId(id)}>{trace.artifacts[id]?.label ?? id}</button>)}</p></section>
+    <section className={`panel inspector${inspected ? '' : ' resting'}`}>
+      <h2>Inspector / provenance</h2>
+      {inspected ? <>
+        <div className="insp-head">
+          <strong>{inspected.label}</strong>
+          <b className={inspected.source}>{inspected.source}</b>
+        </div>
+        <div className="insp-facts">
+          <div><label>Shape</label><span>{inspected.shape.join(' × ') || 'scalar'}</span></div>
+          <div><label>Token</label><span>{inspected.tokenIndex !== undefined
+            ? `${inspected.tokenIndex} · ${trace.tokens[inspected.tokenIndex]?.token ?? ''}` : 'not token bound'}</span></div>
+          <div><label>Layer</label><span>{inspected.layerIndex !== undefined && inspected.layerIndex >= 0
+            ? `${inspected.layerIndex + 1} of ${model.config.layers}` : 'not layer bound'}</span></div>
+        </div>
+        <div className="insp-values">
+          <label>Values <span>all {typeof inspected.values === 'number' ? 1 : inspected.values.length}</span></label>
+          <Vector name={inspected.label} values={typeof inspected.values === 'number' ? new Float32Array([inspected.values]) : inspected.values}/>
+          {/* Every bar sits on the minimum height when the tensor is all zeros,
+              which reads as a broken chart rather than as the real answer. */}
+          {(typeof inspected.values === 'number' ? inspected.values === 0 : inspected.values.every(v => v === 0))
+            && <p className="insp-zero">Every value is exactly zero. Before the first write, the memory is empty, so the read returns nothing.</p>}
+        </div>
+        <div className="insp-lineage">
+          <div>
+            <label>Comes from</label>
+            <div className="parents">{(inspected.parentIds ?? []).length
+              ? inspected.parentIds!.map(id => <button key={id} onClick={() => setPinnedId(id)}>{trace.artifacts[id]?.label ?? id}</button>)
+              : <em>No prior tensor. This is a learned parameter or the start of the trace.</em>}</div>
+          </div>
+          <div>
+            <label>Active inputs</label>
+            <div className="parents event-links">{event?.inputIds.length
+              ? event.inputIds.map(id => <button key={id} onClick={() => setPinnedId(id)}>{trace.artifacts[id]?.label ?? id}</button>)
+              : <em>None for this operation.</em>}</div>
+          </div>
+        </div>
+        <button className="minor insp-follow" onClick={() => setPinnedId(undefined)}>Follow active operation</button>
+      </> : <p>Click any tensor name, or any parent below, to inspect its values and trace where it came from.</p>}
+    </section>
 
     <Comparison/>
   </main></div>;

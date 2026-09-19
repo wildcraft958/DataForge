@@ -316,3 +316,64 @@
   .visual-vector { height: 74px; padding-top: 13px; }
   .visual-vector em { top: 0; font-size: 9px; color: #8c8c8c; }
 
+  /* The inspector answers "where did this number come from", so it gets the
+     same bordered-fact treatment as the comparison panel rather than a run of
+     paragraphs. */
+  .inspector { margin-top: 16px; padding: 18px 20px 20px; }
+  .inspector h2 { margin-bottom: 14px; }
+  .insp-head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+    padding-bottom: 12px; border-bottom: 1px solid #e9e9e9; }
+  .insp-head strong { font: 600 17px Inconsolata, ui-monospace, monospace;
+    color: #000; letter-spacing: -.01em; }
+  .insp-head b { font-size: 9px !important; text-transform: uppercase;
+    letter-spacing: .09em; padding: 4px 9px !important; border-radius: 999px !important; }
+
+  .insp-facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px; margin-bottom: 16px; }
+  .insp-facts > div { border: 1px solid #e3e8e7; border-radius: 10px;
+    padding: 9px 12px; background: #fbfcfc; }
+  .insp-facts label { display: block; margin: 0 0 4px; font-size: 9px !important;
+    text-transform: uppercase; letter-spacing: .09em; color: #8c8c8c !important; }
+  .insp-facts span { font: 13px Inconsolata, ui-monospace, monospace; color: #1a1a1a; }
+
+  .insp-values { margin-bottom: 16px; }
+  .insp-values > label, .insp-lineage label { display: block; margin: 0 0 7px;
+    font-size: 9px !important; text-transform: uppercase; letter-spacing: .09em;
+    color: #8c8c8c !important; }
+
+  .insp-lineage { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px; padding-top: 14px; border-top: 1px solid #e9e9e9; }
+  .insp-lineage .parents { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; }
+  .insp-lineage .parents button { font: 11px Inconsolata, ui-monospace, monospace;
+    padding: 5px 10px; border-radius: 999px; border: 1px solid #d5dedd;
+    background: #fff; color: #4b4b4b; cursor: pointer; }
+  .insp-lineage .parents button:hover { border-color: #1e6bdd; color: #1e6bdd;
+    background: #1e6bdd0d; }
+  .insp-lineage em { font-size: 11px; color: #8c8c8c; font-style: normal; }
+  .insp-follow { margin-top: 16px; }
+
+  @media (max-width: 720px) {
+    .insp-facts, .insp-lineage { grid-template-columns: 1fr; }
+  }
+
+  /* The vector's own "all N" is absolutely positioned inside a shrink-wrapped
+     box, so in the wide inspector it landed in the middle of empty space. The
+     count moves to the label and the bars take the full panel width. */
+  .insp-values .visual-vector { width: 100%; height: 86px; }
+  .insp-values .visual-vector em { display: none; }
+  .insp-values .visual-vector span { flex: 1 1 0; min-width: 0; width: auto; }
+  .insp-values > label span { text-transform: none; letter-spacing: 0;
+    color: #b0b0b0 !important; margin-left: 6px;
+    font: 10px Inconsolata, ui-monospace, monospace; }
+
+  /* compact-plots caps every vector at 220px. The inspector is a full width
+     panel, so the cap has to be lifted there or 32 bars sit in a quarter of it. */
+  .insp-values .visual-vector { max-width: none !important; }
+  .insp-zero { margin-top: 10px !important; font-size: 11px !important;
+    color: #8c8c8c !important; }
+
+  /* The bars now span the panel, so their index labels are worth reading. */
+  .insp-values .visual-vector { padding-bottom: 18px; }
+  .insp-values .visual-vector span small { bottom: -16px; font-size: 9px;
+    color: #8c8c8c; left: 50%; transform: translateX(-50%); }
+
