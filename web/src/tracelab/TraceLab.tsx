@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { loadModel } from './model/loadModel';
 import { run } from './model/inference';
 import type { Model, TokenTrace, Trace } from './model/types';
@@ -88,12 +88,57 @@ const Matrix = ({ values, rows, cols, name, arriving, animKey, onCell }: {
     </figure>
   );
 };
+// B2: the model's answer, drawn where the tokens actually are. The influence
+// bars below say the same thing in numbers, but a curve between two words is
+// the thing a room reads without being told how.
+const PredictionArc = ({ containerRef, from, to, label }: {
+  containerRef: React.RefObject<HTMLElement | null>; from: number; to: number; label: string;
+}) => {
+  const [geom, setGeom] = useState<{ w: number; h: number; x1: number; x2: number; y: number }>();
+
+  useEffect(() => {
+    const measure = () => {
+      const host = containerRef.current;
+      if (!host) return setGeom(undefined);
+      const chips = host.querySelectorAll('button');
+      const a = chips[from], b = chips[to];
+      if (!a || !b) return setGeom(undefined);
+      const base = host.getBoundingClientRect();
+      const ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect();
+      setGeom({
+        w: base.width, h: base.height,
+        x1: ra.left - base.left + ra.width / 2,
+        x2: rb.left - base.left + rb.width / 2,
+        y: ra.top - base.top,
+      });
+    };
+    measure();
+    addEventListener('resize', measure);
+    const t = setTimeout(measure, 60); // after the timeline settles its scroll width
+    return () => { removeEventListener('resize', measure); clearTimeout(t); };
+  }, [containerRef, from, to]);
+
+  if (!geom) return null;
+  const { x1, x2, y } = geom;
+  const peak = Math.max(6, y - Math.min(46, Math.abs(x2 - x1) * .28));
+  const mid = (x1 + x2) / 2;
+
+  return (
+    <svg className="tl-arc" width={geom.w} height={geom.h} aria-hidden="true">
+      <path d={`M ${x2} ${y} Q ${mid} ${peak} ${x1} ${y}`} />
+      <circle cx={x2} cy={y} r="3.5" />
+      <text x={mid} y={Math.max(9, peak - 5)} textAnchor="middle">{label}</text>
+    </svg>
+  );
+};
+
 const FlowOverview = ({ token, data, kind }: { token: TokenTrace; data: TokenTrace['layers'][number]; kind?: string; eventIndex: number }) => { const paths = ['M98 88 H237', 'M323 88 H372', 'M458 88 H602', 'M688 88 H742', 'M828 88 H887', 'M415 131 C415 165 645 165 645 131']; const pathFor: Record<string, number> = { embedding_lookup: 0, q_projection: 1, k_projection: 1, v_projection: 1, feature_map_q: 2, feature_map_k: 2, outer_product: 5, state_s_update: 5, state_z_update: 5, state_read_numerator: 3, state_read_denominator: 3, context_divide: 3, prediction: 4, reconstructed_influence: 4 }; const activePath = kind ? pathFor[kind] : undefined; return <section className="panel flow-overview"><h2>Live computation map</h2><svg viewBox="0 0 1000 180" role="img" aria-label="Token flows through embedding, Q K V, recurrent state, readout, and prediction"><defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#75d8ca"/></marker></defs>{paths.map((path, i) => <g key={path}><path className={`flow-path ${i === 5 ? 'secondary' : ''} ${i === activePath ? 'active-flow' : ''}`} d={path}/>{i === activePath && <circle className={`tensor-packet packet-${i}`} r="5"><animateMotion dur="1.35s" repeatCount="indefinite" path={path}/></circle>}</g>)}{[['TOKEN',token.token,55],['EMBED','32D',280],['Q / K / V','16 / 16 / 32',415],['S + Z','memory',645],['READ','context',785],['PREDICT','antecedent',930]].map(([label,value,x]) => <g key={String(label)} transform={`translate(${x},88)`}><circle r="43"/><text y="-4">{label}</text><text y="15" className="flow-value">{value}</text></g>)}</svg><div className="flow-caption"><span>Q strength <b style={{ width: `${Math.min(100, Math.abs(data.q[0]) * 18)}%` }}/></span><span>memory write <b style={{ width: `${Math.min(100, Math.abs(data.contribution[0]) * 30)}%` }}/></span><span>current operation: {kind ?? 'idle'}</span></div></section>; };
 
 export default function TraceLab() {
   const [model, setModel] = useState<Model>(); const [error, setError] = useState(''); const [text, setText] = useState(examples[0]); const [trace, setTrace] = useState<Trace>(); const [step, setStep] = useState(0); const [layer, setLayer] = useState(1); const [playing, setPlaying] = useState(false); const [speed, setSpeed] = useState(1); const [difference, setDifference] = useState(false); const [microscope, setMicroscope] = useState(false); const [pinnedId, setPinnedId] = useState<string>();
   const [narrow, setNarrow] = useState(() => typeof window !== 'undefined' && window.innerWidth < 900);
   const [cell, setCell] = useState<{ row: number; col: number; name: string }>();
+  const timelineRef = useRef<HTMLElement>(null);
   useEffect(() => { try { const m = loadModel(); setModel(m); setTrace(run(m, text)); } catch (e) { setError((e as Error).message); } }, []);
   useEffect(() => { const onResize = () => setNarrow(window.innerWidth < 900); addEventListener('resize', onResize); return () => removeEventListener('resize', onResize); }, []);
   useEffect(() => { if (!playing || !trace) return; const timer = window.setInterval(() => setStep(s => s >= trace.events.length - 1 ? (setPlaying(false), s) : s + 1), 550 / speed); return () => clearInterval(timer); }, [playing, trace, speed]);
@@ -101,6 +146,13 @@ export default function TraceLab() {
   const event = trace?.events[step]; const tokenIndex = event?.tokenIndex ?? 0; const token = trace?.tokens[tokenIndex]; const activeLayer = Math.min(layer, (token?.layers.length ?? 1) - 1); const data = token?.layers[activeLayer];
   const inspected = trace && (pinnedId ? trace.artifacts[pinnedId] : event?.outputIds[0] ? trace.artifacts[event.outputIds[0]] : undefined);
   const prediction = useMemo(() => token?.prediction && [...token.prediction.probabilities].map((p, i) => ({ label: token.prediction!.labels[i], p })).sort((a,b) => b.p-a.p).slice(0, 4), [token]);
+  const winner = useMemo(() => {
+    const p = token?.prediction;
+    if (!p || !p.positions.length) return undefined;
+    let best = 0;
+    for (let i = 1; i < p.probabilities.length; i++) if (p.probabilities[i] > p.probabilities[best]) best = i;
+    return { index: p.positions[best], confidence: p.probabilities[best] };
+  }, [token]);
   const requestedTokens = tokenize(text); const oovCount = requestedTokens.filter(word => !model?.vocab.includes(word)).length;
   const execute = () => { if (!model) return; const next = run(model, text); setTrace(next); setStep(0); setPlaying(false); };
   if (narrow) return <div className="tracelab"><main className="tl-narrow"><h2>The trace view needs a wider screen</h2><p>This view lays six matrices side by side to show one write into the synaptic state. It needs at least 900 pixels. Open it on a laptop, or use the coverage view, which works at any width.</p></main></div>;
@@ -113,7 +165,7 @@ export default function TraceLab() {
   return <div className="tracelab"><main>
     <header><div><p className="eyebrow">BDH SYNAPTIC WRITE · LIVE TRACE</p><h1>What the memory holds.</h1><p className="tl-sub">Every number below is computed in your browser from trained weights. The write rule is <b>S ← S + φ(K) ⊗ V</b>, the form Pathway derives in BDH Explainer Chapter 2.</p></div><div className="legend"><span className="learned">● Learned</span><span className="computed">● Computed</span><span className="reconstructed">● Reconstructed</span></div></header>
     <section className="input panel"><div className="sentence-builder" aria-label="Selected input words">{requestedTokens.length ? requestedTokens.map((word, index) => <span key={`${word}-${index}`}>{word}</span>) : <small>Choose words below</small>}</div><button className="run" onClick={execute} title="Run trace" aria-label="Run trace"><Play size={15}/><span>Run</span></button><button className="icon-button" onClick={removeToken} disabled={!requestedTokens.length} title="Remove last word" aria-label="Remove last word"><Delete size={15}/></button><button className="icon-button" onClick={() => setText('')} disabled={!requestedTokens.length} title="Clear sentence" aria-label="Clear sentence"><Trash2 size={15}/></button><select aria-label="Examples" onChange={e => { setText(e.target.value); }} value={examples.includes(text) ? text : ''}><option value="" disabled>Examples</option>{examples.concat('I saw an astronaut in the moon with a telescope.').map(x => <option key={x}>{x}</option>)}</select><small>Word bank only · max {model.config.maxLength} tokens</small><div className="word-bank" aria-label="Supported word bank">{wordGroups.map(([group, words]) => <div className="word-group" key={group}><label>{group}</label><div>{words.filter(word => model.vocab.includes(word)).map(word => <button key={word} onClick={() => addToken(word)}>{word}</button>)}</div></div>)}</div>{requestedTokens.length > model.config.maxLength && <p className="input-warning">Only the first {model.config.maxLength} tokens can be traced.</p>}</section>
-    <section className="timeline panel" aria-label="Token timeline">{trace.tokens.map((item, i) => <button key={`${item.token}-${i}`} onClick={() => setStep(trace.events.findIndex(e => e.tokenIndex === i))} className={i === tokenIndex ? 'current' : i < tokenIndex ? 'processed' : ''}>{item.token}<small>#{i}{item.oov && ' · OOV'}</small></button>)}</section>
+    <section className="timeline panel" aria-label="Token timeline" ref={timelineRef}>{trace.tokens.map((item, i) => <button key={`${item.token}-${i}`} onClick={() => setStep(trace.events.findIndex(e => e.tokenIndex === i))} className={`${i === tokenIndex ? 'current' : i < tokenIndex ? 'processed' : ''}${winner && i === winner.index ? ' antecedent' : ''}`}>{item.token}<small>#{i}{item.oov && ' · OOV'}</small></button>)}{winner && <PredictionArc containerRef={timelineRef} from={tokenIndex} to={winner.index} label={`${(winner.confidence * 100).toFixed(0)}%`}/>}</section>
     <nav className="controls panel"><button className="icon-button" onClick={() => setStep(Math.max(0, step - 1))} title="Previous operation" aria-label="Previous operation"><ChevronLeft/></button><button className="icon-button primary" onClick={() => setPlaying(!playing)} title={playing ? 'Pause' : 'Play'} aria-label={playing ? 'Pause' : 'Play'}>{playing ? <Pause/> : <Play/>}</button><button className="icon-button" onClick={() => setStep(Math.min(trace.events.length - 1, step + 1))} title="Next operation" aria-label="Next operation"><ChevronRight/></button><button className="icon-button" onClick={jumpPronoun} title="Jump to pronoun" aria-label="Jump to pronoun"><ScanSearch/></button><button className="icon-button" onClick={() => setStep(0)} title="Restart" aria-label="Restart"><RotateCcw/></button><button className={`icon-button ${microscope ? 'active' : ''}`} onClick={() => setMicroscope(!microscope)} title="Toggle microscope mode" aria-label="Toggle microscope mode"><Microscope/></button><label className="speed" title="Playback speed"><Sparkles size={13}/><select aria-label="Playback speed" value={speed} onChange={e => setSpeed(+e.target.value)}><option value="0.5">0.5×</option><option value="1">1×</option><option value="2">2×</option><option value="4">4×</option></select></label><span>Step {step + 1} / {trace.events.length} · {event?.shortLabel}</span></nav>
     <section className="layers"><button className={activeLayer === 0 ? 'selected' : ''} onClick={() => setLayer(0)}>Layer 1</button><span>Embedding → Layer 1 → Layer 2 → Task head</span><button className={activeLayer === 1 ? 'selected' : ''} onClick={() => setLayer(1)}>Layer 2</button></section>
     <FlowOverview token={token!} data={data} kind={event?.kind} eventIndex={step}/>

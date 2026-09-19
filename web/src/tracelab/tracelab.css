@@ -51,8 +51,10 @@
      static grids on a projector. */
   .cell-arriving { animation: tl-cell-arrive 600ms cubic-bezier(.2,.8,.2,1) both; }
 
-  .tl-sub { max-width: 60ch; margin-top: 6px; font-size: 11px; line-height: 1.5; color: #4b4b4b; }
-  .tl-sub b { color: #0a85eb; font-weight: 600; }
+  /* An absolute max-width, not ch: at this font-size 60ch is only ~330px and
+     the sentence breaks after three words. */
+  .tl-sub { max-width: 760px; margin-top: 7px; font-size: 12.5px; line-height: 1.55; color: #4b4b4b; }
+  .tl-sub b { color: #0a85eb; font-weight: 600; font-family: Inconsolata, ui-monospace, monospace; font-size: 13.5px; }
 
   /* B3: the clicked-cell breakdown, sized to be legible from the back of a room. */
   .tl-scope { font-size: 13px !important; color: #1a1a1a !important; background: #edfbff;
@@ -63,6 +65,23 @@
   .tl-narrow { max-width: 34rem; margin: auto; padding: 48px 24px; text-align: center; }
   .tl-narrow h2 { font-size: 15px; margin-bottom: 10px; }
   .tl-narrow p { font-size: 12px; line-height: 1.6; }
+
+  /* The header is a flex row; without this the strapline is squeezed by the
+     legend and wraps after two or three words. */
+  header > div:first-child { flex: 1; min-width: 0; }
+  .legend { flex-shrink: 0; align-self: flex-start; }
+
+  /* B2: the arc from pronoun to predicted antecedent. */
+  .timeline { position: relative; padding-top: 34px; }
+  .tl-arc { position: absolute; inset: 0; pointer-events: none; overflow: visible; }
+  .tl-arc path { fill: none; stroke: #C061FF; stroke-width: 2; stroke-linecap: round; }
+  .tl-arc circle { fill: #C061FF; }
+  .tl-arc text { fill: #C061FF; font: 600 10px Inconsolata, ui-monospace, monospace; }
+  .timeline .antecedent { border-color: #C061FF !important; box-shadow: 0 0 0 1px #C061FF33; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .tl-arc path { stroke-dasharray: 420; animation: tl-arc-draw 700ms cubic-bezier(.2,.8,.2,1) both; }
+  }
 
   /* The formula dock is the one line a judge reads from a distance. */
   .formula { font-size: 17px !important; padding: 13px !important; }
@@ -78,4 +97,9 @@
   0%   { transform: scale(1.5); filter: brightness(2.4); }
   60%  { transform: scale(1);   filter: brightness(1.5); }
   100% { transform: scale(1);   filter: brightness(1); }
+}
+
+@keyframes tl-arc-draw {
+  from { stroke-dashoffset: 420; }
+  to   { stroke-dashoffset: 0; }
 }
