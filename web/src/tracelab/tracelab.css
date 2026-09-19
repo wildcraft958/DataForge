@@ -291,3 +291,28 @@
   from { stroke-dashoffset: 420; }
   to   { stroke-dashoffset: 0; }
 }
+  /* Fourth reading key. Grey, because it marks the one thing on screen that is
+     drawn rather than computed, and grey is what every other chip is not. */
+  .legend .presentation { color: #8c8c8c; }
+  h2 b.pres { color: #8c8c8c !important; border-color: #d8d8d8 !important;
+    background: #f4f4f4; }
+  .flow-caption .pres-note { color: #8c8c8c; font-size: 10px;
+    flex-basis: 100%; margin-top: 2px; }
+
+  /* The state panel now explains a clicked cell, so its readout needs the same
+     treatment the contribution panel already had. */
+  .state .tl-scope { margin-top: 10px; }
+  .state .tl-hint { margin-top: 10px; }
+  .state-grid .matrix span { cursor: pointer; }
+
+  /* The readout names a cell by index; this is the cell it names. A ring rather
+     than a colour change, so the value's own sign colour stays readable. */
+  .matrix span.cell-selected { outline: 2px solid #0a85eb; outline-offset: 1px;
+    opacity: 1 !important; z-index: 2; position: relative; }
+
+  /* The "all N" count is absolutely positioned at the top of the vector. The
+     light theme shortened the vector from 82px to 65px, so the tall bars grew
+     into it and the two overlapped. Reserve a strip at the top for the count. */
+  .visual-vector { height: 74px; padding-top: 13px; }
+  .visual-vector em { top: 0; font-size: 9px; color: #8c8c8c; }
+

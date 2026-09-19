@@ -90,10 +90,11 @@ const Vector = ({ values, name }: { values: Float32Array; name: string }) => {
 // on a stagger so the write reads as an event rather than three static grids.
 const GHOST_CELLS = 8;
 
-const Matrix = ({ values, rows, cols, name, arriving, animKey, onCell }: {
+const Matrix = ({ values, rows, cols, name, arriving, animKey, onCell, selected }: {
   values: Float32Array; rows: number; cols: number; name: string;
   arriving?: Float32Array; animKey?: string;
   onCell?: (cell: { row: number; col: number; name: string }) => void;
+  selected?: { row: number; col: number; name: string };
 }) => {
   const visibleRows = Math.min(rows, 6), visibleCols = Math.min(cols, 8);
   const max = Math.max(...[...values].map(Math.abs), .0001);
@@ -117,10 +118,11 @@ const Matrix = ({ values, rows, cols, name, arriving, animKey, onCell }: {
           const row = Math.floor(i / visibleCols), col = i % visibleCols;
           const value = values[row * cols + col];
           const order = ghostRank?.get(i);
+          const isSelected = selected?.name === name && selected.row === row && selected.col === col;
           return (
             <span
               key={i}
-              className={order === undefined ? undefined : 'cell-arriving'}
+              className={[order === undefined ? '' : 'cell-arriving', isSelected ? 'cell-selected' : ''].filter(Boolean).join(' ') || undefined}
               style={{
                 opacity: .18 + Math.abs(value) / max * .82,
                 background: value < 0 ? '#FF6164' : '#28baff',
@@ -139,6 +141,37 @@ const Matrix = ({ values, rows, cols, name, arriving, animKey, onCell }: {
     </figure>
   );
 };
+// One readout for every clickable matrix. Which arithmetic to show depends on
+// which matrix was clicked: a contribution cell decomposes into the product
+// that made it, a post-write state cell into the sum. Handoff section 58.13
+// asks that any important number can be traced, and the state panel is the
+// one the spec calls most important.
+const CellScope = ({ cell, data, dModel, fallback }: {
+  cell?: { row: number; col: number; name: string };
+  data: TokenTrace['layers'][number]; dModel: number; fallback: string;
+}) => {
+  if (!cell) return <p className="tl-hint">{fallback}</p>;
+  const { row: r, col: c, name } = cell;
+  const at = (m: Float32Array) => m[r * dModel + c];
+
+  if (name === 'S after') return (
+    <p className="tl-scope">
+      S[{r},{c}] = S<sub>before</sub>[{r},{c}] + C[{r},{c}] ={' '}
+      {fmt(at(data.beforeS))} + {fmt(at(data.contribution))} = <b>{fmt(at(data.afterS))}</b>
+    </p>
+  );
+  if (name === 'S before') return (
+    <p className="tl-scope">
+      S<sub>before</sub>[{r},{c}] = <b>{fmt(at(data.beforeS))}</b>, the sum of every earlier write into this cell.
+    </p>
+  );
+  return (
+    <p className="tl-scope">
+      C[{r},{c}] = φ(K)[{r}] × V[{c}] = {fmt(data.kphi[r])} × {fmt(data.v[c])} = <b>{fmt(at(data.contribution))}</b>
+    </p>
+  );
+};
+
 // B2: the model's answer, drawn where the tokens actually are. The influence
 // bars below say the same thing in numbers, but a curve between two words is
 // the thing a room reads without being told how.
@@ -200,7 +233,7 @@ const FlowOverview = ({ token, data, kind }: { token: TokenTrace; data: TokenTra
 
   return (
     <section className="panel flow-overview">
-      <h2>Live computation map</h2>
+      <h2>Live computation map <b className="pres">Presentation</b></h2>
       <svg viewBox="0 0 1100 134" role="img" aria-label="Token flows through embedding, Q K V, recurrent state, readout, and prediction">
         <defs>
           {[['tl-tip', '#c8c8c8'], ['tl-tip-on', '#1e6bdd'], ['tl-tip-write', '#C061FF']].map(([id, stroke]) => (
@@ -235,6 +268,7 @@ const FlowOverview = ({ token, data, kind }: { token: TokenTrace; data: TokenTra
         <span>Q strength <i className="meter"><b style={{ width: `${Math.min(100, Math.abs(data.q[0]) * 18)}%` }} /></i></span>
         <span>memory write <i className="meter"><b style={{ width: `${Math.min(100, Math.abs(data.contribution[0]) * 30)}%` }} /></i></span>
         <span className="op">current operation: {kind ?? 'idle'}</span>
+        <span className="pres-note">Boxes and arrows are a fixed diagram. The two bars and the highlight are live.</span>
       </div>
     </section>
   );
@@ -269,7 +303,7 @@ export default function TraceLab() {
   const addToken = (word: string) => setText(current => renderTokens([...tokenize(current), word]));
   const removeToken = () => setText(current => renderTokens(tokenize(current).slice(0, -1)));
   return <div className="tracelab"><main>
-    <header><div><p className="eyebrow">BDH SYNAPTIC WRITE · LIVE TRACE</p><h1>What the memory holds.</h1><p className="tl-sub">Every number below is computed in your browser from trained weights. The write rule is <b>S ← S + φ(K) ⊗ V</b>, the form Pathway derives in BDH Explainer Chapter 2.</p></div><div className="tl-brand"><PathwayLogo/><div className="legend"><span className="learned">● Learned</span><span className="computed">● Computed</span><span className="reconstructed">● Reconstructed</span></div></div></header>
+    <header><div><p className="eyebrow">BDH SYNAPTIC WRITE · LIVE TRACE</p><h1>What the memory holds.</h1><p className="tl-sub">Every number below is computed in your browser from trained weights. The write rule is <b>S ← S + φ(K) ⊗ V</b>, the form Pathway derives in BDH Explainer Chapter 2.</p></div><div className="tl-brand"><PathwayLogo/><div className="legend"><span className="learned">● Learned</span><span className="computed">● Computed</span><span className="reconstructed">● Reconstructed</span><span className="presentation">● Presentation</span></div></div></header>
 
     {/* Composing tool, not a permanent fixture: sentence, run and examples on
         one row, with the word bank behind a disclosure. */}
@@ -291,8 +325,8 @@ export default function TraceLab() {
     <div className="workspace">
       <section className="panel embed"><h2>Token / Embed <b>Learned</b></h2><strong>{token?.token} <small>id {token?.id}</small></strong><Vector name="embedding" values={Float32Array.from(model.embeddings[token!.id])}/><p>Lookup row → layer input</p></section>
       <section className="panel qkv"><h2>Q / K / V laboratory <b>Computed</b></h2><div className="lanes"><div><label>Q = xWq + bq</label><Vector name="Q" values={data.q}/><label>φ(Q)</label><Vector name="phi Q" values={data.qphi}/></div><div><label>K = xWk + bk</label><Vector name="K" values={data.k}/><label>φ(K)</label><Vector name="phi K" values={data.kphi}/></div><div><label>V = xWv + bv</label><Vector name="V" values={data.v}/></div></div></section>
-      <section className="panel contribution"><h2>Contribution <b>Computed</b></h2><code>C = φ(K) ⊗ V</code><Matrix name="contribution" values={data.contribution} rows={model.config.dFeature} cols={model.config.dModel} onCell={setCell}/>{(() => { const r = cell?.row ?? 0, c = cell?.col ?? 0; return microscope || cell ? <p className="tl-scope">C[{r},{c}] = φ(K)[{r}] × V[{c}] = {fmt(data.kphi[r])} × {fmt(data.v[c])} = <b>{fmt(data.contribution[r * model.config.dModel + c])}</b></p> : <p className="tl-hint">Click any cell to see the multiplication that produced it.</p>; })()}</section>
-      <section className="panel state"><h2>State memory S / Z <b>Computed</b></h2><button className="minor" onClick={() => setDifference(!difference)}>{difference ? 'Combined state' : 'Difference view ΔS'}</button><div className="state-grid"><div><label>S before</label><Matrix name="S before" values={data.beforeS} rows={model.config.dFeature} cols={model.config.dModel}/></div><div className="plus">＋</div><div><label>C</label><Matrix name="C" values={data.contribution} rows={model.config.dFeature} cols={model.config.dModel}/></div><div className="equals">＝</div><div><label>{difference ? 'ΔS = C' : 'S after'}</label><Matrix name="S after" values={difference ? data.contribution : data.afterS} rows={model.config.dFeature} cols={model.config.dModel} arriving={data.contribution} animKey={`${tokenIndex}-${activeLayer}-${difference}`}/></div></div><label>Z before → after</label><Vector name="Z" values={data.afterZ}/><p>History: S0 → … → S{tokenIndex} ({token?.token})</p></section>
+      <section className="panel contribution"><h2>Contribution <b>Computed</b></h2><code>C = φ(K) ⊗ V</code><Matrix name="contribution" values={data.contribution} rows={model.config.dFeature} cols={model.config.dModel} onCell={setCell} selected={cell}/><CellScope cell={cell ?? (microscope ? { row: 0, col: 0, name: 'contribution' } : undefined)} data={data} dModel={model.config.dModel} fallback="Click any cell to see the multiplication that produced it."/></section>
+      <section className="panel state"><h2>State memory S / Z <b>Computed</b></h2><button className="minor" onClick={() => setDifference(!difference)}>{difference ? 'Combined state' : 'Difference view ΔS'}</button><div className="state-grid"><div><label>S before</label><Matrix name="S before" values={data.beforeS} rows={model.config.dFeature} cols={model.config.dModel} onCell={setCell} selected={cell}/></div><div className="plus">＋</div><div><label>C</label><Matrix name="C" values={data.contribution} rows={model.config.dFeature} cols={model.config.dModel} onCell={setCell} selected={cell}/></div><div className="equals">＝</div><div><label>{difference ? 'ΔS = C' : 'S after'}</label><Matrix name={difference ? 'C' : 'S after'} values={difference ? data.contribution : data.afterS} rows={model.config.dFeature} cols={model.config.dModel} arriving={data.contribution} animKey={`${tokenIndex}-${activeLayer}-${difference}`} onCell={setCell} selected={cell}/></div></div><CellScope cell={cell} data={data} dModel={model.config.dModel} fallback="Click any cell in S before, C or S after to see the arithmetic behind it."/><label>Z before → after</label><Vector name="Z" values={data.afterZ}/><p>History: S0 → … → S{tokenIndex} ({token?.token})</p></section>
       <section className="panel readout"><h2>Read before write</h2><code>N = φ(Q)ᵀSₜ₋₁</code><Vector name="numerator" values={data.numerator}/><code>D = φ(Q)ᵀZₜ₋₁ + ε = {fmt(data.denominator)}</code><Vector name="context" values={data.context}/></section>
       <section className={`panel prediction${prediction ? '' : ' resting'}`}><h2>Prediction / influence</h2>{prediction ? <><p>{token.prediction!.fullSentence ? 'Full-sentence resolver' : 'Causal resolver'} prediction for “{token?.token}”</p>{prediction.map(row => <div className="score" key={row.label}><span>{row.label}</span><em className="score-rail"><i style={{ width: `${row.p * 100}%` }}/></em><strong>{(row.p * 100).toFixed(1)}%</strong></div>)}<div className="influence">{token.prediction!.influence.map((value, i) => <button key={i} title={`Reconstructed φ(Q)·φ(K): ${value.toFixed(4)}`} style={{ height: `${Math.max(8, value * 170)}px` }} onClick={() => setStep(trace.events.findIndex(e => e.tokenIndex === i))}><small>{trace.tokens[i].token}</small></button>)}</div><p className="reconstructed">{token.prediction!.fullSentence ? 'Uses a second reverse linear pass after the sentence ends; the bars above may include later entities. The chart remains forward causal influence.' : 'Reconstructed kernel influence — forward inference uses S/Z, not this history.'}</p></> : <p>Prediction activates on supported pronouns.</p>}</section>
     </div>
