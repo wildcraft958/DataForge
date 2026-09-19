@@ -1,0 +1,89 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@400;600;700&family=Inter:wght@400;500;600&family=Inconsolata:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  @page { size: A4; margin: 12mm 14mm; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: #ffffff; color: #1a1a1a;
+    font-family: 'Inter', -apple-system, system-ui, sans-serif;
+    font-size: 9.1pt; line-height: 1.42;
+  }
+  h1 {
+    font-family: 'Funnel Display', Inter, sans-serif;
+    font-size: 18pt; font-weight: 700; letter-spacing: -0.02em;
+    margin: 0 0 3pt; color: #000;
+  }
+  h1 + p { color: #4b4b4b; }
+  h2 {
+    font-family: 'Funnel Display', Inter, sans-serif;
+    font-size: 11pt; font-weight: 600; letter-spacing: -0.01em;
+    margin: 10pt 0 4pt; padding-top: 4pt; color: #000;
+    border-top: 1px solid #e9e9e9;
+  }
+  h2:first-of-type { border-top: 0; }
+  p { margin: 0 0 5pt; }
+  strong { color: #000; font-weight: 600; }
+  code {
+    font-family: 'Inconsolata', ui-monospace, monospace;
+    font-size: 9pt; background: #f6f6f6; border: 1px solid #e9e9e9;
+    border-radius: 3px; padding: 0 3px; color: #0a85eb;
+  }
+  a { color: #1e6bdd; text-decoration: none; }
+  ol, ul { margin: 0 0 6pt; padding-left: 15pt; }
+  li { margin-bottom: 2pt; }
+  table {
+    width: 100%; border-collapse: collapse; margin: 6pt 0 8pt;
+    font-size: 8.6pt; break-inside: avoid;
+  }
+  th {
+    text-align: left; font-weight: 600; color: #000;
+    background: #f6f6f6; border-bottom: 1.5px solid #c8c8c8;
+    padding: 4pt 6pt;
+  }
+  td { padding: 3pt 6pt; border-bottom: 1px solid #e9e9e9; color: #4b4b4b; }
+  tr:last-child td { border-bottom: 0; }
+  .footer {
+    margin-top: 12pt; padding-top: 6pt; border-top: 1px solid #e9e9e9;
+    font-family: 'Inconsolata', monospace; font-size: 7.6pt; color: #8c8c8c;
+    display: flex; justify-content: space-between;
+  }
+</style></head><body>
+<h1>What BDH Remembers: Demonstration Coverage and Extrapolation</h1>
+<h2>The Claim</h2>
+<p>A model that learns from demonstrations fails on hard problems not because it lacks the capability, but because the demonstrations did not cover that difficulty. Adding one demonstration at the harder level restores performance. The weights do not change. The question does not change. Only the examples change.</p>
+<p>Pathway's BDH shows why. It holds what it learns in one synaptic matrix S of fixed size, and each token writes a single outer product into it. Because S never grows and is only ever added to, what S holds is decided by what you wrote into it. Capability was never the variable. S was.</p>
+<h2>The Task</h2>
+<p>We use an ordering task: colored bars on a 10x10 grid, sorted by height. Complexity is the number of bars (2 to 8). Each task set has three demonstration pairs and one query.</p>
+<p><strong>Covered:</strong> at least one demo matches the query complexity. <strong>Uncovered:</strong> all demos have at most 3 bars. The query grid is identical in both conditions. Only the demonstrations differ.</p>
+<h2>The Models</h2>
+<p>We trained two, and each carries half of the argument.</p>
+<p>The first is a two-layer causal linear-attention model (32 dimensions, 16 feature dimensions, feature map ELU(x) + 1). It runs in the browser and exposes the write itself: <code>C = phi(K) x V</code>, then <code>S = S + C</code>, read as <code>context = phi(Q)S / (phi(Q)Z + e)</code>. That is the form Pathway derives in BDH Explainer Chapter 2. Every number on screen is computed live from trained weights, and clicking one cell of C shows the multiplication behind it.</p>
+<p>The second is a decoder-only transformer (6 layers, 256 dimensions, 8 heads, ~4.2 million parameters), trained on 10,500 covered tasks across all complexities. Given matching demonstrations, it solved every level.</p>
+<p>At inference we retrain nothing. Only the demonstrations change.</p>
+<h2>Results</h2>
+<table><thead><tr><th>Complexity</th><th>Covered EM</th><th>Uncovered EM</th><th>Gap</th></tr></thead><tbody><tr><td>2</td><td>100%</td><td>100%</td><td>0 pp</td></tr><tr><td>3</td><td>100%</td><td>0%</td><td>100 pp</td></tr><tr><td>5</td><td>100%</td><td>0%</td><td>100 pp</td></tr><tr><td>6</td><td>100%</td><td>40%</td><td>60 pp</td></tr><tr><td>8</td><td>100%</td><td>0%</td><td>100 pp</td></tr></tbody></table>
+<p>EM is exact match, cell for cell, ten seeds per cell.</p>
+<p>Complexity 2 is the control: uncovered demonstrations carry up to 3 bars, so a 2-bar query is already covered and nothing breaks. Complexity 6 recovers to 40 percent, so the fall is not monotonic and we do not claim it is. Coverage shifts the odds rather than flipping a switch.</p>
+<h2>The Meta-Learning Connection</h2>
+<p>In-context learning is implicit meta-learning. Von Oswald et al. (arXiv:2212.07677, ICML 2023) showed that a transformer forward pass implements gradient-descent-style updates on its internal representations. Demonstrations are not passive context. They are a training signal processed in one pass.</p>
+<p>Min et al. (arXiv:2202.12837, EMNLP 2022) found that the distribution of demonstrations matters more than label correctness. That predicts our result: what breaks in-context learning is not wrong examples but missing difficulty.</p>
+<p>The same holds at frontier scale, where GPT-6 Astra and Claude Opus 5 rely on the same mechanism. Our small model makes the effect visible. Frontier models make it expensive.</p>
+<h2>Connection to BDH-CQ</h2>
+<p>BDH-CQ is a 150-million-parameter model on Pathway's Dragon Hatchling architecture (arXiv:2608.09888). It holds demonstrations in that same fixed-size synaptic state rather than a growing key-value cache, and scores 29.5% pass@2 on ARC-AGI-1 at $0.00070 per task.</p>
+<p>It shows the same cliff, on the same task family. At ordering length 8 it scores 0/24 without supporting examples and 12/24 with them (Table 3). At nesting depth 5 the same change moves 15/24 to 16/24, so operations differ in how much they depend on coverage.</p>
+<p>The ladder experiment traces the edge: ordering holds through length 5, then falls to 29/36 at 6, 8/24 at 7 and 1/24 at 8. Propagation and copying never fall (48/48 at all distances). Some operations extrapolate and some do not.</p>
+<h2>System Comparison</h2>
+<table><thead><tr><th>System</th><th>Adaptation</th><th>Weight updates</th><th>Memory</th><th>ARC-AGI-1</th><th>Cost per task</th></tr></thead><tbody><tr><td>BDH-CQ</td><td>Recurrent state absorbs demos</td><td>No</td><td>Fixed-size matrix</td><td>29.5% pass@2</td><td>$0.00070</td></tr><tr><td>HRM</td><td>Gradient optimization on demo pairs</td><td>Yes</td><td>Growing buffers</td><td>40.3% (27M params)</td><td>$1.48</td></tr><tr><td>TRM</td><td>Learned identity embedding per puzzle</td><td>Yes</td><td>Growing buffers</td><td>45% (7M params)</td><td>$1.76</td></tr></tbody></table>
+<p>HRM and TRM both score higher than BDH-CQ, and both need a backward pass at inference. That is where their cost sits. ARC Prize reports $1.48 and $1.76 per task, quoted in Section 8 of the BDH-CQ report, against $0.00070: a gap near 2,000 times. Read BDH-CQ as the accuracy-per-dollar result, not the accuracy result. An independent black-box audit by co-authors at Bielik and NYU reproduced the 29.5% score (Section 5), covering accuracy but not cost.</p>
+<h2>Strengths and Limitations</h2>
+<p>The claim is falsifiable and reproducible in under 60 seconds. Both models are real and run in the browser. Every number traces to a paper or to committed data.</p>
+<p>Both train on synthetic families, and the cliff we measure is specific to ordering. Propagation does not show it, even in BDH-CQ's own results.</p>
+<p>View 1 runs the kernelised write on trained weights, which is the real rule, but at two layers and 32 dimensions. The heatmap in view 2 is a simplified illustration that omits low-rank compression, the positional operator and gating. Neither is BDH.</p>
+<p>All BDH-CQ numbers are developer-reported. We did not run BDH-CQ: no public weights exist and its dimensions stay proprietary. No independent team reproduced it, and none tested it outside the ARC family. Treat it as an early demonstration: one paper, one team, one benchmark.</p>
+<p>Adaptation here is session-scoped. Neither model retains anything between sessions. Consolidating fast synaptic state into durable weights is open (arXiv:2509.26507, Conclusion).</p>
+<h2>Key References</h2>
+<ol><li>BDH-CQ report, arXiv:2608.09888, August 2026</li><li>Dragon Hatchling, arXiv:2509.26507, September 2025</li><li>Coconut (latent reasoning baseline), arXiv:2412.06769, December 2024</li><li>Von Oswald et al., "Transformers Learn In-Context by Gradient Descent," arXiv:2212.07677, ICML 2023</li><li>Min et al., "Rethinking the Role of Demonstrations," arXiv:2202.12837, EMNLP 2022</li></ol>
+<div class="footer"><span>DataForge 2026 &middot; Pathway Track</span><span>One-page concept summary</span></div>
+</body></html>
