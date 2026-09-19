@@ -102,24 +102,46 @@ The model trains on all complexities (2 through 8) with covered demonstrations. 
 
 Every row below comes from `web/public/precomputed.json`, 10 seeds per cell, and the artifact computes the same figures live from that file.
 
-| Complexity | Covered EM | Uncovered EM | Gap |
-|:---:|:---:|:---:|:---:|
-| 2 | 100% (10/10) | 100% (10/10) | 0 pp |
-| 3 | 100% (10/10) | 0% (0/10) | 100 pp |
-| 4 | 100% (10/10) | 0% (0/10) | 100 pp |
-| 5 | 100% (10/10) | 0% (0/10) | 100 pp |
-| 6 | 100% (10/10) | 40% (4/10) | 60 pp |
-| 7 | 100% (10/10) | 0% (0/10) | 100 pp |
-| 8 | 100% (10/10) | 0% (0/10) | 100 pp |
+| Complexity | Covered EM | Uncovered EM | Gap | Uncovered set holds a match? |
+|:---:|:---:|:---:|:---:|:---:|
+| 2 | 100% (10/10) | 100% (10/10) | 0 pp | yes, in 10 of 10 seeds |
+| 3 | 100% (10/10) | 0% (0/10) | 100 pp | yes, in 10 of 10 seeds |
+| 4 | 100% (10/10) | 0% (0/10) | 100 pp | no |
+| 5 | 100% (10/10) | 0% (0/10) | 100 pp | no |
+| 6 | 100% (10/10) | 40% (4/10) | 60 pp | no |
+| 7 | 100% (10/10) | 0% (0/10) | 100 pp | no |
+| 8 | 100% (10/10) | 0% (0/10) | 100 pp | no |
 
 **Covered:** at least one of the three demonstrations matches the query complexity.
 **Uncovered:** all three demonstrations have at most 3 bars. The query is identical.
 
-Two rows deserve a note, and both support the claim rather than weakening it.
+### Two rows do not test coverage
 
-Complexity 2 shows no gap at all. That is the control. Uncovered demonstrations hold up to 3 bars, so a 2-bar query is already covered by them, and nothing breaks. That is the result we want here: the effect tracks coverage, not difficulty.
+The uncovered rule caps demonstrations at 3 bars. `generator/export.py` builds the
+uncovered set as 2, 3 and 3 bars for every complexity. At 2 bars and at 3 bars,
+that set therefore still holds a demonstration at the query complexity. The last
+column records this, and it holds in all 10 seeds of both rows.
 
-Complexity 6 recovers to 40 percent. The fall is therefore not monotonic, and we do not claim it is. A 6-bar grid is the easiest of the hard cases to reach by applying a 3-bar rule, and 4 of 10 seeds land. Coverage shifts the odds; it does not flip a switch.
+Complexity 2 is the control. Both settings cover the query, and the model is
+correct in both. That is the result we want, because the effect tracks coverage
+and not difficulty.
+
+Complexity 3 is the row coverage does not explain. Both settings hold a matching
+demonstration in all 10 seeds, and the model still scores 0 percent in the
+uncovered setting. Something other than coverage drives that failure. The two
+sets differ in two ways: the order of the demonstrations, and the individual
+grids. We did not run the experiment that separates those causes. We report the
+number and we do not count it as evidence for the claim.
+
+The coverage claim rests on complexity 4 and above. There, no uncovered
+demonstration reaches the query complexity. The artifact says the same thing on
+screen: at 2 and 3 bars it reports that both settings match, and it reserves the
+coverage verdict for 4 bars and above.
+
+Complexity 6 recovers to 40 percent. The fall is therefore not monotonic, and we
+do not claim it is. A 6-bar grid is the easiest of the hard cases to reach by
+applying a 3-bar rule, and 4 of 10 seeds land. Coverage shifts the odds; it does
+not flip a switch.
 
 ```mermaid
 graph LR

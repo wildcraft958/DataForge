@@ -20,21 +20,19 @@ The first is a two-layer causal linear-attention model (32 dimensions, 16 featur
 
 The second is a decoder-only transformer (6 layers, 256 dimensions, 8 heads, ~4.2 million parameters), trained on 10,500 covered tasks across all complexities. Given matching demonstrations, it solved every level.
 
-At inference we retrain nothing. Only the demonstrations change.
-
 ## Results
 
-| Complexity | Covered EM | Uncovered EM | Gap |
-|---|---|---|---|
-| 2 | 100% | 100% | 0 pp |
-| 3 | 100% | 0% | 100 pp |
-| 5 | 100% | 0% | 100 pp |
-| 6 | 100% | 40% | 60 pp |
-| 8 | 100% | 0% | 100 pp |
+| Complexity | Covered EM | Uncovered EM | Gap | Uncovered set holds a match? |
+|---|---|---|---|---|
+| 2 | 100% | 100% | 0 pp | yes |
+| 3 | 100% | 0% | 100 pp | yes |
+| 5 | 100% | 0% | 100 pp | no |
+| 6 | 100% | 40% | 60 pp | no |
+| 8 | 100% | 0% | 100 pp | no |
 
 EM is exact match, cell for cell, ten seeds per cell.
 
-Complexity 2 is the control: uncovered demonstrations carry up to 3 bars, so a 2-bar query is already covered and nothing breaks. Complexity 6 recovers to 40 percent, so the fall is not monotonic and we do not claim it is. Coverage shifts the odds rather than flipping a switch.
+Complexity 2 and 3 do not test coverage. The uncovered set is always 2, 3 and 3 bars, so at those two complexities it still holds a match. At 2 bars the model is correct in both settings, which is the control we want. At 3 bars it fails in the uncovered setting although a match is present. That gap has some other cause, and we do not count it as evidence. The claim rests on complexity 4 and above. Complexity 6 recovers to 40 percent, so the fall is not monotonic and we do not claim it is.
 
 ## The Meta-Learning Connection
 
@@ -42,7 +40,7 @@ In-context learning is implicit meta-learning. Von Oswald et al. (arXiv:2212.076
 
 Min et al. (arXiv:2202.12837, EMNLP 2022) found that the distribution of demonstrations matters more than label correctness. That predicts our result: what breaks in-context learning is not wrong examples but missing difficulty.
 
-The same holds at frontier scale, where GPT-6 Astra and Claude Opus 5 rely on the same mechanism. Our small model makes the effect visible. Frontier models make it expensive.
+The mechanism is not toy-specific. GPT-6 Astra (OpenAI, September 2026) and Claude Opus 5 learn from demonstrations the same way. Our small model makes the effect cheap to see.
 
 ## Connection to BDH-CQ
 
