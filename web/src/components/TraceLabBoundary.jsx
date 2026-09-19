@@ -23,6 +23,11 @@ export default class TraceLabBoundary extends Component {
           <p>S ← S + C</p>
           <p>context = φ(Q)ᵀS / (φ(Q)ᵀZ + ε)</p>
         </div>
+        <img
+          src="/tracelab-fallback.png"
+          alt="The trace view: a sentence tokenized, with an arc from the pronoun to its predicted antecedent."
+          className="mt-5 rounded-lg border border-navy-700/50 w-full"
+        />
         <p className="text-xs text-navy-400 mt-4">
           Pathway, BDH Explainer Chapter 2. Dragon Hatchling, arXiv:2509.26507.
         </p>

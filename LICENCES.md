@@ -27,14 +27,18 @@ All task data is synthetic. No external datasets are used.
 | Model | Source | Licence |
 |-------|--------|---------|
 | Toy transformer (4.2M params) | Trained from scratch on synthetic data | MIT |
+| Linear-attention coreference model (2 layers, d_model 32) | Trained from scratch on synthetic templates | MIT |
 
-No pretrained weights are used.
+No pretrained weights are used. Both models were trained by this team on data
+this project generates. The second model powers view 1, and its training code,
+metrics and weights checksum are committed.
 
 ## Graphics and Fonts
 
 | Asset | Source | Licence |
 |-------|--------|---------|
 | Inter | Google Fonts (Rasmus Andersson) | SIL Open Font License 1.1 |
+| Pathway wordmark (presentation deck only) | pathway.com media kit | Used for attribution of cited work |
 | JetBrains Mono | Google Fonts (JetBrains) | SIL Open Font License 1.1 |
 
 ## Papers and References

@@ -1,4 +1,4 @@
-# Demonstration Coverage and Extrapolation
+# What BDH Remembers
 
 DataForge 2026, Pathway Track
 
@@ -11,6 +11,21 @@ DataForge 2026, Pathway Track
 ## The Claim
 
 A model that learns from demonstrations fails on hard problems. The reason is not a lack of capability. The demonstrations did not cover that difficulty. Adding one demonstration at the harder level restores performance. The weights do not change. The question does not change. Only the examples change.
+
+## Two views of one synaptic state matrix
+
+BDH keeps what it learns in a fixed-size synaptic matrix S. Each token writes one outer product into S. Because S is fixed in size and only ever added to, what S holds is decided entirely by what you wrote into it.
+
+The artifact has two views, and they are halves of one argument.
+
+| View | Shows | Model |
+|------|-------|-------|
+| 1 · The Write | The write happening, value by value. `S ← S + φ(K) ⊗ V`, the form Pathway derives in BDH Explainer Chapter 2. Step one token and watch the contribution build, then land on S. Click any cell to see the multiplication that produced it. | 2-layer causal linear attention, d_model 32, trained here, 100% on its held-out task |
+| 2 · The Consequence | When S does not hold an example at the query difficulty, the model fails. Same weights, 100% with matched demonstrations and 0% without. | Decoder-only transformer, 4.2M parameters, trained here |
+
+View 1 runs a real trained model in the browser. Every displayed number is computed from committed weights. View 2 labels every output LIVE or PRECOMPUTED and never hides which.
+
+Capability was never the variable. S was.
 
 ## How the Demo Works
 
@@ -236,8 +251,12 @@ DataForge/
 │
 ├── web/                       React + Vite + Tailwind frontend
 │   ├── src/
-│   │   ├── App.jsx
-│   │   ├── components/        15 components
+│   │   ├── App.jsx            Two views: the write, and the consequence
+│   │   ├── components/        16 components
+│   │   ├── tracelab/          View 1: the synaptic write
+│   │   │   ├── TraceLab.tsx   Panels, playback, prediction arc
+│   │   │   ├── tracelab.css   Generated, scoped, themed to Pathway
+│   │   │   └── model/         Inference engine plus trained weights
 │   │   └── hooks/
 │   │       └── useOnnxInference.js
 │   └── public/

@@ -14,8 +14,17 @@ AI-assisted code is present in all components:
 
 - `generator/`: ordering task generator and export script
 - `model/`: transformer architecture, tokenizer, training loop, validation, ONNX export
-- `bdh-toy/`: simplified Hebbian memory module
+- `bdh-toy/`: simplified synaptic memory module
 - `web/`: React frontend, all components, ONNX inference hook
+- `web/src/tracelab/`: the linear-attention trace view
+
+The trace view began as a separate repository written by a team member. Its
+inference engine, trained weights and panel layout were carried over.
+
+This project then made four changes. It scoped the stylesheets so they cannot
+leak. It replaced an icon package with inline graphics. It bundled the model
+weights instead of fetching them. It added the contribution animation, the
+prediction arc and the per-cell breakdown.
 
 Every generated file was reviewed and tested by a human team member. All 28 Python tests and 5 JavaScript tests pass.
 
