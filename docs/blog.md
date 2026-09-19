@@ -36,11 +36,13 @@ The Hebbian memory uses a fixed-size matrix. Each demonstration writes into it w
 
 This is a simplified version. It omits low-rank compression, the positional operator, excitatory and inhibitory circuits, and gating. We label it as such in the demo. The point is not to replicate BDH. The point is to show the learner how two architectures store demonstrations differently, and why coverage matters to both.
 
-The cost difference is large. BDH-CQ processes one task for $0.00070. HRM, which adapts by running a backward pass on augmented demo pairs, costs $1.48 per task (arXiv:2506.21734). TRM, which learns an identity embedding per puzzle, costs $1.76. Recurrent state absorption is orders of magnitude cheaper than optimization-based adaptation.
+The cost difference is large. BDH-CQ processes one task for $0.00070. HRM adapts by running a backward pass on augmented demo pairs, and TRM learns an identity embedding per puzzle. ARC Prize reports $1.48 and $1.76 per task for them, quoted in Section 8 of arXiv:2608.09888. Recurrent state absorption is orders of magnitude cheaper than optimization-based adaptation.
+
+Be careful how you read that. HRM reaches 40.3% on ARC-AGI-1 and TRM reaches 45%, against 29.5% pass@2 for BDH-CQ. BDH-CQ is the accuracy-per-dollar result, not the accuracy result.
 
 ## How the demo works
 
-The interactive artifact opens with a guided walkthrough that takes under 90 seconds. The learner starts at complexity 3 with covered demonstrations. The model sorts 3 bars correctly. The learner drags the complexity slider to 8. The model still works because the demonstrations cover that difficulty. The learner then flips a toggle to remove the matching demonstration. The model fails. Nothing about the model or the question changed. Only the examples did.
+The artifact has two views. It opens on view 1, where you step a sentence through the synaptic write one token at a time and watch the contribution land on S. View 2 carries a guided walkthrough that takes under 90 seconds. The learner starts at complexity 3 with covered demonstrations. The model sorts 3 bars correctly. The learner drags the complexity slider to 8. The model still works because the demonstrations cover that difficulty. The learner then flips a toggle to remove the matching demonstration. The model fails. Nothing about the model or the question changed. Only the examples did.
 
 After the guided flow, all controls unlock. The learner can explore every complexity and toggle between covered and uncovered conditions freely.
 

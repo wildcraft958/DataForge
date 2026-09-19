@@ -94,15 +94,26 @@ graph TB
 
 The model trains on all complexities (2 through 8) with covered demonstrations. At inference, only the demonstrations change.
 
+Every row below comes from `web/public/precomputed.json`, 10 seeds per cell, and the artifact computes the same figures live from that file.
+
 | Complexity | Covered EM | Uncovered EM | Gap |
 |:---:|:---:|:---:|:---:|
-| 2 | 100% | 96% | 4 pp |
-| 3 | 100% | 0% | 100 pp |
-| 5 | 100% | 0% | 100 pp |
-| 8 | 100% | 0% | 100 pp |
+| 2 | 100% (10/10) | 100% (10/10) | 0 pp |
+| 3 | 100% (10/10) | 0% (0/10) | 100 pp |
+| 4 | 100% (10/10) | 0% (0/10) | 100 pp |
+| 5 | 100% (10/10) | 0% (0/10) | 100 pp |
+| 6 | 100% (10/10) | 40% (4/10) | 60 pp |
+| 7 | 100% (10/10) | 0% (0/10) | 100 pp |
+| 8 | 100% (10/10) | 0% (0/10) | 100 pp |
 
 **Covered:** at least one of the three demonstrations matches the query complexity.
 **Uncovered:** all three demonstrations have at most 3 bars. The query is identical.
+
+Two rows deserve a note, and both support the claim rather than weakening it.
+
+Complexity 2 shows no gap at all. That is the control. Uncovered demonstrations hold up to 3 bars, so a 2-bar query is already covered by them, and nothing breaks. That is the result we want here: the effect tracks coverage, not difficulty.
+
+Complexity 6 recovers to 40 percent. The fall is therefore not monotonic, and we do not claim it is. A 6-bar grid is the easiest of the hard cases to reach by applying a 3-bar rule, and 4 of 10 seeds land. Coverage shifts the odds; it does not flip a switch.
 
 ```mermaid
 graph LR
