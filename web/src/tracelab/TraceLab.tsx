@@ -130,7 +130,13 @@ const Matrix = ({ values, rows, cols, name, arriving, animKey, onCell, selected 
                 cursor: onCell ? 'pointer' : undefined,
               }}
               title={`${name}[${row},${col}] = ${value}`}
+              role={onCell ? 'button' : undefined}
+              tabIndex={onCell ? 0 : undefined}
+              aria-label={onCell ? `${name} row ${row} column ${col}, value ${value.toFixed(3)}` : undefined}
               onClick={onCell ? () => onCell({ row, col, name }) : undefined}
+              onKeyDown={onCell ? (e) => {
+                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onCell({ row, col, name }); }
+              } : undefined}
             >
               {fmt(value)}
             </span>
@@ -293,7 +299,7 @@ export default function TraceLab() {
     for (let i = 1; i < p.probabilities.length; i++) if (p.probabilities[i] > p.probabilities[best]) best = i;
     return { index: p.positions[best], confidence: p.probabilities[best] };
   }, [token]);
-  const requestedTokens = tokenize(text); const oovCount = requestedTokens.filter(word => !model?.vocab.includes(word)).length;
+  const requestedTokens = tokenize(text);
   const execute = () => { if (!model) return; const next = run(model, text); setTrace(next); setStep(0); setPlaying(false); };
   if (narrow) return <div className="tracelab"><main className="tl-narrow"><h2>The trace view needs a wider screen</h2><p>This view lays six matrices side by side to show one write into the synaptic state. It needs at least 900 pixels. Open it on a laptop, or use the coverage view, which works at any width.</p></main></div>;
   if (error) return <div className="tracelab"><main className="error">Model loading error: {error}</main></div>;

@@ -377,3 +377,9 @@
   .insp-values .visual-vector span small { bottom: -16px; font-size: 9px;
     color: #8c8c8c; left: 50%; transform: translateX(-50%); }
 
+  /* Keyboard focus has to be visible, or tab order is a trap rather than a path. */
+  .matrix span[role="button"]:focus-visible { outline: 2px solid #1e6bdd;
+    outline-offset: 2px; opacity: 1 !important; z-index: 3; position: relative; }
+  .input-warning { font-size: 10px !important; color: #a06c4c !important;
+    margin: 4px 0 0 !important; }
+
