@@ -84,7 +84,7 @@ export default function HebbianViz({ demos = [] }) {
     <div className="flex flex-col gap-3 flex-1 min-w-[280px]">
       <div className="bg-navy-800/60 border border-navy-700/40 rounded-2xl p-6">
         <h4 className="text-base font-bold text-white tracking-wide mb-1">
-          BDH Synaptic Memory (σ)
+          Pathway BDH Synaptic Memory (S)
         </h4>
         <p className="text-sm text-navy-300 mb-4">
           Fixed-size matrix. All demonstrations compress into one state.

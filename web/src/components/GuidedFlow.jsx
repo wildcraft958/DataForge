@@ -19,7 +19,7 @@ const STEPS = [
     waitFor: 'uncovered',
   },
   {
-    text: 'Look at the memory comparison below the output. The Hebbian matrix absorbed different demonstrations than before.',
+    text: 'Look at the memory comparison below. Pathway\'s BDH stores demonstrations this way: each one writes an outer product into a fixed-size synaptic state (Dragon Hatchling, arXiv:2509.26507). View 1 runs that exact write on trained weights.',
     waitFor: null,
   },
   {

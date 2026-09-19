@@ -117,7 +117,7 @@ export default function MemoryCompact({ demoCount = 0, demos = [] }) {
 
         <div>
           <span className="text-[10px] font-mono text-navy-400 block mb-1.5">
-            BDH Synaptic State (σ)
+            Pathway BDH Synaptic State (S)
           </span>
           <div className="flex justify-center">
             <svg
