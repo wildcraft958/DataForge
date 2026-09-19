@@ -1,18 +1,25 @@
 import { useState, useCallback, useEffect, useRef } from 'react'
 
+// `staleWhen` marks a step whose text stops being true once the controls move.
+// Without it a presenter who drives the slider and toggle directly, rather than
+// pressing Next, leaves the caption asserting "sorts 3 bars correctly" while the
+// screen shows an 8-bar failure. The narration has to agree with the result.
 const STEPS = [
   {
     text: 'The model sorts 3 bars correctly. The demonstrations include a matching example.',
     waitFor: null,
+    staleWhen: (complexity, covered) => complexity !== 3 || !covered,
   },
   {
     text: 'Drag the slider to 8. The model still works because the demos cover this difficulty.',
     waitFor: 'complexity_8',
+    staleWhen: (complexity, covered) => !covered,
   },
   {
     text: 'Now flip the toggle to remove the matching example.',
     waitFor: null,
     highlightToggle: true,
+    staleWhen: (complexity, covered) => !covered,
   },
   {
     text: 'The same model, the same question. Only the examples changed.',
@@ -38,13 +45,21 @@ export default function GuidedFlow({
   const [step, setStep] = useState(0)
   const autoAdvanceRef = useRef(null)
 
+  // onComplete arrives as an inline arrow, so it gets a fresh identity on every
+  // parent render, and the parent re-renders on each inference progress tick.
+  // Holding it in a ref keeps `advance` stable; depending on its identity meant
+  // the effects below tore down and rebuilt their timers faster than the 600ms
+  // they were waiting for, so auto-advance never fired at all.
+  const onCompleteRef = useRef(onComplete)
+  useEffect(() => { onCompleteRef.current = onComplete }, [onComplete])
+
   const advance = useCallback(() => {
-    if (step < STEPS.length - 1) {
-      setStep(step + 1)
-    } else {
-      onComplete?.()
-    }
-  }, [step, onComplete])
+    setStep((s) => {
+      if (s < STEPS.length - 1) return s + 1
+      onCompleteRef.current?.()
+      return s
+    })
+  }, [])
 
   const current = STEPS[step]
 
@@ -61,6 +76,15 @@ export default function GuidedFlow({
     autoAdvanceRef.current = setTimeout(advance, 600)
     return () => clearTimeout(autoAdvanceRef.current)
   }, [active, canAdvance, current.waitFor, advance])
+
+  // The controls moved past what this step describes, so stop describing it.
+  // Advancing chains: leaving complexity 3 skips to the slider step, which its
+  // own condition then satisfies, landing on the step that matches the screen.
+  useEffect(() => {
+    if (!active || !current.staleWhen?.(complexity, covered)) return
+    const t = setTimeout(advance, 250)
+    return () => clearTimeout(t)
+  }, [active, current, complexity, covered, advance])
 
   if (!active) return null
 
