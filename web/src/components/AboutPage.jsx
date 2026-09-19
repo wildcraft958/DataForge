@@ -334,7 +334,7 @@ export default function AboutPage({ onClose }) {
                 {[
                   ['Vocabulary', '13 tokens (colors 0-9, ROW_SEP, GRID_SEP, PAD)'],
                   ['Max sequence', '1024 tokens (~776 per task)'],
-                  ['Training data', '~10,000 tasks, complexity 2-8, all covered'],
+                  ['Training data', '~10,500 tasks, complexity 2-8, all covered'],
                   ['Optimizer', 'AdamW, lr 3e-4, cosine warmup'],
                   ['Batch size', '32'],
                   ['Training', '~30 epochs on a T4 GPU'],

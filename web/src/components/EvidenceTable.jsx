@@ -118,6 +118,7 @@ export default function EvidenceTable({ precomputed, complexity }) {
               <th className="px-4 py-2.5 border-b border-navy-700/60 font-semibold text-white">System</th>
               <th className="px-4 py-2.5 border-b border-navy-700/60 font-semibold text-white">How it adapts</th>
               <th className="px-4 py-2.5 border-b border-navy-700/60 font-semibold text-white">Weight updates at inference?</th>
+              <th className="px-4 py-2.5 border-b border-navy-700/60 font-semibold text-white">ARC-AGI-1</th>
               <th className="px-4 py-2.5 border-b border-navy-700/60 font-semibold text-white">Cost / task</th>
             </tr>
           </thead>
@@ -126,36 +127,46 @@ export default function EvidenceTable({ precomputed, complexity }) {
               <td className="px-4 py-2.5 border-b border-navy-800/60 font-medium text-pw-accent">BDH-CQ</td>
               <td className="px-4 py-2.5 border-b border-navy-800/60 text-navy-100">Recurrent state absorbs demos</td>
               <td className="px-4 py-2.5 border-b border-navy-800/60 text-navy-100">No</td>
+              <td className="px-4 py-2.5 border-b border-navy-800/60 font-mono text-navy-100">29.5% <span className="text-navy-400">(150M)</span></td>
               <td className="px-4 py-2.5 border-b border-navy-800/60 font-mono text-pw-success">$0.00070</td>
             </tr>
             <tr className="hover:bg-navy-800/30 transition-colors">
               <td className="px-4 py-2.5 border-b border-navy-800/60 font-medium text-navy-100">HRM</td>
               <td className="px-4 py-2.5 border-b border-navy-800/60 text-navy-100">Optimizes on augmented demo pairs</td>
               <td className="px-4 py-2.5 border-b border-navy-800/60 text-navy-100">Yes (backward pass)</td>
+              <td className="px-4 py-2.5 border-b border-navy-800/60 font-mono text-navy-100">40.3% <span className="text-navy-400">(27M)</span></td>
               <td className="px-4 py-2.5 border-b border-navy-800/60 font-mono text-navy-100">$1.48</td>
             </tr>
             <tr className="hover:bg-navy-800/30 transition-colors">
               <td className="px-4 py-2.5 border-b border-navy-800/60 font-medium text-navy-100">TRM</td>
               <td className="px-4 py-2.5 border-b border-navy-800/60 text-navy-100">Learned identity embedding per puzzle</td>
               <td className="px-4 py-2.5 border-b border-navy-800/60 text-navy-100">Yes (backward pass)</td>
+              <td className="px-4 py-2.5 border-b border-navy-800/60 font-mono text-navy-100">45% <span className="text-navy-400">(7M)</span></td>
               <td className="px-4 py-2.5 border-b border-navy-800/60 font-mono text-navy-100">$1.76</td>
             </tr>
             <tr className="hover:bg-navy-800/30 transition-colors">
               <td className="px-4 py-2.5 font-medium text-navy-100">CoT LLMs</td>
               <td className="px-4 py-2.5 text-navy-100">Demos in context, reasoning in tokens</td>
               <td className="px-4 py-2.5 text-navy-100">No</td>
+              <td className="px-4 py-2.5 text-navy-400 font-mono">varies</td>
               <td className="px-4 py-2.5 text-navy-300 font-mono">Scales with trace</td>
             </tr>
           </tbody>
         </table>
+        <p className="text-xs text-navy-300 mt-3 leading-relaxed max-w-2xl">
+          <span className="font-semibold text-navy-100">Read this as cost, not accuracy.</span>{' '}
+          HRM and TRM both score higher than BDH-CQ, and both need a backward pass per task.
+          That is where their cost sits. BDH-CQ is the accuracy-per-dollar result.
+        </p>
         <p className="text-xs text-navy-400 mt-3">
           <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400 font-medium mr-1.5">
             developer-reported
           </span>
-          arXiv:2608.09888, Table 5. Cost audit: independent black-box audit by co-authors at Bielik and NYU.
+          BDH-CQ figures: arXiv:2608.09888. HRM and TRM costs: ARC Prize, quoted in Section 8 of the same report.
         </p>
         <p className="text-[10px] text-navy-500 mt-1">
-          HRM: arXiv:2506.21734. TRM: Tiny Recursive Models (7M params, 45% ARC-AGI-1).
+          HRM: arXiv:2506.21734, 40.3% with 27M params. TRM: Tiny Recursive Models, 45% with 7M params.
+          An independent black-box audit by co-authors at Bielik and NYU reproduced BDH-CQ&apos;s 29.5% (Section 5). It covered accuracy, not cost.
         </p>
       </div>
     </section>
