@@ -59,36 +59,42 @@ graph LR
     D --> E["Output Grid<br/>Predicted sort order"]
 ```
 
-The artifact is a single-page React application with three modules:
+The artifact is a single-page React application holding two views. Each runs its own trained model in the browser.
 
 ```mermaid
 graph TB
-    subgraph explorer ["Module 1: Live Explorer"]
+    subgraph write ["View 1: The Write"]
+        W1["Sentence → tokens"] --> W2["Q / K / V, then φ"]
+        W2 --> W3["C = φ(K) ⊗ V"]
+        W3 --> W4["S ← S + C<br/>fixed size, additive"]
+        W4 --> W5["Read: φ(Q)ᵀS / (φ(Q)ᵀZ + ε)"]
+        W5 --> W6["Predicted antecedent"]
+    end
+    subgraph consequence ["View 2: The Consequence"]
         S["Complexity slider (2-8 bars)"] --> M["Trained transformer"]
         T["Coverage toggle"] --> M
         M --> O["Prediction vs ground truth<br/>with diff overlay"]
+        M --> H["Memory comparison:<br/>KV cache vs synaptic state"]
     end
-    subgraph bdh ["Module 2: BDH Substrate"]
-        H["Hebbian memory<br/>Fixed-size matrix<br/>(simplified illustration)"]
-        K["KV cache<br/>Growing token list"]
-    end
-    subgraph evidence ["Module 3: Evidence"]
+    subgraph evidence ["Evidence, inside view 2"]
         E1["BDH-CQ Table 3<br/>(developer-reported)"]
         E2["System comparison<br/>BDH-CQ · HRM · TRM"]
         E3["Ladder experiment"]
     end
 ```
 
-| Spec | Value |
-|------|-------|
-| Model | Decoder-only transformer |
-| Layers | 6 |
-| Attention heads | 8 |
-| d_model | 256 |
-| Parameters | ~4.2 million |
-| Vocabulary | 13 tokens (colors 0-9, ROW_SEP, GRID_SEP, PAD) |
-| Max sequence | 1024 tokens (~776 per task) |
-| Training | ~10,500 covered tasks, AdamW, lr 3e-4, ~30 epochs on T4 |
+| Spec | View 1 model | View 2 model |
+|------|--------------|--------------|
+| Architecture | Causal linear attention | Decoder-only transformer |
+| Layers | 2 | 6 |
+| d_model | 32 | 256 |
+| Attention heads | 1 | 8 |
+| Feature dimension | 16 | not applicable |
+| Feature map | ELU(x) + 1 + ε | not applicable |
+| Vocabulary | 79 words and punctuation | 13 tokens (colors 0-9, ROW_SEP, GRID_SEP, PAD) |
+| Max sequence | 48 tokens | 1024 tokens (~776 per task) |
+| Runs in browser via | TypeScript, Float32Array | ONNX Runtime Web |
+| Training | CPU, minutes, `tracelab-model/train.py` | ~10,500 covered tasks, AdamW, lr 3e-4, ~30 epochs on T4 |
 
 ## The Coverage Cliff
 
@@ -283,7 +289,7 @@ DataForge/
 ├── web/                       React + Vite + Tailwind frontend
 │   ├── src/
 │   │   ├── App.jsx            Two views: the write, and the consequence
-│   │   ├── components/        16 components
+│   │   ├── components/        19 components
 │   │   ├── tracelab/          View 1: the synaptic write
 │   │   │   ├── TraceLab.tsx   Panels, playback, prediction arc
 │   │   │   ├── tracelab.css   Generated, scoped, themed to Pathway
