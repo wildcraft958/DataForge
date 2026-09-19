@@ -593,7 +593,7 @@ export default function AboutPage({ onClose }) {
             DataForge 2026, Pathway Track
           </span>
           <span className="text-xs text-navy-500">
-            Team NamoFans
+            DataForge 2026, Pathway Track
           </span>
         </footer>
       </div>
