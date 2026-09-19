@@ -20,4 +20,4 @@ async function renderPDF(htmlPath, outputPath) {
   console.log(`Rendered ${outputPath}`)
 }
 
-await renderPDF('blog.html', resolve('/Users/bakasur/Desktop/DataForge/docs/blog.pdf'))
+await renderPDF('blog.html', resolve(__dirname, 'blog.pdf'))
