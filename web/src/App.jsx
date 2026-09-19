@@ -79,7 +79,7 @@ function App() {
       <header className="relative px-6 pt-6 pb-5">
         <div className="max-w-5xl mx-auto flex items-start justify-between">
           <div>
-            <p className="text-xs font-mono text-pw-cyan tracking-wider mb-1.5">
+            <p className="text-xs font-mono text-pw-accent tracking-wider mb-1.5">
               DataForge 2026 · Pathway Track
             </p>
             <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight leading-tight">
@@ -115,7 +115,7 @@ function App() {
               <span className={`text-xs font-semibold ${view === v.id ? 'text-white' : 'text-navy-300'}`}>
                 {v.n} · {v.label}
               </span>
-              <span className={`block text-[11px] font-mono mt-0.5 ${view === v.id ? 'text-pw-cyan' : 'text-navy-500'}`}>
+              <span className={`block text-[11px] font-mono mt-0.5 ${view === v.id ? 'text-pw-accent' : 'text-navy-500'}`}>
                 {v.sub}
               </span>
             </button>
@@ -132,7 +132,7 @@ function App() {
               BDH keeps what it learns in one fixed-size synaptic matrix.
               Each token writes a single outer product into it.
             </p>
-            <p className="text-sm text-pw-cyan/80 mt-1.5 font-medium">
+            <p className="text-sm text-pw-accent/80 mt-1.5 font-medium">
               Step through a sentence and watch the write happen.
             </p>
           </div>
@@ -153,7 +153,7 @@ function App() {
           Because that matrix is fixed in size and only ever added to, what it
           holds is decided entirely by what you wrote into it.
         </p>
-        <p className="text-sm text-pw-cyan/80 mt-1.5 font-medium">
+        <p className="text-sm text-pw-accent/80 mt-1.5 font-medium">
           Change the examples. Watch it fail, then recover.
         </p>
       </div>
@@ -161,7 +161,7 @@ function App() {
       <main className="max-w-5xl mx-auto px-6 py-6">
         <div className="mb-4 px-4 py-3 rounded-lg border border-navy-700/40 bg-navy-900/40">
           <p className="text-xs font-mono text-navy-400">
-            <span className="text-pw-cyan font-semibold">Claim:</span>{' '}
+            <span className="text-pw-accent font-semibold">Claim:</span>{' '}
             The same weights that score 100% at 8 bars with matched demos score 0% with 2-bar demos. Context, not capability.
           </p>
         </div>

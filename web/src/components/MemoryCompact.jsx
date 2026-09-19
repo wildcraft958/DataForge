@@ -58,8 +58,8 @@ function zeroMatrix() {
 }
 
 const CACHE_COLORS = [
-  '#5468FF', '#34D399', '#F59E0B', '#F87171',
-  '#A855F7', '#EC4899', '#06B6D4', '#84CC16',
+  '#1e6bdd', '#15803D', '#F59E0B', '#D6383B',
+  '#A855F7', '#DB2777', '#0a85eb', '#65A30D',
 ]
 
 export default function MemoryCompact({ demoCount = 0, demos = [] }) {
@@ -142,7 +142,7 @@ export default function MemoryCompact({ demoCount = 0, demos = [] }) {
                       width={CELL_PX}
                       height={CELL_PX}
                       fill={`rgba(${r},${g},${b},${intensity.toFixed(3)})`}
-                      stroke="#111B2E"
+                      stroke="#ffffff"
                       strokeWidth={0.3}
                     />
                   )

@@ -59,15 +59,15 @@ export default function Controls({
           className={`
             relative inline-flex h-7 w-12 items-center rounded-full transition-all duration-300
             ${covered
-              ? 'bg-pw-success/80 shadow-[0_0_12px_rgba(52,211,153,0.3)]'
-              : 'bg-pw-error/60 shadow-[0_0_12px_rgba(248,113,113,0.2)]'
+              ? 'bg-pw-success/80 shadow-[0_0_12px_rgba(21,128,61,0.3)]'
+              : 'bg-pw-error/60 shadow-[0_0_12px_rgba(214,56,59,0.2)]'
             }
             ${disabled ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'}
           `}
         >
           <span
             className={`
-              inline-block h-5 w-5 rounded-full bg-white transition-transform duration-300 shadow-sm
+              inline-block h-5 w-5 rounded-full bg-[#fff] transition-transform duration-300 shadow-sm
               ${covered ? 'translate-x-6' : 'translate-x-1'}
             `}
           />
@@ -89,10 +89,10 @@ export default function Controls({
           border-radius: 3px;
           background: linear-gradient(
             to right,
-            #5468FF 0%,
-            #5468FF ${((complexity - 2) / 6) * 100}%,
-            #1A2844 ${((complexity - 2) / 6) * 100}%,
-            #1A2844 100%
+            #1e6bdd 0%,
+            #1e6bdd ${((complexity - 2) / 6) * 100}%,
+            #e9e9e9 ${((complexity - 2) / 6) * 100}%,
+            #e9e9e9 100%
           );
           outline: none;
         }
@@ -102,7 +102,7 @@ export default function Controls({
           height: 18px;
           border-radius: 50%;
           background: white;
-          box-shadow: 0 0 0 3px #5468FF, 0 2px 6px rgba(0, 0, 0, 0.3);
+          box-shadow: 0 0 0 3px #1e6bdd, 0 2px 6px rgba(0, 0, 0, 0.22);
           cursor: pointer;
         }
         .styled-slider::-moz-range-thumb {
@@ -111,7 +111,7 @@ export default function Controls({
           border: none;
           border-radius: 50%;
           background: white;
-          box-shadow: 0 0 0 3px #5468FF, 0 2px 6px rgba(0, 0, 0, 0.3);
+          box-shadow: 0 0 0 3px #1e6bdd, 0 2px 6px rgba(0, 0, 0, 0.22);
           cursor: pointer;
         }
         .styled-slider:disabled::-webkit-slider-thumb {

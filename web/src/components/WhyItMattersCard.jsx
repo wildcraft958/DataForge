@@ -1,7 +1,7 @@
 export default function WhyItMattersCard() {
   return (
     <div className="my-8 rounded-xl border border-pw-blue/20 bg-pw-blue/[0.04] px-5 py-4">
-      <h3 className="text-sm font-semibold text-pw-cyan mb-2">
+      <h3 className="text-sm font-semibold text-pw-accent mb-2">
         Why this matters beyond a toy demo
       </h3>
       <p className="text-sm text-navy-200 leading-relaxed mb-2">

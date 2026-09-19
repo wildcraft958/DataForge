@@ -57,8 +57,8 @@ export default function SortingGrid({ inputGrid, outputGrid, size = 140, animate
       style={{
         padding: 3,
         borderRadius: 6,
-        backgroundColor: '#0F1D35',
-        border: '1.5px solid #2A4570',
+        backgroundColor: '#ffffff',
+        border: '1.5px solid #c8c8c8',
       }}
     >
       <svg
@@ -79,7 +79,7 @@ export default function SortingGrid({ inputGrid, outputGrid, size = 140, animate
               width={cellSize}
               height={cellSize}
               fill={ARC_COLORS[0]}
-              stroke="#0F1D35"
+              stroke="#ffffff"
               strokeWidth={1.2}
               rx={1.5}
             />
@@ -105,7 +105,7 @@ export default function SortingGrid({ inputGrid, outputGrid, size = 140, animate
                   width={cellSize}
                   height={cellSize}
                   fill={ARC_COLORS[bar.color]}
-                  stroke="#0F1D35"
+                  stroke="#ffffff"
                   strokeWidth={1.2}
                   rx={1.5}
                 />

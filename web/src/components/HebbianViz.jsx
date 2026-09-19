@@ -96,7 +96,7 @@ export default function HebbianViz({ demos = [] }) {
             viewBox={`0 0 ${w + 1} ${h + 1}`}
             className="rounded-lg"
             style={{
-              filter: energy > 0.5 ? `drop-shadow(0 0 12px rgba(84, 104, 255, 0.25))` : 'none',
+              filter: energy > 0.5 ? `drop-shadow(0 0 12px rgba(30, 107, 221, 0.25))` : 'none',
             }}
           >
             {sigma.map((row, i) =>
@@ -113,7 +113,7 @@ export default function HebbianViz({ demos = [] }) {
                     width={CELL_PX}
                     height={CELL_PX}
                     fill={`rgba(${r},${g},${b},${intensity.toFixed(3)})`}
-                    stroke="#111B2E"
+                    stroke="#ffffff"
                     strokeWidth={0.4}
                     rx={1}
                   />

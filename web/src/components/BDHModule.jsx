@@ -4,7 +4,7 @@ export default function BDHModule() {
       <h2 className="text-xl font-bold text-white mb-2">
         How the Synaptic Memory Works
       </h2>
-      <p className="text-xs font-mono text-pw-cyan/70 mb-2">
+      <p className="text-xs font-mono text-pw-accent/70 mb-2">
         Learning goal: describe how BDH-CQ stores demonstrations differently from a Transformer.
       </p>
       <p className="text-sm text-navy-300 mb-6">
@@ -17,7 +17,7 @@ export default function BDHModule() {
         <h3 className="text-base font-semibold text-navy-100 mb-3">
           Synaptic Update Rule
         </h3>
-        <div className="font-mono text-base text-pw-cyan space-y-1.5">
+        <div className="font-mono text-base text-pw-accent space-y-1.5">
           <p>Write: S<sub>t</sub> = S<sub>t-1</sub> + x<sup>T</sup> · v</p>
           <p>Read:&nbsp; o<sub>t</sub> = x · S<sub>t</sub></p>
         </div>
@@ -26,7 +26,7 @@ export default function BDHModule() {
           synaptic state S. Reading multiplies the current query by S. No growing
           cache, but interference appears when S fills.
         </p>
-        <p className="text-sm text-pw-cyan/90 mt-4 leading-relaxed">
+        <p className="text-sm text-pw-accent/90 mt-4 leading-relaxed">
           The exact <span className="font-mono">φ(K) ⊗ V</span> form of this rule runs on
           trained weights in view 1, where every value is computed in the browser.
         </p>

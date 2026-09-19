@@ -21,7 +21,7 @@ export default function LiveBadge({ isLive, progress }) {
         </span>
       </span>
       {inferring && (
-        <span className="text-[10px] font-mono text-pw-cyan/70 animate-pulse">
+        <span className="text-[10px] font-mono text-pw-accent/70 animate-pulse">
           Generating token {progress.step}/{progress.total}
         </span>
       )}

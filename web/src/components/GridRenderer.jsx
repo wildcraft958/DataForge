@@ -1,14 +1,17 @@
+// ARC hues, darkened so every bar separates from the light empty cell and from
+// each other. Blue and cyan sit far apart on purpose: they identify two
+// different bars in the same grid.
 const ARC_COLORS = [
-  '#172A4A', // 0: empty cell (dark blue, clearly distinct from page #0A0F1C)
-  '#3B82F6', // 1: blue
-  '#EF4444', // 2: red
-  '#22C55E', // 3: green
-  '#EAB308', // 4: yellow
-  '#9CA3AF', // 5: grey
-  '#D946EF', // 6: magenta
-  '#F97316', // 7: orange
-  '#06B6D4', // 8: cyan
-  '#A855F7', // 9: purple
+  '#e9e9e9', // 0: empty cell (light grey, clearly distinct from page #f6f6f6)
+  '#1e6bdd', // 1: blue
+  '#D6383B', // 2: red
+  '#15803D', // 3: green
+  '#D9A404', // 4: yellow
+  '#8c8c8c', // 5: grey
+  '#C061FF', // 6: magenta
+  '#EA6A0A', // 7: orange
+  '#0AA5C9', // 8: cyan
+  '#8B3FD1', // 9: purple
 ]
 
 export { ARC_COLORS }
@@ -31,8 +34,8 @@ export default function GridRenderer({ grid, size = 200, label, ariaLabel }) {
         style={{
           padding: 3,
           borderRadius: 6,
-          backgroundColor: '#0F1D35',
-          border: '1.5px solid #2A4570',
+          backgroundColor: '#ffffff',
+          border: '1.5px solid #c8c8c8',
         }}
       >
         <svg
@@ -52,8 +55,8 @@ export default function GridRenderer({ grid, size = 200, label, ariaLabel }) {
                 y={r * cellSize}
                 width={cellSize}
                 height={cellSize}
-                fill={ARC_COLORS[val] || '#172A4A'}
-                stroke="#0F1D35"
+                fill={ARC_COLORS[val] || '#e9e9e9'}
+                stroke="#ffffff"
                 strokeWidth={1.2}
                 rx={1.5}
               />

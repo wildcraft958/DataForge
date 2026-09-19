@@ -123,7 +123,7 @@ export default function EvidenceTable({ precomputed, complexity }) {
           </thead>
           <tbody>
             <tr className="hover:bg-navy-800/30 transition-colors">
-              <td className="px-4 py-2.5 border-b border-navy-800/60 font-medium text-pw-cyan">BDH-CQ</td>
+              <td className="px-4 py-2.5 border-b border-navy-800/60 font-medium text-pw-accent">BDH-CQ</td>
               <td className="px-4 py-2.5 border-b border-navy-800/60 text-navy-100">Recurrent state absorbs demos</td>
               <td className="px-4 py-2.5 border-b border-navy-800/60 text-navy-100">No</td>
               <td className="px-4 py-2.5 border-b border-navy-800/60 font-mono text-pw-success">$0.00070</td>

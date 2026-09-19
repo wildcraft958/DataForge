@@ -76,7 +76,7 @@ export default function CoverageCliffChart({ precomputed, complexity }) {
             x2={RIGHT}
             y1={y}
             y2={y}
-            stroke="#1A2844"
+            stroke="#e9e9e9"
             strokeDasharray="4 4"
           />
         )
@@ -89,7 +89,7 @@ export default function CoverageCliffChart({ precomputed, complexity }) {
           x={48}
           y={yFromRate(pct) + 4}
           textAnchor="end"
-          fill="#4A6080"
+          fill="#6e6e6e"
           fontSize="10"
           fontFamily="var(--font-mono)"
         >
@@ -102,7 +102,7 @@ export default function CoverageCliffChart({ precomputed, complexity }) {
         x={14}
         y={TOP + HEIGHT / 2}
         textAnchor="middle"
-        fill="#4A6080"
+        fill="#6e6e6e"
         fontSize="10"
         transform={`rotate(-90, 14, ${TOP + HEIGHT / 2})`}
       >
@@ -116,8 +116,8 @@ export default function CoverageCliffChart({ precomputed, complexity }) {
         width={60}
         height={HEIGHT + 6}
         rx={6}
-        fill="rgba(84, 104, 255, 0.08)"
-        stroke="#5468FF"
+        fill="rgba(30, 107, 221, 0.08)"
+        stroke="#1e6bdd"
         strokeWidth={1}
         strokeDasharray="4 2"
         opacity={0.5}
@@ -139,7 +139,7 @@ export default function CoverageCliffChart({ precomputed, complexity }) {
               y={BOTTOM - covH}
               width={BAR_W}
               height={covH}
-              fill="#34D399"
+              fill="#15803D"
               opacity={0.85}
               rx={2}
             />
@@ -149,7 +149,7 @@ export default function CoverageCliffChart({ precomputed, complexity }) {
               y={BOTTOM - uncH}
               width={BAR_W}
               height={uncH}
-              fill="#F87171"
+              fill="#D6383B"
               opacity={0.85}
               rx={2}
             />
@@ -185,7 +185,7 @@ export default function CoverageCliffChart({ precomputed, complexity }) {
           x={groupX(c)}
           y={238}
           textAnchor="middle"
-          fill={c === complexity ? '#5468FF' : '#7B8BA6'}
+          fill={c === complexity ? '#1e6bdd' : '#4b4b4b'}
           fontSize="11"
           fontFamily="var(--font-mono)"
           fontWeight={c === complexity ? 'bold' : 'normal'}
@@ -199,22 +199,22 @@ export default function CoverageCliffChart({ precomputed, complexity }) {
         x={(LEFT + RIGHT) / 2}
         y={254}
         textAnchor="middle"
-        fill="#4A6080"
+        fill="#6e6e6e"
         fontSize="10"
       >
         Complexity (bars)
       </text>
 
       {/* Legend */}
-      <rect x={310} y={4} width={12} height={8} rx={1} fill="#34D399" opacity={0.85} />
-      <text x={326} y={11} fill="#7B8BA6" fontSize="9">Covered</text>
+      <rect x={310} y={4} width={12} height={8} rx={1} fill="#15803D" opacity={0.85} />
+      <text x={326} y={11} fill="#4b4b4b" fontSize="9">Covered</text>
 
-      <rect x={370} y={4} width={12} height={8} rx={1} fill="#F87171" opacity={0.85} />
-      <text x={386} y={11} fill="#7B8BA6" fontSize="9">Uncovered</text>
+      <rect x={370} y={4} width={12} height={8} rx={1} fill="#D6383B" opacity={0.85} />
+      <text x={386} y={11} fill="#4b4b4b" fontSize="9">Uncovered</text>
 
       <circle cx={440} cy={8} r={3} fill="#28BAFF" opacity={0.9} />
       <line x1={444} x2={456} y1={8} y2={8} stroke="#28BAFF" strokeWidth={1.5} strokeDasharray="4 2" />
-      <text x={460} y={11} fill="#7B8BA6" fontSize="9">BDH-CQ</text>
+      <text x={460} y={11} fill="#4b4b4b" fontSize="9">BDH-CQ</text>
     </svg>
     </div>
   )

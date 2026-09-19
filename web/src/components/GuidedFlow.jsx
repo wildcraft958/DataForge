@@ -68,9 +68,10 @@ export default function GuidedFlow({
     <div
       className="fixed bottom-0 left-0 right-0 z-50 border-t border-navy-700/40"
       style={{
-        backgroundColor: 'rgba(11, 17, 32, 0.85)',
+        backgroundColor: 'rgba(255, 255, 255, 0.94)',
         backdropFilter: 'blur(12px)',
         WebkitBackdropFilter: 'blur(12px)',
+        boxShadow: '0 -4px 20px rgba(0, 0, 0, 0.08)',
       }}
     >
       <div className="max-w-2xl mx-auto px-6 py-4 flex items-center gap-4">
@@ -83,8 +84,8 @@ export default function GuidedFlow({
                 className="h-1 rounded-full flex-1 transition-colors duration-300"
                 style={{
                   background: i <= step
-                    ? 'linear-gradient(90deg, #5468FF, #28BAFF)'
-                    : '#1A2844',
+                    ? 'linear-gradient(90deg, #1e6bdd, #28BAFF)'
+                    : '#e9e9e9',
                 }}
               />
             ))}
@@ -96,7 +97,7 @@ export default function GuidedFlow({
           className={`
             px-5 py-2 rounded-lg text-sm font-semibold transition-all duration-200
             ${canAdvance
-              ? 'bg-pw-blue text-white hover:shadow-[0_0_16px_rgba(84,104,255,0.4)] hover:bg-pw-blue/90'
+              ? 'bg-pw-blue text-[#fff] hover:shadow-[0_0_16px_rgba(30,107,221,0.4)] hover:bg-pw-blue/90'
               : 'bg-navy-700/50 text-navy-400 cursor-not-allowed'
             }
           `}

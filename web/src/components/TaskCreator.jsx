@@ -232,7 +232,7 @@ export default function TaskCreator({ onnx, demos, covered }) {
         <button
           onClick={runModel}
           disabled={!onnx.ready || running || !demos}
-          className="text-xs px-4 py-2 rounded-lg font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed bg-pw-blue text-white hover:bg-pw-blue/80"
+          className="text-xs px-4 py-2 rounded-lg font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed bg-pw-blue text-[#fff] hover:bg-pw-blue/80"
         >
           {running ? 'Running...' : 'Run model'}
         </button>

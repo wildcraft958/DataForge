@@ -62,8 +62,8 @@ export default function DemoPanel({ demos, gridSize = 140 }) {
               key={i}
               className="w-2.5 h-2.5 rounded-full transition-all duration-300"
               style={{
-                backgroundColor: i < visibleCount ? '#5468FF' : '#1A2844',
-                boxShadow: i < visibleCount ? '0 0 6px rgba(84, 104, 255, 0.5)' : 'none',
+                backgroundColor: i < visibleCount ? '#1e6bdd' : '#e9e9e9',
+                boxShadow: i < visibleCount ? '0 0 6px rgba(30, 107, 221, 0.5)' : 'none',
               }}
             />
           ))}
@@ -103,7 +103,7 @@ export default function DemoPanel({ demos, gridSize = 140 }) {
               opacity: i < visibleCount ? 1 : 0.1,
               transform: i < visibleCount ? 'translateY(0)' : 'translateY(8px)',
               transition: 'opacity 0.4s ease, transform 0.4s ease, background-color 0.4s ease',
-              backgroundColor: i < visibleCount ? 'rgba(26, 40, 68, 0.35)' : 'transparent',
+              backgroundColor: i < visibleCount ? 'rgba(30, 107, 221, 0.06)' : 'transparent',
             }}
           >
             <span className="text-sm font-mono text-navy-400 w-5 shrink-0 text-right font-bold">
@@ -115,7 +115,7 @@ export default function DemoPanel({ demos, gridSize = 140 }) {
             <svg width="24" height="16" viewBox="0 0 24 16" className="shrink-0">
               <path
                 d="M0 8h18M15 3l5 5-5 5"
-                stroke={i < visibleCount ? '#5468FF' : '#1A2844'}
+                stroke={i < visibleCount ? '#1e6bdd' : '#e9e9e9'}
                 strokeWidth="2"
                 fill="none"
                 strokeLinecap="round"

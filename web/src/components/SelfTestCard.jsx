@@ -116,7 +116,7 @@ export default function SelfTestCard({ visible }) {
             <button
               onClick={() => setPhase('mcq')}
               disabled={freeText.trim().length === 0}
-              className="px-4 py-2 rounded-lg text-sm font-medium bg-pw-blue text-white hover:shadow-[0_0_16px_rgba(84,104,255,0.4)] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+              className="px-4 py-2 rounded-lg text-sm font-medium bg-pw-blue text-[#fff] hover:shadow-[0_0_16px_rgba(30,107,221,0.4)] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
             >
               Continue to quiz
             </button>

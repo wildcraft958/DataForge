@@ -18,7 +18,7 @@ export default class TraceLabBoundary extends Component {
           The live trace could not start. The mechanism it shows is below, and
           the coverage view is unaffected.
         </p>
-        <div className="rounded-lg border border-navy-700/50 bg-navy-900/60 px-5 py-5 font-mono text-sm text-pw-cyan space-y-2">
+        <div className="rounded-lg border border-navy-700/50 bg-navy-900/60 px-5 py-5 font-mono text-sm text-pw-accent space-y-2">
           <p>C = φ(K) ⊗ V</p>
           <p>S ← S + C</p>
           <p>context = φ(Q)ᵀS / (φ(Q)ᵀZ + ε)</p>
@@ -33,7 +33,7 @@ export default class TraceLabBoundary extends Component {
         </p>
         <button
           onClick={() => this.setState({ failed: false })}
-          className="mt-5 px-4 py-2 rounded-lg text-xs font-semibold bg-pw-blue text-white"
+          className="mt-5 px-4 py-2 rounded-lg text-xs font-semibold bg-pw-blue text-[#fff]"
         >
           Try again
         </button>

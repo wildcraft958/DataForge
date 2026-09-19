@@ -189,8 +189,8 @@ export default function OutputComparison({
             style={{
               boxShadow: showDiff
                 ? correct
-                  ? '0 0 24px rgba(52, 211, 153, 0.25)'
-                  : '0 0 24px rgba(248, 113, 113, 0.25)'
+                  ? '0 0 24px rgba(21, 128, 61, 0.25)'
+                  : '0 0 24px rgba(214, 56, 59, 0.25)'
                 : 'none',
             }}
           >
@@ -198,8 +198,8 @@ export default function OutputComparison({
               style={{
                 padding: 3,
                 borderRadius: 6,
-                backgroundColor: '#0F1D35',
-                border: '1.5px solid #2A4570',
+                backgroundColor: '#ffffff',
+                border: '1.5px solid #c8c8c8',
               }}
             >
               <svg
@@ -220,7 +220,7 @@ export default function OutputComparison({
                       width={cellSize}
                       height={cellSize}
                       fill={ARC_COLORS[0]}
-                      stroke="#0F1D35"
+                      stroke="#ffffff"
                       strokeWidth={1.2}
                       rx={1.5}
                     />
@@ -248,7 +248,7 @@ export default function OutputComparison({
                           width={cellSize}
                           height={cellSize}
                           fill={ARC_COLORS[bar.color]}
-                          stroke="#0F1D35"
+                          stroke="#ffffff"
                           strokeWidth={1.2}
                           rx={1.5}
                         />
@@ -259,19 +259,32 @@ export default function OutputComparison({
                 {showDiff && prediction.map((row, r) =>
                   row.map((val, c) => {
                     if (val === groundTruth[r][c]) return null
+                    // A white halo under the red border. A wrong cell can hold
+                    // any bar colour, including the red one, so a red border on
+                    // its own disappears on exactly the cells that matter most.
                     return (
-                      <rect
-                        key={`diff-${r}-${c}`}
-                        x={c * cellSize + 1.5}
-                        y={r * cellSize + 1.5}
-                        width={cellSize - 3}
-                        height={cellSize - 3}
-                        fill="none"
-                        stroke="#F87171"
-                        strokeWidth={2}
-                        rx={1}
-                        style={{ animation: 'fadeSlideIn 0.3s ease forwards' }}
-                      />
+                      <g key={`diff-${r}-${c}`} style={{ animation: 'fadeSlideIn 0.3s ease forwards' }}>
+                        <rect
+                          x={c * cellSize + 1.5}
+                          y={r * cellSize + 1.5}
+                          width={cellSize - 3}
+                          height={cellSize - 3}
+                          fill="rgba(214, 56, 59, 0.45)"
+                          stroke="#ffffff"
+                          strokeWidth={3.5}
+                          rx={1}
+                        />
+                        <rect
+                          x={c * cellSize + 1.5}
+                          y={r * cellSize + 1.5}
+                          width={cellSize - 3}
+                          height={cellSize - 3}
+                          fill="none"
+                          stroke="#8F1216"
+                          strokeWidth={2}
+                          rx={1}
+                        />
+                      </g>
                     )
                   })
                 )}
@@ -309,7 +322,7 @@ export default function OutputComparison({
                 {explanation.body}
               </p>
               {explanation.bdh && (
-                <p className="text-[10px] text-pw-cyan/60 mt-1.5 font-mono">
+                <p className="text-[10px] text-pw-accent/60 mt-1.5 font-mono">
                   {explanation.bdh}
                 </p>
               )}

@@ -37,7 +37,7 @@ export default function DemoContext({ demos = [], complexity }) {
           >
             {bars} bars
             {matches && (
-              <span className="text-[10px] text-pw-cyan font-semibold">match</span>
+              <span className="text-[10px] text-pw-accent font-semibold">match</span>
             )}
           </span>
         )
