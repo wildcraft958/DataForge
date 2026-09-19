@@ -16,9 +16,9 @@ export default function Controls({
   disabled = false,
 }) {
   return (
-    <div className="flex flex-col sm:flex-row items-center gap-6 p-5 bg-navy-800/60 rounded-xl border border-navy-700/50 backdrop-blur-sm">
+    <div className="card card-accent flex flex-col sm:flex-row sm:items-center gap-5 sm:gap-8 px-6 py-5">
       <div className="flex items-center gap-4">
-        <label htmlFor="complexity-slider" className="text-sm font-medium text-navy-200">
+        <label htmlFor="complexity-slider" className="eyebrow text-navy-500">
           Complexity
         </label>
         <input
@@ -35,7 +35,7 @@ export default function Controls({
           aria-valuetext={`${complexity} bars`}
           className="w-44 styled-slider"
         />
-        <span className="text-xl font-mono font-bold text-white w-7 text-center">
+        <span className="text-3xl font-mono font-bold text-white w-10 text-center leading-none">
           {complexity}
         </span>
         <span className="text-xs text-navy-400 font-mono">
@@ -43,10 +43,10 @@ export default function Controls({
         </span>
       </div>
 
-      <div className="w-px h-6 bg-navy-700 hidden sm:block" />
+      <div className="w-px h-8 bg-[#e9e9e9] hidden sm:block" />
 
       <div className="flex items-center gap-4">
-        <label htmlFor="coverage-toggle" className="text-sm font-medium text-navy-200">
+        <label htmlFor="coverage-toggle" className="eyebrow text-navy-500">
           Coverage
         </label>
         <button
@@ -72,12 +72,14 @@ export default function Controls({
             `}
           />
         </button>
-        <span className={`text-sm font-semibold ${covered ? 'text-pw-success' : 'text-pw-error'}`}>
+        <span
+          className={`pill ${covered ? 'text-pw-success bg-pw-success/10' : 'text-pw-error bg-pw-error/10'}`}
+        >
           {covered ? 'Covered' : 'Uncovered'}
         </span>
       </div>
 
-      <div className="text-[10px] font-mono text-navy-500 mt-1 ml-1">
+      <div className="cite sm:ml-auto">
         Context: ~{tokenEstimate(complexity)} / 1024 tokens
       </div>
 

@@ -76,7 +76,7 @@ export default function GuidedFlow({
     >
       <div className="max-w-2xl mx-auto px-6 py-4 flex items-center gap-4">
         <div className="flex-1">
-          <p className="text-sm text-navy-100 leading-relaxed">{current.text}</p>
+          <p className="text-base text-navy-100 leading-relaxed">{current.text}</p>
           <div className="flex gap-1 mt-2.5">
             {STEPS.map((_, i) => (
               <div
@@ -95,7 +95,7 @@ export default function GuidedFlow({
           onClick={advance}
           disabled={!canAdvance}
           className={`
-            px-5 py-2 rounded-lg text-sm font-semibold transition-all duration-200
+            px-6 py-2.5 rounded-full eyebrow transition-all duration-200
             ${canAdvance
               ? 'bg-pw-blue text-[#fff] hover:shadow-[0_0_16px_rgba(30,107,221,0.4)] hover:bg-pw-blue/90'
               : 'bg-navy-700/50 text-navy-400 cursor-not-allowed'

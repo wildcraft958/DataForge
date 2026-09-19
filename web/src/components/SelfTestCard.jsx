@@ -30,10 +30,10 @@ function Question({ q, onComplete }) {
 
   return (
     <div>
-      <p className="text-sm text-navy-200 mb-3">{q.prompt}</p>
+      <p className="text-base text-navy-200 mb-4">{q.prompt}</p>
       <div className="flex flex-col gap-2">
         {q.options.map((opt, i) => {
-          let style = 'border-navy-700/50 bg-navy-900/30 hover:border-navy-600'
+          let style = 'border-[#e9e9e9] bg-[#fff] hover:border-navy-600'
           if (answered && i === selected) {
             style = opt.correct
               ? 'border-emerald-500/60 bg-emerald-500/[0.08]'
@@ -49,7 +49,7 @@ function Question({ q, onComplete }) {
                 }
               }}
               disabled={answered}
-              className={`text-left px-4 py-3 rounded-lg border text-sm transition-all duration-200 ${style} ${answered ? 'cursor-default' : 'cursor-pointer'}`}
+              className={`text-left px-5 py-4 rounded-2xl border text-sm transition-all duration-200 ${style} ${answered ? 'cursor-default' : 'cursor-pointer'}`}
             >
               <span className="text-navy-200">{opt.text}</span>
             </button>
@@ -78,12 +78,12 @@ export default function SelfTestCard({ visible }) {
 
   return (
     <div
-      className="rounded-xl border border-pw-blue/30 bg-pw-blue/[0.04] p-5 mb-6"
+      className="card card-accent-blue p-6 sm:p-7 mb-6"
       style={{ animation: 'fadeSlideIn 0.4s ease forwards' }}
     >
-      <div className="flex items-start justify-between gap-4 mb-4">
+      <div className="flex items-start justify-between gap-4 mb-5">
         <div>
-          <h3 className="text-sm font-semibold text-white mb-1">
+          <h3 className="h-card">
             {phase === 'freetext'
               ? 'Your explanation'
               : `Quick check ${step + 1}/${QUESTIONS.length}`}
@@ -91,7 +91,7 @@ export default function SelfTestCard({ visible }) {
         </div>
         <button
           onClick={() => setDismissed(true)}
-          className="text-navy-500 hover:text-navy-300 transition-colors text-xs shrink-0"
+          className="eyebrow text-navy-500 hover:text-navy-300 transition-colors shrink-0"
           aria-label="Dismiss self-test"
         >
           Dismiss
@@ -100,7 +100,7 @@ export default function SelfTestCard({ visible }) {
 
       {phase === 'freetext' ? (
         <div>
-          <p className="text-sm text-navy-200 mb-3">
+          <p className="text-base text-navy-200 mb-4">
             In one sentence, explain why the model failed when the demonstrations did not cover the query difficulty.
           </p>
           <input
@@ -110,13 +110,13 @@ export default function SelfTestCard({ visible }) {
             maxLength={200}
             enterKeyHint="done"
             placeholder="e.g., The model had the capability but..."
-            className="w-full px-4 py-3 rounded-lg border border-navy-700/50 bg-navy-900/30 text-sm text-navy-100 placeholder-navy-500 focus:outline-none focus:border-pw-blue/50 transition-colors"
+            className="w-full px-5 py-3.5 rounded-2xl border border-[#e9e9e9] bg-[#fff] text-base text-navy-100 placeholder-navy-500 focus:outline-none focus:border-pw-blue transition-colors"
           />
           <div className="flex justify-end mt-3">
             <button
               onClick={() => setPhase('mcq')}
               disabled={freeText.trim().length === 0}
-              className="px-4 py-2 rounded-lg text-sm font-medium bg-pw-blue text-[#fff] hover:shadow-[0_0_16px_rgba(30,107,221,0.4)] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+              className="px-5 py-2.5 rounded-full eyebrow bg-pw-blue text-[#fff] hover:shadow-[0_0_16px_rgba(30,107,221,0.4)] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
             >
               Continue to quiz
             </button>
@@ -125,7 +125,7 @@ export default function SelfTestCard({ visible }) {
       ) : (
         <div style={{ animation: 'fadeSlideIn 0.3s ease forwards' }}>
           {freeText && (
-            <p className="text-[10px] text-navy-500 mb-3">
+            <p className="cite mb-4">
               Your answer: &ldquo;{freeText}&rdquo;
             </p>
           )}

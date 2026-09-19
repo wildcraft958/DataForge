@@ -56,7 +56,7 @@ export default function CoverageCliffChart({ precomputed, complexity }) {
   const bdhPolyline = bdhPoints.map((p) => `${p.x},${p.y}`).join(' ')
 
   return (
-    <div className="w-full max-w-[520px]" style={{ aspectRatio: '2 / 1' }}>
+    <div className="w-full max-w-[800px] mx-auto" style={{ aspectRatio: '2 / 1' }}>
     <svg
       viewBox="0 0 520 260"
       role="img"

@@ -1,10 +1,10 @@
 export default function WhyItMattersCard() {
   return (
-    <div className="my-8 rounded-xl border border-pw-blue/20 bg-pw-blue/[0.04] px-5 py-4">
-      <h3 className="text-sm font-semibold text-pw-accent mb-2">
+    <div className="card card-accent-blue my-10 px-6 py-6 sm:px-8 sm:py-7">
+      <h3 className="h-card mb-4">
         Why this matters beyond a toy demo
       </h3>
-      <p className="text-sm text-navy-200 leading-relaxed mb-2">
+      <p className="text-base text-navy-200 leading-relaxed mb-3 max-w-4xl">
         GPT-6 Astra (OpenAI, Sep 2026) and Claude Opus 5 (Anthropic, 2026) use
         the same mechanism you just tested: in-context learning from
         demonstrations. Von Oswald et al.{' '}
@@ -13,7 +13,7 @@ export default function WhyItMattersCard() {
         internal representations. The demonstrations are a training signal, not
         passive context.
       </p>
-      <p className="text-sm text-navy-200 leading-relaxed">
+      <p className="text-base text-navy-200 leading-relaxed max-w-4xl">
         When someone prompts a frontier model with three easy examples and then
         asks a hard question, the same coverage failure applies. Min et al.{' '}
         <span className="text-navy-400">(arXiv:2202.12837)</span> found that the

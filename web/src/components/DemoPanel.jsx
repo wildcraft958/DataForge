@@ -49,10 +49,10 @@ export default function DemoPanel({ demos, gridSize = 140 }) {
     <div className="flex flex-col gap-4">
       <div className="flex items-center gap-3">
         <div className="flex flex-col">
-          <h3 className="text-base font-semibold text-white">
+          <h3 className="eyebrow text-navy-500 mb-2">
             Demonstrations
           </h3>
-          <span className="text-xs text-navy-400 mt-0.5">
+          <span className="text-sm text-navy-400">
             Rule: sort bars by height, shortest on the left, tallest on the right.
           </span>
         </div>
@@ -72,11 +72,11 @@ export default function DemoPanel({ demos, gridSize = 140 }) {
           onClick={handleReplay}
           disabled={playing}
           className={`
-            ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium
-            transition-all duration-200
+            ml-auto flex items-center gap-2 px-4 py-2 rounded-full eyebrow
+            transition-all duration-200 border
             ${playing
-              ? 'bg-navy-700/30 text-navy-500 cursor-not-allowed'
-              : 'bg-navy-800/60 text-navy-200 hover:bg-navy-700/60 hover:text-white border border-navy-700/50'
+              ? 'border-[#e9e9e9] text-navy-500 cursor-not-allowed'
+              : 'border-[#e9e9e9] text-navy-300 hover:border-navy-600 hover:text-white'
             }
           `}
         >

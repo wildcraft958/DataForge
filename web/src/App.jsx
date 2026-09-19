@@ -75,70 +75,77 @@ function App() {
   const prediction = isLive ? livePrediction : precomputedPrediction
 
   return (
-    <div className="min-h-screen bg-navy-950 text-navy-100 pb-28 font-sans">
-      <header className="relative px-6 pt-6 pb-5">
-        <div className="max-w-5xl mx-auto flex items-start justify-between">
-          <div>
-            <p className="text-xs font-mono text-pw-accent tracking-wider mb-1.5">
-              DataForge 2026 · Pathway Track
-            </p>
-            <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight leading-tight">
-              What BDH Remembers
-            </h1>
-            <p className="text-xs text-navy-400 mt-1">
-              Two views of one synaptic state matrix.
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
+    <div className="page-canvas min-h-screen bg-navy-950 text-navy-100 pb-28 font-sans">
+      {/* Deck chrome: one translucent strip, the run label on the left and the
+          honesty badge on the right, visible on every scroll position. */}
+      <div className="sticky top-0 z-40 border-b border-[#e9e9e9] bg-[#ffffffbf] backdrop-blur-xl">
+        <div className="max-w-7xl mx-auto px-6 h-14 flex items-center gap-3">
+          <span className="w-2 h-2 rounded-full bg-pw-indigo shrink-0" />
+          <span className="eyebrow text-navy-100 truncate">What BDH Remembers</span>
+          <span className="text-navy-700 hidden sm:inline">/</span>
+          <span className="eyebrow text-navy-500 hidden sm:inline truncate">
+            {VIEWS.find((v) => v.id === view)?.label}
+          </span>
+          <div className="ml-auto flex items-center gap-3 shrink-0">
             <button
               onClick={() => setAboutOpen(true)}
-              className="text-xs font-medium text-navy-300 hover:text-white transition-colors px-3 py-1.5 rounded-lg border border-navy-700/50 hover:border-navy-600"
+              className="eyebrow text-navy-400 hover:text-navy-100 transition-colors px-3.5 py-2 rounded-full border border-[#e9e9e9] hover:border-navy-600"
             >
               About
             </button>
             {view === 'consequence' && <LiveBadge isLive={isLive} progress={onnx.progress} />}
           </div>
         </div>
+      </div>
 
-        <nav className="max-w-5xl mx-auto mt-5 flex gap-2" aria-label="Views">
+      <header className="max-w-7xl mx-auto px-6 pt-10 sm:pt-14 pb-6">
+        <p className="eyebrow text-pw-accent mb-4">
+          DataForge 2026 · Pathway Track
+        </p>
+        <h1 className="h-page">
+          What BDH Remembers
+        </h1>
+        <p className="lead mt-4 max-w-2xl">
+          Two views of one synaptic state matrix.
+        </p>
+
+        <nav className="mt-8 grid sm:grid-cols-2 gap-3" aria-label="Views">
           {VIEWS.map((v) => (
             <button
               key={v.id}
               onClick={() => setView(v.id)}
               aria-current={view === v.id ? 'page' : undefined}
-              className={`flex-1 text-left px-4 py-2.5 rounded-lg border transition-colors ${
+              className={`text-left px-5 py-4 rounded-2xl border transition-colors ${
                 view === v.id
-                  ? 'border-pw-cyan/60 bg-pw-cyan/10'
-                  : 'border-navy-700/50 hover:border-navy-600 bg-navy-900/30'
+                  ? 'border-pw-cyan bg-pw-cyan/10'
+                  : 'border-[#e9e9e9] bg-[#fff] hover:border-navy-600'
               }`}
             >
-              <span className={`text-xs font-semibold ${view === v.id ? 'text-white' : 'text-navy-300'}`}>
+              <span className={`block eyebrow ${view === v.id ? 'text-navy-100' : 'text-navy-400'}`}>
                 {v.n} · {v.label}
               </span>
-              <span className={`block text-[11px] font-mono mt-0.5 ${view === v.id ? 'text-pw-accent' : 'text-navy-500'}`}>
+              <span className={`block text-sm font-mono mt-1.5 ${view === v.id ? 'text-pw-accent' : 'text-navy-500'}`}>
                 {v.sub}
               </span>
             </button>
           ))}
         </nav>
-
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-pw-blue to-transparent" />
       </header>
 
       {view === 'write' ? (
         <>
-          <div className="max-w-5xl mx-auto px-6 pt-6 pb-2">
-            <p className="text-base sm:text-lg text-navy-200 max-w-2xl leading-relaxed">
+          <div className="max-w-7xl mx-auto px-6 pt-4 pb-2">
+            <p className="lead max-w-3xl">
               BDH keeps what it learns in one fixed-size synaptic matrix.
               Each token writes a single outer product into it.
             </p>
-            <p className="text-sm text-pw-accent/80 mt-1.5 font-medium">
+            <p className="text-base font-medium text-pw-accent mt-3">
               Step through a sentence and watch the write happen.
             </p>
           </div>
           <TraceLabBoundary>
             <Suspense fallback={
-              <div className="max-w-5xl mx-auto px-6 py-16 text-center text-sm text-navy-400">
+              <div className="max-w-7xl mx-auto px-6 py-16 text-center text-sm text-navy-400">
                 Loading the trained linear-attention model…
               </div>
             }>
@@ -148,20 +155,20 @@ function App() {
         </>
       ) : (
       <>
-      <div className="max-w-5xl mx-auto px-6 pt-6 pb-2">
-        <p className="text-base sm:text-lg text-navy-200 max-w-2xl leading-relaxed">
+      <div className="max-w-7xl mx-auto px-6 pt-4 pb-2">
+        <p className="lead max-w-3xl">
           Because that matrix is fixed in size and only ever added to, what it
           holds is decided entirely by what you wrote into it.
         </p>
-        <p className="text-sm text-pw-accent/80 mt-1.5 font-medium">
+        <p className="text-base font-medium text-pw-accent mt-3">
           Change the examples. Watch it fail, then recover.
         </p>
       </div>
 
-      <main className="max-w-5xl mx-auto px-6 py-6">
-        <div className="mb-4 px-4 py-3 rounded-lg border border-navy-700/40 bg-navy-900/40">
-          <p className="text-xs font-mono text-navy-400">
-            <span className="text-pw-accent font-semibold">Claim:</span>{' '}
+      <main className="max-w-7xl mx-auto px-6 py-6">
+        <div className="card card-accent mb-5 px-6 py-5">
+          <p className="eyebrow text-pw-accent mb-2">Claim:</p>
+          <p className="text-lg text-navy-200 max-w-4xl">
             The same weights that score 100% at 8 bars with matched demos score 0% with 2-bar demos. Context, not capability.
           </p>
         </div>
@@ -178,12 +185,14 @@ function App() {
           <>
             <DemoContext demos={currentTask.demos} complexity={complexity} />
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-8 mb-6">
-              <DemoPanel demos={currentTask.demos} gridSize={130} />
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6 mb-6 items-start">
+              <div className="card p-5 sm:p-6">
+                <DemoPanel demos={currentTask.demos} gridSize={130} />
+              </div>
 
-              <div className="flex flex-col gap-4 sm:gap-6">
-                <div>
-                  <h3 className="text-sm font-medium text-navy-300 mb-3">
+              <div className="flex flex-col gap-5 sm:gap-6">
+                <div className="card p-5 sm:p-6">
+                  <h3 className="eyebrow text-navy-500 mb-4">
                     Query Input
                   </h3>
                   <GridRenderer
@@ -202,8 +211,8 @@ function App() {
                     covered={covered}
                   />
                 ) : (
-                  <div>
-                    <h3 className="text-sm font-medium text-navy-300 mb-3">
+                  <div className="card p-5 sm:p-6">
+                    <h3 className="eyebrow text-navy-500 mb-4">
                       Expected Output
                     </h3>
                     <GridRenderer

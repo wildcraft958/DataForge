@@ -21,8 +21,8 @@ export default function DemoContext({ demos = [], complexity }) {
   const estimatedTokens = 770
 
   return (
-    <div className="mb-4 flex flex-wrap items-center gap-3 px-4 py-3 rounded-lg border border-navy-700/40 bg-navy-900/40">
-      <span className="text-xs font-mono text-navy-400 mr-1">Demos:</span>
+    <div className="card mb-5 flex flex-wrap items-center gap-3 px-5 py-4">
+      <span className="eyebrow text-navy-500 mr-1">Demos:</span>
       {demos.map((demo, i) => {
         const bars = countBars(demo.input)
         const matches = bars === complexity
@@ -30,7 +30,7 @@ export default function DemoContext({ demos = [], complexity }) {
           <span
             key={i}
             className={`
-              inline-flex items-center gap-1.5 text-xs font-mono px-2 py-1 rounded-md border
+              inline-flex items-center gap-1.5 text-xs font-mono px-3 py-1.5 rounded-full border
               transition-colors duration-300
               ${TAG_COLORS[i % TAG_COLORS.length]}
             `}
@@ -42,7 +42,7 @@ export default function DemoContext({ demos = [], complexity }) {
           </span>
         )
       })}
-      <span className="ml-auto text-[11px] font-mono text-navy-500">
+      <span className="ml-auto cite">
         {estimatedTokens} / {TOKEN_BUDGET} tokens
       </span>
     </div>

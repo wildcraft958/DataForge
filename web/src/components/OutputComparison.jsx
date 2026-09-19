@@ -153,14 +153,14 @@ export default function OutputComparison({
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-center gap-3">
-        <h3 className="text-sm font-medium text-navy-300">
+        <h3 className="eyebrow text-navy-500">
           Model Output
         </h3>
         <button
           onClick={() => prediction && startAnimation()}
           disabled={playing || !prediction}
           className={`
-            ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium
+            ml-auto flex items-center gap-2 px-4 py-2 rounded-full eyebrow
             transition-all duration-200
             ${playing
               ? 'bg-navy-700/30 text-navy-500 cursor-not-allowed'
@@ -183,7 +183,7 @@ export default function OutputComparison({
       </div>
       <div className="flex flex-wrap items-start gap-4 sm:gap-6">
         <div className="flex flex-col items-center gap-1.5">
-          <span className="text-xs font-mono text-navy-400">Prediction</span>
+          <span className="cite">Prediction</span>
           <div
             className="rounded-lg transition-shadow duration-700"
             style={{
@@ -294,14 +294,14 @@ export default function OutputComparison({
         </div>
 
         <div className="flex flex-col items-center gap-1.5">
-          <span className="text-xs font-mono text-navy-400">Ground Truth</span>
+          <span className="cite">Ground Truth</span>
           <GridRenderer grid={groundTruth} size={gridSize} />
         </div>
       </div>
 
       {showDiff && (
         <div
-          className={`mt-2 rounded-xl border ${tone.border} ${tone.bg} px-4 py-3`}
+          className={`mt-3 rounded-2xl border ${tone.border} ${tone.bg} px-5 py-4`}
           style={{ animation: 'fadeSlideIn 0.35s ease forwards' }}
           aria-live="polite"
         >
@@ -311,18 +311,18 @@ export default function OutputComparison({
             </span>
             <div className="flex-1 min-w-0">
               <div className="flex items-baseline gap-3 flex-wrap">
-                <span className={`text-sm font-semibold ${tone.headlineColor}`}>
+                <span className={`text-base font-semibold ${tone.headlineColor}`}>
                   {explanation.headline}
                 </span>
                 <span className="text-xs font-mono text-navy-400">
                   {accuracy}% cells correct · {wrongCells}/{totalCells} wrong
                 </span>
               </div>
-              <p className="text-xs text-navy-300 mt-1.5 leading-relaxed max-w-md">
+              <p className="text-sm text-navy-300 mt-2 leading-relaxed max-w-lg">
                 {explanation.body}
               </p>
               {explanation.bdh && (
-                <p className="text-[10px] text-pw-accent/60 mt-1.5 font-mono">
+                <p className="cite mt-2">
                   {explanation.bdh}
                 </p>
               )}

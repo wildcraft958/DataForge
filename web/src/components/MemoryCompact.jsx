@@ -82,13 +82,13 @@ export default function MemoryCompact({ demoCount = 0, demos = [] }) {
   const h = N * CELL_PX
 
   return (
-    <div className="rounded-xl border border-navy-700/40 bg-navy-800/40 p-4">
-      <h4 className="text-xs font-semibold text-navy-300 mb-3 tracking-wide">
+    <div className="card card-accent-violet p-5 sm:p-6">
+      <h4 className="eyebrow text-navy-500 mb-5">
         Memory Comparison
       </h4>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <div>
-          <span className="text-[10px] font-mono text-navy-400 block mb-1.5">
+          <span className="cite block mb-2">
             Transformer KV Cache
           </span>
           <div className="flex items-end gap-[2px] h-20 bg-navy-900/40 rounded-lg p-2">
@@ -116,7 +116,7 @@ export default function MemoryCompact({ demoCount = 0, demos = [] }) {
         </div>
 
         <div>
-          <span className="text-[10px] font-mono text-navy-400 block mb-1.5">
+          <span className="cite block mb-2">
             Pathway BDH Synaptic State (S)
           </span>
           <div className="flex justify-center">

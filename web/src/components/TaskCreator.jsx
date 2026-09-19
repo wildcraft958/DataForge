@@ -125,12 +125,12 @@ export default function TaskCreator({ onnx, demos, covered }) {
       <div className="mb-6">
         <button
           onClick={() => setOpen(true)}
-          className="w-full text-left px-4 py-3 rounded-xl border border-navy-700/40 bg-navy-900/30 hover:border-pw-cyan/30 transition-colors group"
+          className="card w-full text-left px-6 py-5 hover:border-pw-cyan transition-colors group"
         >
-          <span className="text-sm font-medium text-navy-300 group-hover:text-white transition-colors">
+          <span className="h-card text-navy-300 group-hover:text-white transition-colors">
             Create your own task
           </span>
-          <span className="text-xs text-navy-500 ml-2">
+          <span className="text-sm text-navy-500 ml-3">
             Design a bar arrangement and run the model on it
           </span>
         </button>
@@ -139,12 +139,12 @@ export default function TaskCreator({ onnx, demos, covered }) {
   }
 
   return (
-    <div className="mb-6 rounded-xl border border-navy-700/40 bg-navy-900/30 p-5">
+    <div className="card mb-6 p-6 sm:p-7">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-sm font-semibold text-white">Create your own task</h3>
+        <h3 className="h-card">Create your own task</h3>
         <button
           onClick={() => setOpen(false)}
-          className="text-xs text-navy-400 hover:text-white transition-colors"
+          className="eyebrow text-navy-400 hover:text-white transition-colors"
         >
           Collapse
         </button>
@@ -232,7 +232,7 @@ export default function TaskCreator({ onnx, demos, covered }) {
         <button
           onClick={runModel}
           disabled={!onnx.ready || running || !demos}
-          className="text-xs px-4 py-2 rounded-lg font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed bg-pw-blue text-[#fff] hover:bg-pw-blue/80"
+          className="eyebrow px-5 py-2.5 rounded-full transition-colors disabled:opacity-40 disabled:cursor-not-allowed bg-pw-blue text-[#fff] hover:bg-pw-blue/80"
         >
           {running ? 'Running...' : 'Run model'}
         </button>
