@@ -30,8 +30,12 @@ All task data is synthetic. No external datasets are used.
 | Linear-attention coreference model (2 layers, d_model 32) | Trained from scratch on synthetic templates | MIT |
 
 No pretrained weights are used. Both models were trained by this team on data
-this project generates. The second model powers view 1, and its training code,
-metrics and weights checksum are committed.
+this project generates.
+
+The second model powers view 1. Its training script is `tracelab-model/train.py`,
+which also generates the data, writes the browser weights and records a checksum.
+The exported weights, the vocabulary, the configuration and `metrics.json` are all
+committed, so you can load the model without training it again.
 
 ## Graphics and Fonts
 
