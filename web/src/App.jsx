@@ -1,4 +1,5 @@
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, lazy, Suspense } from 'react'
+import TraceLabBoundary from './components/TraceLabBoundary'
 import Controls from './components/Controls'
 import DemoPanel from './components/DemoPanel'
 import GridRenderer from './components/GridRenderer'
@@ -15,7 +16,15 @@ import TaskCreator from './components/TaskCreator'
 import WhyItMattersCard from './components/WhyItMattersCard'
 import useOnnxInference from './hooks/useOnnxInference'
 
+const TraceLab = lazy(() => import('./tracelab/TraceLab'))
+
+const VIEWS = [
+  { id: 'write', n: '1', label: 'The Write', sub: 'S ← S + φ(K) ⊗ V' },
+  { id: 'consequence', n: '2', label: 'The Consequence', sub: 'the coverage cliff' },
+]
+
 function App() {
+  const [view, setView] = useState('write')
   const [complexity, setComplexity] = useState(3)
   const [covered, setCovered] = useState(true)
   const [guidedActive, setGuidedActive] = useState(true)
@@ -74,8 +83,11 @@ function App() {
               DataForge 2026 · Pathway Track
             </p>
             <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight leading-tight">
-              Demonstration Coverage
+              What BDH Remembers
             </h1>
+            <p className="text-xs text-navy-400 mt-1">
+              Two views of one synaptic state matrix.
+            </p>
           </div>
           <div className="flex items-center gap-3">
             <button
@@ -84,19 +96,65 @@ function App() {
             >
               About
             </button>
-            <LiveBadge isLive={isLive} progress={onnx.progress} />
+            {view === 'consequence' && <LiveBadge isLive={isLive} progress={onnx.progress} />}
           </div>
         </div>
+
+        <nav className="max-w-5xl mx-auto mt-5 flex gap-2" aria-label="Views">
+          {VIEWS.map((v) => (
+            <button
+              key={v.id}
+              onClick={() => setView(v.id)}
+              aria-current={view === v.id ? 'page' : undefined}
+              className={`flex-1 text-left px-4 py-2.5 rounded-lg border transition-colors ${
+                view === v.id
+                  ? 'border-pw-cyan/60 bg-pw-cyan/10'
+                  : 'border-navy-700/50 hover:border-navy-600 bg-navy-900/30'
+              }`}
+            >
+              <span className={`text-xs font-semibold ${view === v.id ? 'text-white' : 'text-navy-300'}`}>
+                {v.n} · {v.label}
+              </span>
+              <span className={`block text-[11px] font-mono mt-0.5 ${view === v.id ? 'text-pw-cyan' : 'text-navy-500'}`}>
+                {v.sub}
+              </span>
+            </button>
+          ))}
+        </nav>
+
         <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-pw-blue to-transparent" />
       </header>
 
+      {view === 'write' ? (
+        <>
+          <div className="max-w-5xl mx-auto px-6 pt-6 pb-2">
+            <p className="text-base sm:text-lg text-navy-200 max-w-2xl leading-relaxed">
+              BDH keeps what it learns in one fixed-size synaptic matrix.
+              Each token writes a single outer product into it.
+            </p>
+            <p className="text-sm text-pw-cyan/80 mt-1.5 font-medium">
+              Step through a sentence and watch the write happen.
+            </p>
+          </div>
+          <TraceLabBoundary>
+            <Suspense fallback={
+              <div className="max-w-5xl mx-auto px-6 py-16 text-center text-sm text-navy-400">
+                Loading the trained linear-attention model…
+              </div>
+            }>
+              <TraceLab />
+            </Suspense>
+          </TraceLabBoundary>
+        </>
+      ) : (
+      <>
       <div className="max-w-5xl mx-auto px-6 pt-6 pb-2">
         <p className="text-base sm:text-lg text-navy-200 max-w-2xl leading-relaxed">
-          A model fails on hard problems not because it lacks the capability,
-          but because the demonstrations did not cover that difficulty.
+          Because that matrix is fixed in size and only ever added to, what it
+          holds is decided entirely by what you wrote into it.
         </p>
         <p className="text-sm text-pw-cyan/80 mt-1.5 font-medium">
-          Change the examples. Watch it recover.
+          Change the examples. Watch it fail, then recover.
         </p>
       </div>
 
@@ -188,6 +246,8 @@ function App() {
         active={guidedActive}
         onComplete={() => setGuidedActive(false)}
       />
+      </>
+      )}
 
       {aboutOpen && <AboutPage onClose={() => setAboutOpen(false)} />}
     </div>
